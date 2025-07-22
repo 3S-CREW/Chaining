@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "719736077401",
+    "project_id": "chaining-88dbd",
+    "storage_bucket": "chaining-88dbd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:719736077401:android:603dfaaff9ffdc064c0548",
+        "android_client_info": {
+          "package_name": "com.example.chaining"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIcZyjKx3aaxdM75g8P7PvZgU4WJSco8s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
