@@ -6,6 +6,9 @@ plugins {
     // Hilt 의존성 주입 (DI) 라이브러리 사용
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+
+    // Compose Compiler 플러그인 추가
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -45,7 +48,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
     packaging {
         resources {
@@ -61,8 +64,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
 
     // Hilt 의존성 주입 (DI) 라이브러리 사용
-    implementation("com.google.dagger:hilt-android:2.51")
-    kapt("com.google.dagger:hilt-android-compiler:2.51")
+    implementation("com.google.dagger:hilt-android:2.55")
+    kapt("com.google.dagger:hilt-android-compiler:2.55")
 
     // Room (로컬 DB) 의존성 주입
     implementation("androidx.room:room-runtime:2.6.1")
