@@ -3,6 +3,21 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
     id("com.google.gms.google-services") version "4.4.3" apply false
+
     // Hilt 의존성 주입 (DI) 라이브러리 사용
     id("com.google.dagger.hilt.android") version "2.51" apply false
+
+    // Spotless 의존성 주입 (Ktlint 관련 툴)
+    id("com.diffplug.spotless") version "6.22.0"
+}
+
+subprojects {
+    apply(plugin = "com.diffplug.spotless")
+
+    spotless {
+        kotlin {
+            target("**/*.kt")
+            ktlint()
+        }
+    }
 }
