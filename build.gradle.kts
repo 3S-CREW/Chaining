@@ -3,4 +3,6 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
     id("com.google.gms.google-services") version "4.4.3" apply false
+    // Hilt 의존성 주입 (DI) 라이브러리 사용
+    id("com.google.dagger.hilt.android") version "2.51" apply false
 }
