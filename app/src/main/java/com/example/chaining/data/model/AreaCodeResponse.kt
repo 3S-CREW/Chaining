@@ -1,21 +1,20 @@
 package com.example.chaining.data.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class AreaCodeResponse(
     @SerializedName("response")
-    val response: Response
+    val response: AreaCodeResponse
 ) {
-    data class Response(
+    data class AreaCodeResponse(
         @SerializedName("body")
-        val body: Body,
+        val body: AreaCodeBody,
         @SerializedName("header")
-        val header: Header
+        val header: AreaCodeHeader
     ) {
-        data class Body(
+        data class AreaCodeBody(
             @SerializedName("items")
-            val items: Items,
+            val items: AreaCodeItems,
             @SerializedName("numOfRows")
             val numOfRows: Int,
             @SerializedName("pageNo")
@@ -23,11 +22,11 @@ data class AreaCodeResponse(
             @SerializedName("totalCount")
             val totalCount: Int
         ) {
-            data class Items(
+            data class AreaCodeItems(
                 @SerializedName("item")
-                val item: List<Item>
+                val item: List<AreaCodeItem>
             ) {
-                data class Item(
+                data class AreaCodeItem(
                     @SerializedName("lDongRegnCd")
                     val lDongRegnCd: String,
                     @SerializedName("lDongRegnNm")
@@ -42,7 +41,7 @@ data class AreaCodeResponse(
             }
         }
 
-        data class Header(
+        data class AreaCodeHeader(
             @SerializedName("resultCode")
             val resultCode: String,
             @SerializedName("resultMsg")
