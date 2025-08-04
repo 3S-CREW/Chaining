@@ -1,6 +1,7 @@
 package com.example.chaining.network
 
 import com.example.chaining.BuildConfig.DATA_OPEN_API_KEY
+import com.example.chaining.data.model.AreaCodeResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
