@@ -3,7 +3,7 @@ package com.example.chaining.data.repository
 import com.example.chaining.BuildConfig
 import com.example.chaining.data.model.AreaCodeResponse
 import com.example.chaining.network.AreaService
-import jakarta.inject.Inject
+import javax.inject.Inject
 
 class AreaRepository @Inject constructor(
     private val api: AreaService
