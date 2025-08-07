@@ -19,7 +19,7 @@ val properties = Properties().apply {
 
 android {
     namespace = "com.example.chaining"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.chaining"

@@ -1,5 +1,6 @@
 package com.example.chaining.ui.theme.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,6 +18,7 @@ fun AreaScreen(viewModel: AreaViewModel = hiltViewModel()) {
 
     LazyColumn {
         items(areaCodes) { area ->
+            Log.d(area.lDongRegnNm, area.lDongRegnCd)
             Text(
                 text = "${area.lDongRegnNm} (${area.lDongRegnCd})",
                 modifier = Modifier.padding(8.dp)
