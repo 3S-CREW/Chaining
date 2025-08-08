@@ -28,7 +28,13 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        buildConfigField("String","GOOGLE_API_WEB_CLIENT_ID", properties["GOOGLE_API_WEB_CLIENT_ID"].toString())
+        buildConfigField("String", "DATA_OPEN_API_KEY", properties["DATA_OPEN_API_KEY"].toString())
+
+        buildConfigField(
+            "String",
+            "GOOGLE_API_WEB_CLIENT_ID",
+            properties["GOOGLE_API_WEB_CLIENT_ID"].toString()
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -83,6 +89,7 @@ dependencies {
     // Hilt 의존성 주입 (DI) 라이브러리 사용
     implementation("com.google.dagger:hilt-android:2.55")
     kapt("com.google.dagger:hilt-android-compiler:2.55")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Room (로컬 DB) 의존성 주입
     implementation("androidx.room:room-runtime:2.6.1")
