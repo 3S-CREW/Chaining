@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -11,9 +13,13 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+val properties = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
+}
+
 android {
     namespace = "com.example.chaining"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.chaining"
@@ -21,6 +27,8 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String","GOOGLE_API_WEB_CLIENT_ID", properties["GOOGLE_API_WEB_CLIENT_ID"].toString())
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -46,6 +54,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.15"
@@ -58,6 +67,14 @@ android {
 }
 
 dependencies {
+    // Google Sign-In (Credentials API 포함)
+    implementation("androidx.credentials:credentials:1.5.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
+
+    // Google Identity Services (Google 로그인 팝업 등을 위해 필요)
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+
     // 구글 Firebase 사용
     implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
     implementation("com.google.firebase:firebase-analytics")
