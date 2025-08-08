@@ -11,7 +11,7 @@ interface AreaService {
     suspend fun getAreaCodes(
         @Query("serviceKey", encoded = true) serviceKey: String, // API 키
         @Query("lDongRegnCd") lDongRegnCd: Int = 11, // 지역 코드
-        @Query("PageNo") PageNo: Int = 1, // 불러올 페이지 수
+        @Query("pageNo") PageNo: Int = 1, // 불러올 페이지 수
         @Query("numOfRows") numOfRows: Int = 1000, // 불러올 행의 수
         @Query("lDongListYn") lDongListYn: String = "Y", // 목록조회 여부
         @Query("MobileOS") mobileOS: String = "AND", // OS 종류

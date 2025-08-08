@@ -10,7 +10,7 @@ class AreaRepository @Inject constructor(
 ) {
     suspend fun fetchAreaCodes(): List<AreaCodeResponse.AreaCodeResponse.AreaCodeBody.AreaCodeItems.AreaCodeItem> {
         val response = api.getAreaCodes(
-            serviceKey = BuildConfig.DATA_OPEN_API_KEY + "&_type=json"
+            serviceKey = BuildConfig.DATA_OPEN_API_KEY
         )
         return response.response.body.items.item
     }
