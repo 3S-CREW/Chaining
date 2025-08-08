@@ -30,6 +30,12 @@ android {
 
         buildConfigField("String", "DATA_OPEN_API_KEY", properties["DATA_OPEN_API_KEY"].toString())
 
+        buildConfigField(
+            "String",
+            "GOOGLE_API_WEB_CLIENT_ID",
+            properties["GOOGLE_API_WEB_CLIENT_ID"].toString()
+        )
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -67,6 +73,14 @@ android {
 }
 
 dependencies {
+    // Google Sign-In (Credentials API 포함)
+    implementation("androidx.credentials:credentials:1.5.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
+
+    // Google Identity Services (Google 로그인 팝업 등을 위해 필요)
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+
     // 구글 Firebase 사용
     implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
     implementation("com.google.firebase:firebase-analytics")
