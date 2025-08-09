@@ -16,18 +16,22 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onTableClick: () -> Unit) {
     val user = Firebase.auth.currentUser
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text("환영합니다, ${user?.displayName}")
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            Firebase.auth.signOut()
-        }) {
+        Button(onClick = onTableClick) {
+            Text("테이블 보기")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { Firebase.auth.signOut() }) {
             Text("로그아웃")
         }
     }

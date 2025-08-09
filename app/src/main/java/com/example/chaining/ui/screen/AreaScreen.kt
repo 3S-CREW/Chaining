@@ -1,4 +1,4 @@
-package com.example.chaining.ui.theme.screen
+package com.example.chaining.ui.screen
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
