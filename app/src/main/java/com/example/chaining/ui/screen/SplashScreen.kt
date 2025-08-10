@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
@@ -28,20 +29,33 @@ import com.example.chaining.ui.component.SplashAnimation
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun SplashScreen(navController: NavController) {
-    val offsetX = remember { Animatable(300f) }
+    val offsetX = remember { Animatable(300f) } // 슬라이드
+    val alpha = remember { Animatable(0f) } // 페이드 인
     val chainVisible = remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
-        offsetX.animateTo(
-            targetValue = 0f,
-            animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing)
-        )
-        delay(300)
+        // 슬라이드 인 + 페이드 인 동시 실행
+        launch {
+            offsetX.animateTo(
+                targetValue = 0f,
+                animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
+            )
+        }
+        launch {
+            alpha.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 1500, easing = FastOutSlowInEasing)
+            )
+        }
+
+        delay(800)
         chainVisible.value = true
         delay(1500)
+
         val isLoggedIn = Firebase.auth.currentUser != null
         if (isLoggedIn) {
             navController.navigate("home") {
@@ -66,7 +80,7 @@ fun SplashScreen(navController: NavController) {
         ) {
             if (chainVisible.value) {
                 SplashAnimation()
-                Spacer(modifier = Modifier.height(8.dp)) // 이미지와 텍스트 간격
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
             Text(
@@ -74,9 +88,10 @@ fun SplashScreen(navController: NavController) {
                 fontSize = 50.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                modifier = Modifier.offset { IntOffset(offsetX.value.toInt(), 0) }
+                modifier = Modifier
+                    .offset { IntOffset(offsetX.value.toInt(), 0) }
+                    .alpha(alpha.value)
             )
         }
-
     }
 }
