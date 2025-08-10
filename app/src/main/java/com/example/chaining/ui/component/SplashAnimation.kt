@@ -1,34 +1,38 @@
 package com.example.chaining.ui.component
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.chaining.R
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
+import kotlinx.coroutines.launch
 
 @Composable
 fun SplashAnimation() {
-    var startAnimation by remember { mutableStateOf(false) }
+    val offsetY = remember { Animatable(0f) } // 아래 -> 위
 
-    val chainWidth by animateDpAsState(
-        targetValue = if (startAnimation) 200.dp else 0.dp,
-        animationSpec = tween(durationMillis = 1000)
-    )
-
-    LaunchedEffect(true) {
-        startAnimation = true
+    LaunchedEffect(Unit) {
+        launch {
+            offsetY.animateTo(
+                targetValue = -50f,
+                animationSpec = tween(durationMillis = 200)
+            )
+        }
     }
 
     Image(
         painter = painterResource(id = R.drawable.chain),
         contentDescription = "Chain",
         modifier = Modifier
-            .size(64.dp)
-            .height(20.dp)
-            .width(chainWidth)
+            .size(70.dp)
+            .graphicsLayer {
+                translationY = offsetY.value
+            }
     )
 }

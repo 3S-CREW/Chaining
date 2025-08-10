@@ -7,9 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +20,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.chaining.ui.component.SplashAnimation
@@ -33,12 +30,14 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SplashScreen(navController: NavController) {
-    val offsetX = remember { Animatable(300f) } // 슬라이드
+    val offsetX = remember { Animatable(300f) } // X축 슬라이드인 용도
     val alpha = remember { Animatable(0f) } // 페이드 인
-    val chainVisible = remember { mutableStateOf(false) }
+    val offsetY = remember { Animatable(0f) } // Y축 슬라이드인 용도
+    val chainVisible = remember { mutableStateOf(false) } // 체인 이미지 용도
+    val textSlideDownStart = remember { mutableStateOf(false) } // 2단계 시작 용도
 
-    LaunchedEffect(true) {
-        // 슬라이드 인 + 페이드 인 동시 실행
+    LaunchedEffect(Unit) {
+        // 1단계: 오른쪽 -> 중앙 슬라이드 + 페이드인
         launch {
             offsetX.animateTo(
                 targetValue = 0f,
@@ -53,7 +52,17 @@ fun SplashScreen(navController: NavController) {
         }
 
         delay(800)
+
+        // 2단계: 중앙 -> 아래쪽 슬라이드
+        textSlideDownStart.value = true
+        launch {
+            offsetY.animateTo(
+                70f,
+                animationSpec = tween(200, easing = FastOutSlowInEasing)
+            )
+        }
         chainVisible.value = true
+
         delay(1500)
 
         val isLoggedIn = Firebase.auth.currentUser != null
@@ -80,7 +89,6 @@ fun SplashScreen(navController: NavController) {
         ) {
             if (chainVisible.value) {
                 SplashAnimation()
-                Spacer(modifier = Modifier.height(8.dp))
             }
 
             Text(
@@ -89,7 +97,7 @@ fun SplashScreen(navController: NavController) {
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 modifier = Modifier
-                    .offset { IntOffset(offsetX.value.toInt(), 0) }
+                    .offset { IntOffset(offsetX.value.toInt(), offsetY.value.toInt()) }
                     .alpha(alpha.value)
             )
         }
