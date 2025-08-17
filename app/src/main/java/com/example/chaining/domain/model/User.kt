@@ -13,7 +13,8 @@ data class User(
     val kakaoOpenChatUrl: String = "",            // 카톡 오픈채팅 링크
     val recruitPosts: List<String> = emptyList(), // 내가 모집한 글 (Post ID만 저장)
     val applications: List<String> = emptyList(), // 내가 지원한 글 (Application ID만 저장)
-    val createdAt: Long = 0L                      // 서버 타임스탬프
+    val createdAt: Long = 0L,                     // 서버 타임스탬프
+    val isDeleted: Boolean = false                // Soft Delete 플래그 추가
 )
 
 @kotlinx.serialization.Serializable

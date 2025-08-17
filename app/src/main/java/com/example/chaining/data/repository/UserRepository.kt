@@ -75,8 +75,9 @@ class UserRepository @Inject constructor(
         usersRef().child(id).updateChildren(updates).await()
     }
 
-    /** Delete */
+    /** Delete (Soft Delete) */
     suspend fun deleteUser(id: String) {
-        usersRef().child(id).removeValue().await()
+        val updates = mapOf("isDeleted" to true)
+        usersRef().child(id).updateChildren(updates).await()
     }
 }
