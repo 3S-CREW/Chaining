@@ -5,6 +5,9 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.gms.google-services")
 
+    // @kotlinx.serialization.Serializable을 쓰기 위한 plugin 적용
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.10"
+
     // Hilt 의존성 주입 (DI) 라이브러리 사용
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
@@ -85,6 +88,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-database-ktx") // Realtime Database
 
     // Hilt 의존성 주입 (DI) 라이브러리 사용
     implementation("com.google.dagger:hilt-android:2.55")
@@ -102,7 +106,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
     // Navigation 라이브러리 의존성 주입
-    implementation ("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // @kotlinx.serialization.Serializable을 쓰기 위한 의존성 주입
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
