@@ -51,7 +51,7 @@ class UserRepository @Inject constructor(
     }
 
     /** Read (실시간 구독 - 내 계정, 변경사항이 있을 때마다 계속 가져오기) */
-    fun observeMyUser(): Flow<User?> = callbackFlow {
+    fun observeMyUsers(): Flow<User?> = callbackFlow {
         val uid = uidOrThrow()
         val ref = usersRef().child(uid)
 
