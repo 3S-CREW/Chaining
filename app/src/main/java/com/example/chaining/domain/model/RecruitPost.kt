@@ -11,6 +11,7 @@ data class RecruitPost(
     val preferredLanguages: List<LanguagePref> = emptyList(), // 선호하는 언어 정보
     val content: String = "",                 // 모집글 내용
     val createdAt: Long = 0L,                 // 작성 시각
+    val kakaoOpenChatUrl: String = "",            // 카톡 오픈채팅 링크
     val owner: UserSummary = UserSummary(),   // 작성자 프로필 (간단 정보)
     val applicants: List<Application> = emptyList() // 지원자 리스트
 )
