@@ -122,7 +122,9 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.White,
-                contentColor = Color.Black
+                contentColor = Color.Black,
+                disabledContainerColor = Color.White,
+                disabledContentColor = Color.Black
             ),
             enabled = !isLoading,
             shape = RoundedCornerShape(12.dp),
