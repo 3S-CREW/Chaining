@@ -4,7 +4,9 @@ import com.example.chaining.BuildConfig
 import com.example.chaining.data.model.AreaCodeResponse
 import com.example.chaining.network.AreaService
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class AreaRepository @Inject constructor(
     private val api: AreaService
 ) {
