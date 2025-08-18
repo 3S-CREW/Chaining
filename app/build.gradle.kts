@@ -5,9 +5,6 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.gms.google-services")
 
-    // @kotlinx.serialization.Serializable을 쓰기 위한 plugin 적용
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.10"
-
     // Hilt 의존성 주입 (DI) 라이브러리 사용
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
@@ -88,7 +85,6 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-database-ktx") // Realtime Database
 
     // Hilt 의존성 주입 (DI) 라이브러리 사용
     implementation("com.google.dagger:hilt-android:2.55")

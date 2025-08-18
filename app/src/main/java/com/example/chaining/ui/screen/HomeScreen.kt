@@ -16,7 +16,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
 @Composable
-fun HomeScreen(onTableClick: () -> Unit) {
+fun HomeScreen(onTableClick: () -> Unit, onMyPageClick: () -> Unit) {
     val user = Firebase.auth.currentUser
     Column(
         modifier = Modifier
@@ -26,10 +26,17 @@ fun HomeScreen(onTableClick: () -> Unit) {
         verticalArrangement = Arrangement.Center
     ) {
         Text("환영합니다, ${user?.displayName}")
+
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onTableClick) {
             Text("테이블 보기")
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onMyPageClick) {
+            Text("마이페이지")
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { Firebase.auth.signOut() }) {
             Text("로그아웃")
