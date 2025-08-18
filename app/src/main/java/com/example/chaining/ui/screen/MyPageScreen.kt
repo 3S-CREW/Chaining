@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -14,6 +15,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -108,6 +111,35 @@ fun BasicInfoSection() {
             ) {
 
             }
+        }
+    }
+}
+
+@Composable
+fun ActionButtons() {
+    Column {
+        Button(
+            onClick = { /* 모집 현황 */ },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("모집 현황")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(
+            onClick = { /* 지원 현황 */ },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("지원 현황")
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(
+            onClick = {/* 프로필 저장 */ },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3578E5))
+        ) {
+            Text("프로필 저장", color = Color.White)
         }
     }
 }
