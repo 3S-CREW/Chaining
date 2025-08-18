@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,29 +37,54 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.example.chaining.domain.model.User
+import com.example.chaining.viewmodel.UserViewModel
 
 @Composable
-fun MyPageScreen(uid: String) {
+fun MyPageScreen(
+    userViewModel: UserViewModel = hiltViewModel()
+) {
+    val userState by userViewModel.user.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        ProfileSection()
+        ProfileSection(user = userState, onNicknameChange = { newNickname ->
+            userViewModel.updateUser(mapOf("nickname" to newNickname))
+        })
+
         Spacer(modifier = Modifier.height(24.dp))
-        BasicInfoSection()
+        BasicInfoSection(
+            selectedCountry = userState?.country ?: "한국",
+            onCountryChange = { newCountry ->
+                userViewModel.updateUser(mapOf("country" to newCountry))
+            }
+        )
+
         Spacer(modifier = Modifier.height(24.dp))
-        ActionButtons()
+        ActionButtons(
+            onSave = {
+                // 필요하면 전체 유저 정보 저장
+            }
+        )
     }
 }
 
 @Composable
-fun ProfileSection() {
+fun ProfileSection(
+    user: User?,
+    onNicknameChange: (String) -> Unit
+) {
+    var nickname by remember { mutableStateOf(user?.nickname ?: "") }
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box {
             Image(
-                painter = rememberAsyncImagePainter(model = "프로필 URL"),
+                painter = rememberAsyncImagePainter(model = user?.profileImageUrl ?: ""),
                 contentDescription = null,
                 modifier = Modifier
                     .size(80.dp)
@@ -75,7 +101,15 @@ fun ProfileSection() {
 
         Spacer(modifier = Modifier.height(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("안녕안녕안녕", fontWeight = FontWeight.Bold)
+            TextField(
+                value = nickname,
+                onValueChange = {
+                    nickname = it
+                    onNicknameChange(it)
+                },
+                singleLine = true,
+                modifier = Modifier.weight(1f)
+            )
             Icon(Icons.Default.Edit, contentDescription = "닉네임 수정")
         }
 
@@ -86,37 +120,52 @@ fun ProfileSection() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BasicInfoSection() {
+fun BasicInfoSection(
+    selectedCountry: String,
+    onCountryChange: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val countries = listOf("한국", "미국", "일본")
+    var country by remember { mutableStateOf(selectedCountry) }
+
     Column {
         Text("기본 정보", fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
 
-        val countries = listOf("한국", "미국", "일본")
-        var selectedCountry by remember { mutableStateOf(countries[0]) }
-
         ExposedDropdownMenuBox(
-            expanded = false,
-            onExpandedChange = {}
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded }
         ) {
             TextField(
-                value = selectedCountry,
-                onValueChange = {},
+                value = country,
+                onValueChange = { },
                 label = { Text("출신 국가 선택") },
                 readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(false) }
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) }
             )
             DropdownMenu(
-                expanded = false,
-                onDismissRequest = {}
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
             ) {
-
+                countries.forEach { c ->
+                    androidx.compose.material3.DropdownMenuItem(
+                        text = { Text(c) },
+                        onClick = {
+                            country = c
+                            onCountryChange(c)
+                            expanded = false
+                        }
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun ActionButtons() {
+fun ActionButtons(
+    onSave: () -> Unit
+) {
     Column {
         Button(
             onClick = { /* 모집 현황 */ },
