@@ -19,7 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.BuildConfig
+import com.example.chaining.domain.model.User
+import com.example.chaining.viewmodel.UserViewModel
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.Firebase
@@ -27,7 +30,10 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 
 @Composable
-fun LoginScreen(onLoginSuccess: () -> Unit) {
+fun LoginScreen(
+    onLoginSuccess: () -> Unit,
+    userViewModel: UserViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
     val signInClient = Identity.getSignInClient(context)
 
@@ -45,7 +51,20 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     Firebase.auth.signInWithCredential(firebaseCredential)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                onLoginSuccess()
+                                val firebaseUser = Firebase.auth.currentUser
+                                if (firebaseUser != null) {
+                                    val uid = firebaseUser.uid
+
+                                    // 신규 유저 DB 등록
+                                    userViewModel.addUser(
+                                        User(
+                                            id = uid,
+                                            nickname = firebaseUser.displayName ?: ""
+                                        )
+                                    )
+                                    // 로그인 성공 처리
+                                    onLoginSuccess()
+                                }
                             } else {
                                 Toast.makeText(context, "로그인 실패", Toast.LENGTH_SHORT).show()
                             }
@@ -60,7 +79,9 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -81,7 +102,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
 
             signInClient.beginSignIn(signInRequest)
                 .addOnSuccessListener { result ->
-                    val intentSenderRequest = IntentSenderRequest.Builder(result.pendingIntent).build()
+                    val intentSenderRequest =
+                        IntentSenderRequest.Builder(result.pendingIntent).build()
                     launcher.launch(intentSenderRequest)
                 }
                 .addOnFailureListener {

@@ -23,11 +23,13 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             SplashScreen(navController)
         }
         composable("login") {
-            LoginScreen {
-                navController.navigate("home") {
-                    popUpTo("login") { inclusive = true }
+            LoginScreen(
+                onLoginSuccess = {
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                    }
                 }
-            }
+            )
         }
         composable("home") {
             HomeScreen(
