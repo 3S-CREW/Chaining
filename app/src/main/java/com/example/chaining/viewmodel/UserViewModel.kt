@@ -1,5 +1,6 @@
 package com.example.chaining.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chaining.data.repository.UserRepository
@@ -33,10 +34,23 @@ class UserViewModel @Inject constructor(
         repo.addUser(user)
     }
 
+    /** Update - 전체 User 객체 저장 */
+    fun saveUser() = viewModelScope.launch {
+        try {
+            _user.value?.let {
+                repo.saveUser(it)
+                Log.d("UserVM", "User saved: $it")
+            } ?: Log.w("UserVM", "_user.value is null, skipping save")
+        } catch (e: Exception) {
+            Log.e("UserVM", "Failed to save user", e)
+        }
+    }
+
     /** Update - 일부 필드 수정 */
     fun updateUser(updates: Map<String, Any?>) = viewModelScope.launch {
         _user.value?.id?.let { uid ->
             repo.updateUser(uid, updates)
+            Log.d("UserVM", "$uid, $updates")
         }
     }
 

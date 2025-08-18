@@ -13,6 +13,7 @@ import com.example.chaining.ui.screen.SplashScreen
 
 @Composable
 fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
+
     NavHost(
         navController = navController,
         startDestination = "splash",
@@ -38,7 +39,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             AreaScreen()
         }
         composable("myPage") {
-            MyPageScreen(uid = "1")
+            MyPageScreen()
         }
     }
 }

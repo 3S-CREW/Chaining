@@ -18,6 +18,7 @@ import com.google.firebase.auth.auth
 @Composable
 fun HomeScreen(onTableClick: () -> Unit, onMyPageClick: () -> Unit) {
     val user = Firebase.auth.currentUser
+
     Column(
         modifier = Modifier
             .fillMaxSize()

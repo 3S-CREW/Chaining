@@ -67,9 +67,7 @@ fun MyPageScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
         ActionButtons(
-            onSave = {
-                // 필요하면 전체 유저 정보 저장
-            }
+            onSave = { userState?.let { userViewModel.saveUser() } }
         )
     }
 }
@@ -141,7 +139,8 @@ fun BasicInfoSection(
                 onValueChange = { },
                 label = { Text("출신 국가 선택") },
                 readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) }
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+                modifier = Modifier.menuAnchor()
             )
             DropdownMenu(
                 expanded = expanded,
@@ -184,7 +183,7 @@ fun ActionButtons(
 
         Spacer(modifier = Modifier.height(24.dp))
         Button(
-            onClick = {/* 프로필 저장 */ },
+            onClick = onSave,
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3578E5))
         ) {
