@@ -83,6 +83,7 @@ dependencies {
 
     // 구글 Firebase 사용
     implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
+    implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx")
 
@@ -103,6 +104,9 @@ dependencies {
 
     // Navigation 라이브러리 의존성 주입
     implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // Coil (Jetpack Compose용)
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     // @kotlinx.serialization.Serializable을 쓰기 위한 의존성 주입
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")

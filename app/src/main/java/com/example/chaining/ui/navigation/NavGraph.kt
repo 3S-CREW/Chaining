@@ -31,7 +31,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable("home") {
             HomeScreen(
                 onTableClick = { navController.navigate("area") },
-                onMyPageClick = { navController.navigate("myPage") }
+                onMyPageClick = { navController.navigate("myPage") },
+                onMainHomeClick = { navController.navigate("mainHome") }
             )
         }
         composable("area") {
