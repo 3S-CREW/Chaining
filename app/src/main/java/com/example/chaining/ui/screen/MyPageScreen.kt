@@ -6,6 +6,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +21,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -109,44 +110,98 @@ fun ProfileSection(
     user: User?,
     onNicknameChange: (String) -> Unit
 ) {
-    var nickname by remember { mutableStateOf(user?.nickname ?: "") }
+    var showDialog by remember { mutableStateOf(false) }
+    var nicknameInput by remember { mutableStateOf(user?.nickname ?: "") }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Box {
+                Image(
+                    painter = rememberAsyncImagePainter(model = user?.profileImageUrl ?: ""),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                )
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = "프로필 변경",
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .background(Color.White, CircleShape)
+                )
+            }
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box {
-            Image(
-                painter = rememberAsyncImagePainter(model = user?.profileImageUrl ?: ""),
-                contentDescription = null,
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape)
-            )
-            Icon(
-                imageVector = Icons.Default.Refresh,
-                contentDescription = "프로필 변경",
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .background(Color.White, CircleShape)
+                    .clickable {
+                        nicknameInput = user?.nickname ?: ""
+                        showDialog = true
+                    }
+            ) {
+                Text(
+                    text = user?.nickname ?: "닉네임 없음",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.pen_squared),
+                    contentDescription = "닉네임 수정",
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "팔로워 203 · 팔로우 106",
+                color = Color.Gray,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold
             )
         }
+    }
 
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            TextField(
-                value = nickname,
-                onValueChange = {
-                    nickname = it
-                    onNicknameChange(it)
-                },
-                singleLine = true,
-                modifier = Modifier.weight(1f)
-            )
-            Icon(Icons.Default.Edit, contentDescription = "닉네임 수정")
-        }
 
-        Spacer(modifier = Modifier.height(4.dp))
-        Text("팔로워 203 · 팔로우 106", color = Color.Gray, fontSize = 12.sp)
+
+    if (showDialog) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("닉네임 변경") },
+            text = {
+                TextField(
+                    value = nicknameInput,
+                    onValueChange = { nicknameInput = it },
+                    placeholder = { Text("닉네임 입력") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onNicknameChange(nicknameInput)
+                        showDialog = false
+                    }
+                ) {
+                    Text("변경")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("취소")
+                }
+            }
+        )
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
