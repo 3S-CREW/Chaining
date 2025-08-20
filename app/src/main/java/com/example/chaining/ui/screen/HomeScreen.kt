@@ -19,7 +19,8 @@ import com.google.firebase.auth.auth
 fun HomeScreen(
     onTableClick: () -> Unit,
     onMyPageClick: () -> Unit,
-    onMainHomeClick: () -> Unit
+    onMainHomeClick: () -> Unit,
+    onCreatePostClick: () -> Unit
 ) {
     val user = Firebase.auth.currentUser
     Column(
@@ -49,6 +50,11 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { Firebase.auth.signOut() }) {
             Text("로그아웃")
+        }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onCreatePostClick) {
+            Text(text = "모집글 작성")
         }
     }
 }

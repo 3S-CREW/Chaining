@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.chaining.ui.login.LoginScreen
 import com.example.chaining.ui.screen.AreaScreen
+import com.example.chaining.ui.screen.CreatePostScreen
 import com.example.chaining.ui.screen.HomeScreen
 import com.example.chaining.ui.screen.MainHomeScreen
 import com.example.chaining.ui.screen.MyPageScreen
@@ -33,7 +34,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             HomeScreen(
                 onTableClick = { navController.navigate("area") },
                 onMyPageClick = { navController.navigate("myPage") },
-                onMainHomeClick = { navController.navigate("mainHome") }
+                onMainHomeClick = { navController.navigate("mainHome") },
+                onCreatePostClick = { navController.navigate("createPost") }
             )
         }
         composable("area") {
@@ -44,6 +46,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
         composable("mainHome"){
             MainHomeScreen()
+        }
+        composable("createPost") {
+            CreatePostScreen()
         }
     }
 }
