@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chaining.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatePostScreen() {
     var title by remember { mutableStateOf("") } // 제목을 저장할 상태 변수
