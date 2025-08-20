@@ -19,7 +19,8 @@ import com.google.firebase.auth.auth
 fun HomeScreen(
     onTableClick: () -> Unit,
     onMyPageClick: () -> Unit,
-    onMainHomeClick: () -> Unit
+    onMainHomeClick: () -> Unit,
+    onCreatePostClick: () -> Unit
 ) {
     val user = Firebase.auth.currentUser
     Column(
