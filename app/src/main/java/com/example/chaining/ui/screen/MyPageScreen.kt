@@ -54,6 +54,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.chaining.R
 import com.example.chaining.domain.model.User
+import com.example.chaining.ui.component.TestButton
 import com.example.chaining.viewmodel.UserViewModel
 
 @Composable
@@ -99,6 +100,12 @@ fun MyPageScreen(
             leadingIconRes = R.drawable.forest_path,
             placeholder = "선호 여행지 선택"
         )
+        Spacer(modifier = Modifier.height(12.dp))
+        userState?.preferredLanguages?.let {
+            TestButton(
+                preferredLanguages = it
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
         ActionButtons(
@@ -213,7 +220,6 @@ fun DropDownField(
     onItemSelected: (String) -> Unit,      // 선택 시 콜백
     leadingIconRes: Int,                   // 아이콘 리소스
     placeholder: String,                   // Placeholder 텍스트
-    modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
