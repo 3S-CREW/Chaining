@@ -56,7 +56,6 @@ class UserViewModel @Inject constructor(
     fun updateUser(updates: Map<String, Any?>) = viewModelScope.launch {
         _user.value?.id?.let { uid ->
             repo.updateUser(uid, updates)
-            Log.d("UserVM", "$uid, $updates")
         }
     }
 
