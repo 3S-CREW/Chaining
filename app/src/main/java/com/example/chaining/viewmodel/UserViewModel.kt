@@ -1,14 +1,17 @@
 package com.example.chaining.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chaining.data.repository.UserRepository
 import com.example.chaining.domain.model.User
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
@@ -21,9 +24,13 @@ class UserViewModel @Inject constructor(
 
     init {
         // 앱 시작 시 내 계정 실시간 구독
-        viewModelScope.launch {
-            repo.observeMyUsers().collect { newUser ->
-                _user.value = newUser
+        val currentUser = Firebase.auth.currentUser
+        if (currentUser != null) {
+            // 사용자가 로그인한 경우에만 데이터를 구독
+            viewModelScope.launch {
+                repo.observeMyUsers().collect { newUser ->
+                    _user.value = newUser
+                }
             }
         }
     }
@@ -31,6 +38,18 @@ class UserViewModel @Inject constructor(
     /** Create - 최초 회원가입 시 User 등록 */
     fun addUser(user: User) = viewModelScope.launch {
         repo.addUser(user)
+    }
+
+    /** Update - 전체 User 객체 저장 */
+    fun saveUser() = viewModelScope.launch {
+        try {
+            _user.value?.let {
+                repo.saveUser(it)
+                Log.d("UserVM", "User saved: $it")
+            } ?: Log.w("UserVM", "_user.value is null, skipping save")
+        } catch (e: Exception) {
+            Log.e("UserVM", "Failed to save user", e)
+        }
     }
 
     /** Update - 일부 필드 수정 */

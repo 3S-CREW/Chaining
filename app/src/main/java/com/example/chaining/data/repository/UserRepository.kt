@@ -75,6 +75,12 @@ class UserRepository @Inject constructor(
         usersRef().child(id).updateChildren(updates).await()
     }
 
+    /** 전체 User 객체 저장 */
+    suspend fun saveUser(user: User) {
+        val uid = uidOrThrow()
+        usersRef().child(uid).setValue(user).await()
+    }
+
     /** Delete (Soft Delete) */
     suspend fun deleteUser(id: String) {
         val updates = mapOf("isDeleted" to true)

@@ -23,29 +23,17 @@ private val LightColorScheme =
         primary = Purple40,
         secondary = PurpleGrey40,
         tertiary = Pink40,
-        background = Color.White,    // 앱 배경 흰색
-        surface = Color.White,       // Card, Surface 등도 흰색
-        onPrimary = Color.White,
-        onSecondary = Color.White,
-        onTertiary = Color.White,
-        onBackground = Color.Black,  // 기본 텍스트 색상
-        onSurface = Color.Black,     // Surface 위 텍스트 색상
-        /* Other default colors to override
-        background = Color(0xFFFFFBFE),
-        surface = Color(0xFFFFFBFE),
-        onPrimary = Color.White,
-        onSecondary = Color.White,
-        onTertiary = Color.White,
-        onBackground = Color(0xFF1C1B1F),
-        onSurface = Color(0xFF1C1B1F),
-         */
+        background = Color.White, // 원하는 색상 (#FFFFBF)
+        surface = Color.White,    // Scaffold, Surface 등 표면도 같은 색상
+        onBackground = Color.Black,
+        onSurface = Color.Black
     )
 
 @Composable
 fun chainingTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colorScheme =
@@ -60,7 +48,7 @@ fun chainingTheme(
         }
 
     MaterialTheme(
-        colorScheme = LightColorScheme,
+        colorScheme = colorScheme,
         typography = Typography,
         content = content,
     )

@@ -23,6 +23,7 @@ fun HomeScreen(
     onCreatePostClick: () -> Unit
 ) {
     val user = Firebase.auth.currentUser
+
     Column(
         modifier = Modifier
             .fillMaxSize()

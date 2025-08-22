@@ -20,8 +20,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.unit.sp
 import com.example.chaining.BuildConfig
+import com.example.chaining.domain.model.User
+import com.example.chaining.viewmodel.UserViewModel
 import com.example.chaining.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
@@ -30,7 +33,10 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 
 @Composable
-fun LoginScreen(onLoginSuccess: () -> Unit) {
+fun LoginScreen(
+    onLoginSuccess: () -> Unit,
+    userViewModel: UserViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
     val signInClient = Identity.getSignInClient(context)
     var isLoading by remember { mutableStateOf(false) }
@@ -44,6 +50,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             if (intent != null) {
                 val credential = signInClient.getSignInCredentialFromIntent(intent)
                 val idToken = credential.googleIdToken
+
                 if (idToken != null) {
                     isLoading = true
                     val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
@@ -51,7 +58,20 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                         .addOnCompleteListener { task ->
                             isLoading = false
                             if (task.isSuccessful) {
-                                onLoginSuccess()
+                                val firebaseUser = Firebase.auth.currentUser
+                                if (firebaseUser != null) {
+                                    val uid = firebaseUser.uid
+
+                                    // 신규 유저 DB 등록
+                                    userViewModel.addUser(
+                                        User(
+                                            id = uid,
+                                            nickname = firebaseUser.displayName ?: ""
+                                        )
+                                    )
+                                    // 로그인 성공 처리
+                                    onLoginSuccess()
+                                }
                             } else {
                                 Toast.makeText(context, "로그인 실패", Toast.LENGTH_SHORT).show()
                             }
@@ -153,3 +173,4 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
         }
     }
 }
+
