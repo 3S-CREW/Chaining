@@ -17,13 +17,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -128,18 +127,24 @@ fun ProfileSection(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Box {
                 Image(
-                    painter = rememberAsyncImagePainter(model = user?.profileImageUrl ?: ""),
+                    painter = rememberAsyncImagePainter(
+                        model = user?.profileImageUrl.takeIf { !it.isNullOrEmpty() }
+                            ?: R.drawable.test_profile
+                    ),
                     contentDescription = null,
                     modifier = Modifier
                         .size(80.dp)
                         .clip(CircleShape)
                 )
                 Icon(
-                    imageVector = Icons.Default.Refresh,
+                    painter = painterResource(id = R.drawable.change),
                     contentDescription = "프로필 변경",
+                    tint = Color.Unspecified,
                     modifier = Modifier
+
                         .align(Alignment.BottomEnd)
-                        .background(Color.White, CircleShape)
+                        .offset(x = (-8).dp, y = (-8).dp)
+                        .size(20.dp)
                 )
             }
 
