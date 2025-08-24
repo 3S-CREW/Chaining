@@ -12,6 +12,7 @@ import com.example.chaining.ui.screen.HomeScreen
 import com.example.chaining.ui.screen.MainHomeScreen
 import com.example.chaining.ui.screen.MyPageScreen
 import com.example.chaining.ui.screen.SplashScreen
+import com.example.chaining.ui.screen.JoinPostScreen
 
 @Composable
 fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -38,7 +39,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onTableClick = { navController.navigate("area") },
                 onMyPageClick = { navController.navigate("myPage") },
                 onMainHomeClick = { navController.navigate("mainHome") },
-                onCreatePostClick = { navController.navigate("createPost") }
+                onCreatePostClick = { navController.navigate("createPost") },
+                onJoinPostClick = { navController.navigate("joinPost") }
             )
         }
         composable("area") {
@@ -52,6 +54,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
         composable("createPost") {
             CreatePostScreen()
+        }
+        composable("joinPost") {
+            JoinPostScreen()
         }
     }
 }
