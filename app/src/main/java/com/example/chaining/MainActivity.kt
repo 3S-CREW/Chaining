@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
 
-            chainingTheme {
+            chainingTheme(dynamicColor = false) {
                 val navController = rememberNavController()
                 Scaffold(
                     modifier = Modifier

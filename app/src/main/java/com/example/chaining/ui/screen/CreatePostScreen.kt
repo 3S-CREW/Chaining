@@ -2,6 +2,7 @@ package com.example.chaining.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -25,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,12 +40,40 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
+import com.example.chaining.domain.model.LanguagePref
+import com.example.chaining.domain.model.LocationPref
+import com.example.chaining.domain.model.RecruitPost
+import com.example.chaining.domain.model.UserSummary
+import com.example.chaining.ui.component.DatePickerFieldToModal
+import com.example.chaining.viewmodel.RecruitPostViewModel
+import com.example.chaining.viewmodel.UserViewModel
 
 @Composable
-fun CreatePostScreen() {
-    var title by remember { mutableStateOf("") } // 제목을 저장할 상태 변수
-    var content by remember { mutableStateOf("") } // 내용을 위한 상태 변수
+fun CreatePostScreen(
+    postViewModel: RecruitPostViewModel = hiltViewModel(),
+    userViewModel: UserViewModel = hiltViewModel()
+
+) {
+    val userState by userViewModel.user.collectAsState()
+
+    var title by remember { mutableStateOf(userState?.nickname ?: "") }
+    var content by remember { mutableStateOf("") }
+    var preferredDestinations by remember { mutableStateOf("") }
+    var preferredLocation by remember { mutableStateOf<LocationPref>(LocationPref()) }
+    var preferredLanguages by remember {
+        mutableStateOf(
+            userState?.preferredLanguages ?: emptyList()
+        )
+    }
+    var hasCar by remember { mutableStateOf("") }
+    var tourAt by remember { mutableStateOf<Long?>(null) }
+    var closeAt by remember { mutableStateOf<Long?>(null) }
+    var kakaoOpenChatUrl by remember { mutableStateOf("") }
+
+    val languages = listOf("한국어", "영어", "중국어", "일본어")
+    var selectedLanguages by remember { mutableStateOf(mapOf<String, Int>()) }
 
     Scaffold(
         topBar = {
@@ -52,7 +83,6 @@ fun CreatePostScreen() {
                     .height(64.dp) // 원하는 높이로 직접 설정
                     .clip(RoundedCornerShape(bottomEnd = 20.dp))
                     .background(Color(0xFF4A526A)),
-                // 내부 요소들을 세로 중앙에 정렬
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // 뒤로가기 아이콘 버튼
@@ -68,25 +98,23 @@ fun CreatePostScreen() {
                 // 제목 텍스트
                 Text(
                     text = "모집글 작성",
-                    modifier = Modifier.weight(1f), // 3. 남는 공간을 모두 차지
+                    modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
-                    textAlign = TextAlign.Center // 4. 텍스트를 가운데 정렬
+                    textAlign = TextAlign.Center
                 )
 
                 // 제목을 완벽한 중앙에 맞추기 위한 빈 공간
                 Spacer(modifier = Modifier.width(48.dp))
             }
         },
-        // 전체 화면 배경색 설정
         containerColor = Color(0xFFF3F6FF)
     ) { innerPadding ->
-        // 스크롤 가능한 Column으로 콘텐츠 영역 설정
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp) // 좌우, 상하 여백
+                .padding(16.dp)
                 .verticalScroll(rememberScrollState()) // 스크롤 가능하게 만듦
         ) {
             Spacer(modifier = Modifier.height(16.dp))
@@ -106,21 +134,104 @@ fun CreatePostScreen() {
                     unfocusedPlaceholderColor = Color.Gray,
                     focusedIndicatorColor = Color.LightGray,
                     unfocusedIndicatorColor = Color.LightGray
+                )
             )
-        )
             Spacer(modifier = Modifier.height(20.dp))
 
-            // '선호하는 여행지 선택' 드롭다운 메뉴 추가
-            PreferenceSelector()
+            // 여행지 스타일 드롭다운
+            PreferenceSelector(
+                selectedOption = preferredDestinations,
+                onOptionSelected = { preferredDestinations = it }
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            PreferenceSelector()
+
+
+            // 여행지 지역 드롭다운
+            PreferenceSelector(
+                selectedOption = preferredLocation.location ?: "",
+                onOptionSelected = { preferredLocation = preferredLocation.copy(location = it) }
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            PreferenceSelector()
+
+            // 여행 시작일 선택
+            DatePickerFieldToModal(
+                modifier = Modifier.fillMaxWidth(),
+                selectedDate = tourAt,
+                onDateSelected = { tourAt = it }
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            PreferenceSelector()
+
+            // 모집 마감일 선택
+            DatePickerFieldToModal(
+                modifier = Modifier.fillMaxWidth(),
+                selectedDate = closeAt,
+                onDateSelected = { closeAt = it }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            SingleDropdown(
+                label = "자차 여부",
+                options = listOf("예(6인승 이상)", "예(4인승)", "예(2인승)", "아니요"),
+                selectedOption = hasCar,
+                onOptionSelected = { hasCar = it }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text("선호 언어 선택 및 레벨", fontSize = 16.sp)
+            languages.forEach { lang ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                ) {
+                    // 언어 이름
+                    Text(lang, modifier = Modifier.width(60.dp))
+
+                    // 레벨 토글
+                    (1..10).forEach { level ->
+                        val selected = selectedLanguages[lang] == level
+                        Button(
+                            onClick = {
+                                selectedLanguages = if (selected) {
+                                    selectedLanguages - lang
+                                } else {
+                                    selectedLanguages + (lang to level)
+                                }
+                            },
+                            modifier = Modifier
+                                .size(28.dp)
+                                .padding(1.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (selected) Color(0xFF4285F4) else Color.LightGray
+                            ),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text("$level", fontSize = 10.sp, color = Color.White)
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+            // 오픈 채팅 링크 입력창
+            OutlinedTextField(
+                value = kakaoOpenChatUrl,
+                onValueChange = { kakaoOpenChatUrl = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+                placeholder = { Text("카카오톡 오픈 채팅방 링크를 입력하세요.") },
+                shape = RoundedCornerShape(16.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedPlaceholderColor = Color.Gray,
+                    unfocusedPlaceholderColor = Color.Gray,
+                    focusedIndicatorColor = Color.LightGray,
+                    unfocusedIndicatorColor = Color.LightGray
+                )
+            )
+            Spacer(modifier = Modifier.height(36.dp))
 
             // 내용 입력창
-            Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 value = content,
                 onValueChange = { content = it },
@@ -139,20 +250,47 @@ fun CreatePostScreen() {
                 )
             )
 
-            Spacer(modifier = Modifier.height(36.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            Button(
-                onClick = { /* TODO: 작성 완료 로직 구현 */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                    //.padding(bottom = 16.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF4285F4) // 파란색 배경
-                )
-            ) {
-                Text(text = "작성 완료", fontSize = 16.sp)
+            SaveButton {
+                val missingFields = mutableListOf<String>()
+                if (title.isBlank()) missingFields.add("제목")
+                if (content.isBlank()) missingFields.add("내용")
+                if (preferredDestinations.isBlank()) missingFields.add("선호 여행지 스타일")
+                if (preferredLocation.location.isBlank()) missingFields.add("선호 여행지/장소")
+                if (tourAt == null) missingFields.add("여행 시작일")
+                if (closeAt == null) missingFields.add("모집 마감일")
+                if (hasCar.isBlank()) missingFields.add("자차 여부")
+                if (selectedLanguages.isEmpty()) missingFields.add("선호 언어")
+                if (kakaoOpenChatUrl.isBlank()) missingFields.add("카카오톡 오픈채팅 링크")
+
+                if (missingFields.isNotEmpty()) {
+                    // 어떤 항목이 비었는지 Toast 또는 Alert
+                    println("다음 항목을 입력해주세요: ${missingFields.joinToString(", ")}")
+                } else {
+                    // 모든 항목 유효
+                    val newPost = RecruitPost(
+                        postId = "",
+                        title = title,
+                        content = content,
+                        preferredDestinations = preferredDestinations,
+                        preferredLocations = preferredLocation,
+                        tourAt = tourAt!!,
+                        closeAt = closeAt!!,
+                        hasCar = hasCar,
+                        preferredLanguages = selectedLanguages.map { (lang, level) ->
+                            LanguagePref(lang, level)
+                        },
+                        kakaoOpenChatUrl = kakaoOpenChatUrl,
+                        createdAt = System.currentTimeMillis(),
+                        owner = UserSummary(
+                            id = userState?.id ?: "",
+                            nickname = userState?.nickname ?: "",
+                            profileImageUrl = userState?.profileImageUrl ?: ""
+                        )
+                    )
+                    postViewModel.createPost(newPost)
+                }
             }
         }
     }
@@ -160,13 +298,59 @@ fun CreatePostScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PreferenceSelector() {
+fun SingleDropdown(
+    label: String,
+    options: List<String>,
+    selectedOption: String,
+    onOptionSelected: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var displayText by remember { mutableStateOf(selectedOption) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        OutlinedTextField(
+            value = displayText,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(label) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor() // 중요: 메뉴 위치 잡아줌
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        displayText = option // TextField에 바로 반영
+                        onOptionSelected(option) // 부모 상태 반영
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PreferenceSelector(
+    selectedOption: String,
+    onOptionSelected: (String) -> Unit
+) {
     // 드롭다운 메뉴에 표시할 아이템 목록
     val options = listOf("서울", "부산", "제주도", "강릉", "경주")
     // 드롭다운 메뉴가 펼쳐졌는지 여부를 저장하는 상태
     var isExpanded by remember { mutableStateOf(false) }
-    // 현재 선택된 항목을 저장하는 상태
-    var selectedOptionText by remember { mutableStateOf("") }
+    val selectedOptionText = selectedOption
 
     ExposedDropdownMenuBox(
         expanded = isExpanded,
@@ -217,12 +401,28 @@ fun PreferenceSelector() {
                 DropdownMenuItem(
                     text = { Text(selectionOption) },
                     onClick = {
-                        selectedOptionText = selectionOption
+                        onOptionSelected(selectionOption)
                         isExpanded = false
                     },
                     modifier = Modifier.background(Color.White)
                 )
             }
         }
+    }
+}
+
+@Composable
+fun SaveButton(onSave: () -> Unit) {
+    Button(
+        onClick = onSave,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
+        shape = RoundedCornerShape(30.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF4285F4)
+        )
+    ) {
+        Text(text = "작성 완료", fontSize = 16.sp)
     }
 }
