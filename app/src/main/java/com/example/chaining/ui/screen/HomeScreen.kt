@@ -22,7 +22,7 @@ fun HomeScreen(
     onMainHomeClick: () -> Unit,
     onCreatePostClick: () -> Unit,
     onJoinPostClick: () -> Unit,
-    onViewPostClick: () -> Unit
+    onCommunityClick: () -> Unit
 ) {
     val user = Firebase.auth.currentUser
 
@@ -66,7 +66,7 @@ fun HomeScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onViewPostClick) {
+        Button(onClick = onCommunityClick) {
             Text(text = "모집글 조회")
         }
     }

@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun CommnuityScreen() {
+fun CommunityScreen() {
     Column(
         modifier = Modifier
             .height(20.dp)
