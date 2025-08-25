@@ -27,6 +27,7 @@ class RecruitPostViewModel @Inject constructor(
 
     /** Create - 모집글 등록 */
     fun createPost(post: RecruitPost) = viewModelScope.launch {
+        Log.d("PostPost", post.toString())
         repo.createPost(post)
         fetchAllPosts()
     }

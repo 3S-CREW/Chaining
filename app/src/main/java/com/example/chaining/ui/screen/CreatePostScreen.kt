@@ -1,8 +1,8 @@
 package com.example.chaining.ui.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,8 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -28,7 +26,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
+import com.example.chaining.domain.model.LanguagePref
 import com.example.chaining.domain.model.LocationPref
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.domain.model.UserSummary
@@ -58,7 +56,6 @@ fun CreatePostScreen(
     userViewModel: UserViewModel = hiltViewModel()
 
 ) {
-    val postState by postViewModel.post.collectAsState()
     val userState by userViewModel.user.collectAsState()
 
     var title by remember { mutableStateOf(userState?.nickname ?: "") }
@@ -74,6 +71,9 @@ fun CreatePostScreen(
     var tourAt by remember { mutableStateOf<Long?>(null) }
     var closeAt by remember { mutableStateOf<Long?>(null) }
     var kakaoOpenChatUrl by remember { mutableStateOf("") }
+
+    val languages = listOf("한국어", "영어", "중국어", "일본어")
+    var selectedLanguages by remember { mutableStateOf(mapOf<String, Int>()) }
 
     Scaffold(
         topBar = {
@@ -153,8 +153,85 @@ fun CreatePostScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 내용 입력창
+            // 여행 시작일 선택
+            DatePickerFieldToModal(
+                modifier = Modifier.fillMaxWidth(),
+                selectedDate = tourAt,
+                onDateSelected = { tourAt = it }
+            )
             Spacer(modifier = Modifier.height(16.dp))
+
+            // 모집 마감일 선택
+            DatePickerFieldToModal(
+                modifier = Modifier.fillMaxWidth(),
+                selectedDate = closeAt,
+                onDateSelected = { closeAt = it }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            SingleDropdown(
+                label = "자차 여부",
+                options = listOf("예(6인승 이상)", "예(4인승)", "예(2인승)", "아니요"),
+                selectedOption = hasCar,
+                onOptionSelected = { hasCar = it }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text("선호 언어 선택 및 레벨", fontSize = 16.sp)
+            languages.forEach { lang ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                ) {
+                    // 언어 이름
+                    Text(lang, modifier = Modifier.width(60.dp))
+
+                    // 레벨 토글
+                    (1..10).forEach { level ->
+                        val selected = selectedLanguages[lang] == level
+                        Button(
+                            onClick = {
+                                selectedLanguages = if (selected) {
+                                    selectedLanguages - lang
+                                } else {
+                                    selectedLanguages + (lang to level)
+                                }
+                            },
+                            modifier = Modifier
+                                .size(28.dp)
+                                .padding(1.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (selected) Color(0xFF4285F4) else Color.LightGray
+                            ),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text("$level", fontSize = 10.sp, color = Color.White)
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+            // 오픈 채팅 링크 입력창
+            OutlinedTextField(
+                value = kakaoOpenChatUrl,
+                onValueChange = { kakaoOpenChatUrl = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+                placeholder = { Text("카카오톡 오픈 채팅방 링크를 입력하세요.") },
+                shape = RoundedCornerShape(16.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedPlaceholderColor = Color.Gray,
+                    unfocusedPlaceholderColor = Color.Gray,
+                    focusedIndicatorColor = Color.LightGray,
+                    unfocusedIndicatorColor = Color.LightGray
+                )
+            )
+            Spacer(modifier = Modifier.height(36.dp))
+
+            // 내용 입력창
             OutlinedTextField(
                 value = content,
                 onValueChange = { content = it },
@@ -173,37 +250,37 @@ fun CreatePostScreen(
                 )
             )
 
-            Spacer(modifier = Modifier.height(36.dp))
-            // 여행 시작일 선택
-            DatePickerFieldToModal(
-                modifier = Modifier.fillMaxWidth(),
-                // 현재 상태 값
-                selectedDate = tourAt,
-                // 날짜 선택 시 업데이트
-                onDateSelected = { tourAt = it }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            // 모집 마감일 선택
-            DatePickerFieldToModal(
-                modifier = Modifier.fillMaxWidth(),
-                selectedDate = closeAt,
-                onDateSelected = { closeAt = it }
-            )
+            SaveButton {
+                val missingFields = mutableListOf<String>()
+                if (title.isBlank()) missingFields.add("제목")
+                if (content.isBlank()) missingFields.add("내용")
+                if (preferredDestinations.isBlank()) missingFields.add("선호 여행지 스타일")
+                if (preferredLocation.location.isBlank()) missingFields.add("선호 여행지/장소")
+                if (tourAt == null) missingFields.add("여행 시작일")
+                if (closeAt == null) missingFields.add("모집 마감일")
+                if (hasCar.isBlank()) missingFields.add("자차 여부")
+                if (selectedLanguages.isEmpty()) missingFields.add("선호 언어")
+                if (kakaoOpenChatUrl.isBlank()) missingFields.add("카카오톡 오픈채팅 링크")
 
-            Spacer(modifier = Modifier.height(16.dp))
-            SaveButton(
-                onSave = {
+                if (missingFields.isNotEmpty()) {
+                    // 어떤 항목이 비었는지 Toast 또는 Alert
+                    println("다음 항목을 입력해주세요: ${missingFields.joinToString(", ")}")
+                } else {
+                    // 모든 항목 유효
                     val newPost = RecruitPost(
                         postId = "",
                         title = title,
                         content = content,
                         preferredDestinations = preferredDestinations,
-                        preferredLocations = LocationPref(location = preferredLocation.location),
-                        tourAt = tourAt ?: System.currentTimeMillis(),
+                        preferredLocations = preferredLocation,
+                        tourAt = tourAt!!,
+                        closeAt = closeAt!!,
                         hasCar = hasCar,
-                        closeAt = closeAt ?: System.currentTimeMillis(),
-                        preferredLanguages = preferredLanguages,
+                        preferredLanguages = selectedLanguages.map { (lang, level) ->
+                            LanguagePref(lang, level)
+                        },
                         kakaoOpenChatUrl = kakaoOpenChatUrl,
                         createdAt = System.currentTimeMillis(),
                         owner = UserSummary(
@@ -214,7 +291,7 @@ fun CreatePostScreen(
                     )
                     postViewModel.createPost(newPost)
                 }
-            )
+            }
         }
     }
 }
@@ -228,78 +305,36 @@ fun SingleDropdown(
     onOptionSelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var displayText by remember { mutableStateOf(selectedOption) }
 
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
         OutlinedTextField(
-            value = selectedOption,
+            value = displayText,
             onValueChange = {},
             readOnly = true,
             label = { Text(label) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor() // 중요: 메뉴 위치 잡아줌
         )
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            options.forEach { option ->
-                DropdownMenuItem(text = { Text(option) }, onClick = {
-                    onOptionSelected(option)
-                    expanded = false
-                })
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DatePickerField(
-    label: String,
-    selectedDate: Long?,
-    onDateSelected: (Long) -> Unit
-) {
-    val showDialog = remember { mutableStateOf(false) }
-    val dateFormatter = remember { java.text.SimpleDateFormat("yyyy-MM-dd") }
-
-    // 선택된 날짜를 yyyy-MM-dd 형식으로 변환
-    val formattedDate = selectedDate?.let { dateFormatter.format(it) } ?: ""
-
-    OutlinedTextField(
-        value = formattedDate,
-        onValueChange = {},
-        readOnly = true,
-        label = { Text(label) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { showDialog.value = true }
-    )
-
-    if (showDialog.value) {
-        // Material3 DatePickerDialog
-        val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = selectedDate ?: System.currentTimeMillis()
-        )
-
-        DatePickerDialog(
-            onDismissRequest = { showDialog.value = false },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        val selectedMillis = datePickerState.selectedDateMillis
-                        if (selectedMillis != null) {
-                            onDateSelected(selectedMillis)
-                        }
-                        showDialog.value = false
-                    }
-                ) {
-                    Text("확인")
-                }
-            },
-            dismissButton = {
-                Button(onClick = { showDialog.value = false }) {
-                    Text("취소")
-                }
-            }
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
         ) {
-            DatePicker(state = datePickerState)
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        displayText = option // TextField에 바로 반영
+                        onOptionSelected(option) // 부모 상태 반영
+                        expanded = false
+                    }
+                )
+            }
         }
     }
 }
@@ -315,8 +350,7 @@ fun PreferenceSelector(
     val options = listOf("서울", "부산", "제주도", "강릉", "경주")
     // 드롭다운 메뉴가 펼쳐졌는지 여부를 저장하는 상태
     var isExpanded by remember { mutableStateOf(false) }
-    // 현재 선택된 항목을 저장하는 상태
-    var selectedOptionText by remember { mutableStateOf("") }
+    val selectedOptionText = selectedOption
 
     ExposedDropdownMenuBox(
         expanded = isExpanded,
@@ -367,7 +401,7 @@ fun PreferenceSelector(
                 DropdownMenuItem(
                     text = { Text(selectionOption) },
                     onClick = {
-                        selectedOptionText = selectionOption
+                        onOptionSelected(selectionOption)
                         isExpanded = false
                     },
                     modifier = Modifier.background(Color.White)

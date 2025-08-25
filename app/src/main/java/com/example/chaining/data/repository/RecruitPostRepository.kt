@@ -23,7 +23,7 @@ class RecruitPostRepository @Inject constructor(
     private fun uidOrThrow(): String =
         auth.currentUser?.uid ?: error("로그인이 필요합니다.")
 
-    private fun postsRef(): DatabaseReference = rootRef.child("recruit_posts")
+    private fun postsRef(): DatabaseReference = rootRef.child("posts")
 
     /** Create (신규 모집글 생성) */
     suspend fun createPost(post: RecruitPost): String {

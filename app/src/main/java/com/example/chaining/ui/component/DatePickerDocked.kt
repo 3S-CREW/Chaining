@@ -91,7 +91,7 @@ fun DatePickerFieldToModal(
             Icon(
                 imageVector = Icons.Default.DateRange,
                 contentDescription = "Select date",
-                tint = MaterialTheme.colorScheme.primary,
+                tint = Color(0xFF4285F4),
                 modifier = Modifier.size(24.dp)
             )
         }
