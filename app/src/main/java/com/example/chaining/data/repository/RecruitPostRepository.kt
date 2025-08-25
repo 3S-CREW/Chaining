@@ -52,6 +52,21 @@ class RecruitPostRepository @Inject constructor(
         )
     }
 
+    /** Read (전체) */
+    suspend fun getAllPosts(): List<RecruitPost> {
+        val snap = postsRef().get().await()
+        val posts = mutableListOf<RecruitPost>()
+
+        for (child in snap.children) {
+            val post = child.getValue(RecruitPost::class.java)
+            if (post != null) {
+                posts.add(post.copy(postId = child.key ?: ""))
+            }
+        }
+
+        return posts
+    }
+
     /** Read (내가 쓴글 전체 정보, 한 번만 가져오기) */
     suspend fun getMyPosts(): List<RecruitPost> {
         val uid = uidOrThrow()
