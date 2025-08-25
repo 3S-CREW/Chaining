@@ -17,19 +17,28 @@ class RecruitPostViewModel @Inject constructor(
 ) : ViewModel() {
     private val _post = MutableStateFlow<RecruitPost?>(null)
     val post: StateFlow<RecruitPost?> = _post
-    
+
     private val _posts = MutableStateFlow<List<RecruitPost>>(emptyList())
     val posts: StateFlow<List<RecruitPost>> = _posts
 
     init {
-        viewModelScope.launch {
-            _posts.value = repo.getAllPosts()
-        }
+        fetchAllPosts()
     }
 
     /** Create - 모집글 등록 */
-    fun addPost(post: RecruitPost) = viewModelScope.launch {
+    fun createPost(post: RecruitPost) = viewModelScope.launch {
         repo.createPost(post)
+        fetchAllPosts()
+    }
+
+    /** Read - 모집글 새로고침 */
+    fun fetchAllPosts() = viewModelScope.launch {
+        try {
+            _posts.value = repo.getAllPosts()
+            Log.d("PostVM", "Fetched posts: ${_posts.value.size}")
+        } catch (e: Exception) {
+            Log.e("PostVM", "Failed to fetch posts", e)
+        }
     }
 
     /** Update - 전체 User 객체 저장 */
@@ -37,8 +46,8 @@ class RecruitPostViewModel @Inject constructor(
         try {
             _post.value?.let {
                 repo.savePost(it)
-                Log.d("PostVM", "Post saved: $it")
-            } ?: Log.w("PostVM", "_post.value is null, skipping save")
+                fetchAllPosts()
+            }
         } catch (e: Exception) {
             Log.e("PostVM", "Failed to save post", e)
         }
@@ -48,6 +57,7 @@ class RecruitPostViewModel @Inject constructor(
     fun deletePost() = viewModelScope.launch {
         _post.value?.postId?.let { pid ->
             repo.deletePost(pid)
+            fetchAllPosts()
         }
     }
 }
