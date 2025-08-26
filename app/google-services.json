@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "719736077401",
+    "firebase_url": "https://chaining-88dbd-default-rtdb.firebaseio.com",
     "project_id": "chaining-88dbd",
     "storage_bucket": "chaining-88dbd.firebasestorage.app"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "719736077401-cfndlb3a481dqti68btf9an9phu3odia.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chaining",
+            "certificate_hash": "17e272bb5052dc6523c3c639813e19cd8e720ffa"
+          }
+        },
         {
           "client_id": "719736077401-q1onru1a7hb5due08ugcqtvi5eeadu5a.apps.googleusercontent.com",
           "client_type": 1,

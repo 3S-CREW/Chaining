@@ -1,6 +1,7 @@
 package com.example.chaining.data.repository
 
 
+import android.util.Log
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.domain.model.UserSummary
 import com.google.firebase.auth.FirebaseAuth
@@ -56,6 +57,7 @@ class RecruitPostRepository @Inject constructor(
     suspend fun getAllPosts(): List<RecruitPost> {
         val snap = postsRef().get().await()
         val posts = mutableListOf<RecruitPost>()
+        Log.d("RecruitPostRepository", "postsRef path = ${postsRef().toString()}")
 
         for (child in snap.children) {
             val post = child.getValue(RecruitPost::class.java)

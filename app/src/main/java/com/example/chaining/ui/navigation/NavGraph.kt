@@ -60,8 +60,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable("joinPost") {
             JoinPostScreen()
         }
-        composable("viewPost") {
-            CommunityScreen()
+        composable("community") {
+            CommunityScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 }
