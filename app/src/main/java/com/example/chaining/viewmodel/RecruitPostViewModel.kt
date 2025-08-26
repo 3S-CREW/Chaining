@@ -42,7 +42,6 @@ class RecruitPostViewModel @Inject constructor(
     // 새로고침 버튼용 함수
     fun refreshPosts() = viewModelScope.launch {
         fetchAllPosts(force = true)
-        println("하이하이하이1")
     }
 
     /** Create - 모집글 등록 */
@@ -58,9 +57,7 @@ class RecruitPostViewModel @Inject constructor(
 
         if (force) {
             try {
-                println("하이하이하이2")
                 _posts.value = repo.getAllPosts()
-                println("하이하이하이3" + _posts.value)
                 lastFetchTime = currentTime
             } catch (e: Exception) {
                 Log.e("PostVM", "Failed to fetch posts", e)

@@ -3,7 +3,6 @@ package com.example.chaining.ui.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,8 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -31,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
+import com.example.chaining.ui.component.CardItem
+import com.example.chaining.ui.component.formatRemainingTime
 import com.example.chaining.viewmodel.RecruitPostViewModel
 
 @Composable
@@ -100,23 +99,13 @@ fun CommunityScreen(
                     textAlign = TextAlign.Center
                 )
             } else {
-                // 게시글 목록 표시
+                // 모집글 목록 표시
                 posts.forEach { post ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 12.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White
-                        ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text(text = post.title, fontSize = 18.sp, color = Color.Black)
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(text = post.content, fontSize = 14.sp, color = Color.Gray)
-                        }
-                    }
+                    CardItem(
+                        type = "모집글",
+                        recruitPost = post,
+                        remainingTime = formatRemainingTime(post.closeAt - System.currentTimeMillis())
+                    )
                 }
             }
         }

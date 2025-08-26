@@ -22,7 +22,8 @@ data class RecruitPost(
 data class UserSummary(   // 간단 버전 (닉네임/사진 정도만)
     val id: String = "",
     val nickname: String = "",
-    val profileImageUrl: String = ""
+    val profileImageUrl: String = "",
+    val country: String = ""
 )
 
 @kotlinx.serialization.Serializable
