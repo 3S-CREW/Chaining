@@ -21,7 +21,8 @@ fun HomeScreen(
     onMyPageClick: () -> Unit,
     onMainHomeClick: () -> Unit,
     onCreatePostClick: () -> Unit,
-    onJoinPostClick: () -> Unit
+    onJoinPostClick: () -> Unit,
+    onCommunityClick: () -> Unit
 ) {
     val user = Firebase.auth.currentUser
 
@@ -53,7 +54,7 @@ fun HomeScreen(
         Button(onClick = { Firebase.auth.signOut() }) {
             Text("로그아웃")
         }
-        
+
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onCreatePostClick) {
             Text(text = "모집글 작성")
@@ -62,6 +63,11 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onJoinPostClick) {
             Text(text = "신청")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onCommunityClick) {
+            Text(text = "모집글 조회")
         }
     }
 }

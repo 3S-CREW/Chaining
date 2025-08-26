@@ -7,12 +7,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.chaining.ui.login.LoginScreen
 import com.example.chaining.ui.screen.AreaScreen
+import com.example.chaining.ui.screen.CommunityScreen
 import com.example.chaining.ui.screen.CreatePostScreen
 import com.example.chaining.ui.screen.HomeScreen
+import com.example.chaining.ui.screen.JoinPostScreen
 import com.example.chaining.ui.screen.MainHomeScreen
 import com.example.chaining.ui.screen.MyPageScreen
 import com.example.chaining.ui.screen.SplashScreen
-import com.example.chaining.ui.screen.JoinPostScreen
 
 @Composable
 fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -40,7 +41,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onMyPageClick = { navController.navigate("myPage") },
                 onMainHomeClick = { navController.navigate("mainHome") },
                 onCreatePostClick = { navController.navigate("createPost") },
-                onJoinPostClick = { navController.navigate("joinPost") }
+                onJoinPostClick = { navController.navigate("joinPost") },
+                onCommunityClick = { navController.navigate("community") }
             )
         }
         composable("area") {
@@ -49,7 +51,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable("myPage") {
             MyPageScreen()
         }
-        composable("mainHome"){
+        composable("mainHome") {
             MainHomeScreen()
         }
         composable("createPost") {
@@ -57,6 +59,11 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
         composable("joinPost") {
             JoinPostScreen()
+        }
+        composable("community") {
+            CommunityScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 }
