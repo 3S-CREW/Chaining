@@ -8,5 +8,6 @@ data class Application(
     val applicant: UserSummary = UserSummary(), // 지원자 간단 프로필
     val introduction: String = "",            // 자기 소개
     val createdAt: Long = 0L,
+    var status: String = "PENDING",
     val isDeleted: Boolean = false                // Soft Delete 플래그 추가
 )

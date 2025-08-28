@@ -56,6 +56,30 @@ class ApplicationRepository @Inject constructor(
         return applicationId
     }
 
+    fun observeMyApplicationStatus(): Flow<List<Application>> = callbackFlow {
+        val uid = uidOrThrow()
+        val ref = applicationsRef().orderByChild("applicant/id").equalTo(uid)
+
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val applications = snapshot.children.mapNotNull { snap ->
+                    snap.getValue(Application::class.java)?.let { app ->
+                        app.copy(applicationId = snap.key ?: "")
+                    }
+                }
+                trySend(applications).isSuccess
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                close(error.toException())
+            }
+        }
+
+        ref.addValueEventListener(listener)
+        awaitClose { ref.removeEventListener(listener) }
+    }
+
+
     /** Read (지원서 보기) */
     suspend fun getApplication(id: String): Application? {
         val snap = applicationsRef().child(id).get().await()
