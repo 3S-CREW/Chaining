@@ -1,0 +1,176 @@
+package com.example.chaining.viewmodel
+
+import android.content.Context
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import com.example.chaining.domain.model.QuizItem // 이전에 만든 QuizItem 데이터 클래스 import
+import com.example.chaining.domain.model.QuizType
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+
+class QuizViewModel : ViewModel() {
+
+    // 전체 퀴즈 목록 (비공개)
+    private var allQuizzes: List<QuizItem> = emptyList()
+
+    // UI가 구독할 최종 15문제 퀴즈 리스트 (공개)
+    private val _quizSet = mutableStateOf<List<QuizItem>>(emptyList())
+    val quizSet: State<List<QuizItem>> = _quizSet
+
+    // 현재 몇 번째 문제를 풀고 있는지 추적
+    private val _currentQuestionIndex = mutableStateOf(0)
+    val currentQuestionIndex: State<Int> = _currentQuestionIndex
+
+    // 현재 문제 State (읽기 전용)
+    val currentQuestion: State<QuizItem?> = derivedStateOf {
+        _quizSet.value.getOrNull(_currentQuestionIndex.value)
+    }
+
+    // '순서 맞추기' 유형을 위한 단어 묶음 (shuffled)
+    val wordChips = derivedStateOf {
+        currentQuestion.value?.takeIf { it.type == QuizType.SENTENCE_ORDER.name }
+            ?.answer?.split(" ")?.shuffled() ?: emptyList()
+    }
+
+    // 사용자가 구성한 정답 문장을 저장하는 State
+    private val _userAnswerSentence = mutableStateOf<List<String>>(emptyList())
+    val userAnswerSentence: State<List<String>> = _userAnswerSentence
+
+    // 선택하고 남은 단어 칩 목록 (shuffled)
+    val remainingWordChips = derivedStateOf {
+        val originalWords = currentQuestion.value?.answer?.split(" ")?.shuffled() ?: emptyList()
+        originalWords - _userAnswerSentence.value.toSet()
+    }
+
+    // '객관식' 유형을 위한 사용자 선택 답안 저장 State
+    private val _selectedOption = mutableStateOf<String?>(null)
+    val selectedOption: State<String?> = _selectedOption
+
+    // '빈칸 채우기' 유형을 위한 사용자 선택 답안 저장 State
+    private val _selectedBlankWord = mutableStateOf<String?>(null)
+    val selectedBlankWord: State<String?> = _selectedBlankWord
+
+    // 사용자의 답변을 기록할 Map (Key: 문제 ID, Value: 사용자 답변)
+    private val _userAnswersMap = mutableStateOf<Map<String, String>>(emptyMap())
+    val userAnswersMap: State<Map<String, String>> = _userAnswersMap
+
+    // 사용자가 답을 제출했는지 확인 (버튼 활성화용)
+    val isAnswerSubmitted = derivedStateOf {
+        when (currentQuestion.value?.type) {
+            QuizType.SENTENCE_ORDER.name -> userAnswerSentence.value.isNotEmpty()
+            QuizType.MULTIPLE_CHOICE.name -> selectedOption.value != null
+            QuizType.FILL_IN_THE_BLANK.name -> selectedBlankWord.value != null
+            else -> false
+        }
+    }
+    // 퀴즈가 종료되었는지 여부를 저장
+    private val _isQuizFinished = mutableStateOf(false)
+    val isQuizFinished: State<Boolean> = _isQuizFinished
+
+    /**
+     * Assets 폴더에서 언어에 맞는 퀴즈 JSON 파일을 읽어오는 함수
+     */
+    fun loadQuizzes(context: Context, language: String) {
+        val fileName = if (language == "KOREAN") {
+            "korean_quizzes.json"
+        } else {
+            "english_quizzes.json"
+        }
+
+        try {
+            // 1. Assets에서 파일 스트림 열기
+            val inputStream = context.assets.open(fileName)
+            // 2. 텍스트 읽기
+            val jsonString = inputStream.bufferedReader().use { it.readText() }
+            // 3. Gson을 사용해 JSON 텍스트를 List<QuizItem>으로 변환
+            val listType = object : TypeToken<List<QuizItem>>() {}.type
+            allQuizzes = Gson().fromJson(jsonString, listType)
+
+            // 퀴즈를 모두 불러온 후, 15문제를 선택하는 함수 호출
+            selectQuizSet()
+
+        } catch (e: Exception) {
+            // 파일을 읽지 못했을 경우 예외 처리
+            allQuizzes = emptyList()
+        }
+    }
+
+    private fun selectQuizSet() {
+        val finalQuizList = mutableListOf<QuizItem>()
+        // LV1 부터 LV5 까지 반복
+        (1..5).forEach { level ->
+            // 3가지 유형(SO, MC, FB)에 대해 반복
+            QuizType.values().forEach { type ->
+                // 해당 레벨과 유형에 맞는 문제들을 필터링
+                val filteredQuizzes = allQuizzes.filter { it.level == level && it.type == type.name }
+                // 필터링된 문제들 중 하나를 랜덤으로 선택 (문제가 있을 경우에만)
+                filteredQuizzes.randomOrNull()?.let {
+                    finalQuizList.add(it)
+                }
+            }
+        }
+        // 생성된 15문제의 순서를 섞어서 레벨 순서대로 나오지 않게 함
+        // finalQuizList.shuffle()
+        _quizSet.value = finalQuizList
+    }
+
+    // 단어 칩을 클릭했을 때 호출될 함수
+    fun onWordChipClicked(word: String) {
+        _userAnswerSentence.value = _userAnswerSentence.value + word
+    }
+
+    // '내가 만든 문장'의 단어를 클릭했을 때 (선택 해제)
+    fun onAnswerWordClicked(word: String) {
+        _userAnswerSentence.value = _userAnswerSentence.value - word
+    }
+
+    // '객관식' 선택지를 클릭했을 때
+    fun onOptionSelected(option: String) {
+        _selectedOption.value = option
+    }
+
+    // '빈칸 채우기' 선택지를 클릭했을 때
+    fun onBlankWordSelected(word: String) {
+        _selectedBlankWord.value = word
+    }
+
+    // '다음' 버튼을 눌렀을 때 호출될 함수
+    fun submitAndGoToNext() {
+        // 현재 문제 가져오기 (ID를 얻기 위함)
+        val quiz = currentQuestion.value ?: return
+
+        // 현재 문제 유형에 맞는 사용자 답변 가져오기
+        val userAnswer = when (quiz.type) {
+            QuizType.SENTENCE_ORDER.name -> _userAnswerSentence.value.joinToString(" ")
+            QuizType.MULTIPLE_CHOICE.name -> _selectedOption.value
+            QuizType.FILL_IN_THE_BLANK.name -> _selectedBlankWord.value
+            else -> null
+        }
+
+        // 답변이 있을 경우, Map에 기록
+        if (userAnswer != null) {
+            val newAnswers = _userAnswersMap.value.toMutableMap()
+            newAnswers[quiz.id] = userAnswer
+            _userAnswersMap.value = newAnswers
+        }
+
+        // 다음 문제로 이동 또는 결과 화면으로 전환
+        if (_currentQuestionIndex.value < (_quizSet.value.size - 1)) {
+            _currentQuestionIndex.value++
+            clearUserAnswer()
+        } else {
+            // 모든 퀴즈를 다 푼 경우
+            _isQuizFinished.value = true
+        }
+    }
+
+    // 다음 문제로 넘어갈 때 사용자가 선택한 답을 초기화하는 함수
+    fun clearUserAnswer() {
+        _userAnswerSentence.value = emptyList()
+        _selectedOption.value = null
+        _selectedBlankWord.value = null
+    }
+
+}
