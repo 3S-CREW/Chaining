@@ -10,4 +10,5 @@ sealed class Screen(val route: String) {
     object CreatePost : Screen("createPost")
     object JoinPost : Screen("joinPost")
     object Community : Screen("community")
+    object KRQuiz : Screen("krQuiz")
 }
