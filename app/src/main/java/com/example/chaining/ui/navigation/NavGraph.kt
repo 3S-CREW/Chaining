@@ -15,6 +15,7 @@ import com.example.chaining.ui.screen.JoinPostScreen
 import com.example.chaining.ui.screen.KRQuizScreen
 import com.example.chaining.ui.screen.MainHomeScreen
 import com.example.chaining.ui.screen.MyPageScreen
+import com.example.chaining.ui.screen.QuizResultScreen
 import com.example.chaining.ui.screen.SplashScreen
 
 @Composable
@@ -69,11 +70,31 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onBackClick = { navController.popBackStack() }
             )
         }
-        composable("krQuiz") {
-            KRQuizScreen()
-        }
         composable("enQuiz") {
-            ENQuizScreen()
+            ENQuizScreen(
+                // 퀴즈 종료 시 "quiz_result" 경로로 이동
+                onNavigateToResult = {
+                    navController.navigate("quizResult") {
+                        // 퀴즈 화면은 뒤로가기 스택에서 제거
+                        popUpTo("enQuiz") { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable("krquiz") {
+            KRQuizScreen(
+                onNavigateToResult = {
+                    navController.navigate("quizResult") {
+                        // 퀴즈 화면은 뒤로가기 스택에서 제거
+                        popUpTo("krQuiz") { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable("quizResult") {
+            QuizResultScreen()
         }
     }
 }

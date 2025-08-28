@@ -41,7 +41,8 @@ import com.example.chaining.viewmodel.QuizViewModel
 
 @Composable
 fun ENQuizScreen(
-    quizViewModel: QuizViewModel = viewModel()
+    quizViewModel: QuizViewModel = viewModel(),
+    onNavigateToResult: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -58,6 +59,14 @@ fun ENQuizScreen(
     val selectedOption = quizViewModel.selectedOption.value
     val selectedBlankWord = quizViewModel.selectedBlankWord.value
     val isAnswerSubmitted = quizViewModel.isAnswerSubmitted.value
+    val isQuizFinished = quizViewModel.isQuizFinished.value
+
+    // isQuizFinished 상태가 true로 바뀌면 onNavigateToResult 함수를 호출
+    LaunchedEffect(isQuizFinished) {
+        if (isQuizFinished) {
+            onNavigateToResult()
+        }
+    }
 
     Scaffold(
         containerColor = Color(0xFFF3F6FF) // 배경색

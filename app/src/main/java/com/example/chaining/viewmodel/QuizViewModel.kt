@@ -56,14 +56,6 @@ class QuizViewModel : ViewModel() {
     private val _userAnswersMap = mutableStateOf<Map<String, String>>(emptyMap())
     val userAnswersMap: State<Map<String, String>> = _userAnswersMap
 
-    // 정답을 확인했는지 여부를 저장
-    // private val _answerChecked = mutableStateOf(false)
-    //val answerChecked: State<Boolean> = _answerChecked
-
-    // 현재 문제의 정답 여부를 저장 (맞으면 true, 틀리면 false, 아직 안 풀면 null)
-    // private val _isCorrect = mutableStateOf<Boolean?>(null)
-    //val isCorrect: State<Boolean?> = _isCorrect
-
     // 사용자가 답을 제출했는지 확인 (버튼 활성화용)
     val isAnswerSubmitted = derivedStateOf {
         when (currentQuestion.value?.type) {
@@ -73,6 +65,9 @@ class QuizViewModel : ViewModel() {
             else -> false
         }
     }
+    // 퀴즈가 종료되었는지 여부를 저장
+    private val _isQuizFinished = mutableStateOf(false)
+    val isQuizFinished: State<Boolean> = _isQuizFinished
 
     /**
      * Assets 폴더에서 언어에 맞는 퀴즈 JSON 파일을 읽어오는 함수
@@ -166,7 +161,8 @@ class QuizViewModel : ViewModel() {
             _currentQuestionIndex.value++
             clearUserAnswer()
         } else {
-            // TODO: 모든 퀴즈를 다 푼 경우, 결과 화면으로 이동하는 로직
+            // 모든 퀴즈를 다 푼 경우
+            _isQuizFinished.value = true
         }
     }
 

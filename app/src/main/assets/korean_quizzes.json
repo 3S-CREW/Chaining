@@ -46,7 +46,7 @@
     "type": "FILL_IN_THE_BLANK",
     "problem": "화장실은 ______에 있어요?",
     "translation": "Where is the restroom?",
-    "options": ["어디 (Where)", "언제 (When)", "누구 (Who)", "무엇 (What)"],
+    "options": ["어디", "언제", "누구", "무엇"],
     "answer": "어디 (Where)"
   },
   {
@@ -56,7 +56,7 @@
     "type": "FILL_IN_THE_BLANK",
     "problem": "이거 ______예요?",
     "translation": "How much is this?",
-    "options": ["얼마 (How much)", "왜 (Why)", "어떻게 (How)", "몇 (How many)"],
+    "options": ["얼마", "왜", "어떻게", "몇"],
     "answer": "얼마 (How much)"
   },
   {
@@ -106,7 +106,7 @@
     "type": "FILL_IN_THE_BLANK",
     "problem": "이 버스, 시청에 ______?",
     "translation": "Does this bus go to the city hall?",
-    "options": ["가요 (go)", "와요 (come)", "먹어요 (eat)", "자요 (sleep)"],
+    "options": ["가요", "와요", "먹어요", "자요"],
     "answer": "가요 (go)"
   },
   {
@@ -116,7 +116,7 @@
     "type": "FILL_IN_THE_BLANK",
     "problem": "계산서 좀 ______.",
     "translation": "The bill, please.",
-    "options": ["앉으세요 (sit down)", "주세요 (give me)", "입으세요 (wear)", "읽으세요 (read)"],
+    "options": ["앉으세요", "주세요", "입으세요", "읽으세요"],
     "answer": "주세요 (give me)"
   },
   {
@@ -166,7 +166,7 @@
     "type": "FILL_IN_THE_BLANK",
     "problem": "창가 쪽 자리로 ______.",
     "translation": "I'd like a window seat, please.",
-    "options": ["부탁드립니다 (I'd like to request)", "괜찮습니다 (It's okay)", "모릅니다 (I don't know)", "없습니다 (There isn't any)"],
+    "options": ["부탁드립니다", "괜찮습니다", "모릅니다", "없습니다"],
     "answer": "부탁드립니다 (I'd like to request)"
   },
   {
@@ -176,7 +176,7 @@
     "type": "FILL_IN_THE_BLANK",
     "problem": "와이파이 비밀번호가 ______?",
     "translation": "What is the Wi-Fi password?",
-    "options": ["뭐예요 (what is)", "예뻐요 (is pretty)", "비싸요 (is expensive)", "멀어요 (is far)"],
+    "options": ["뭐예요", "예뻐요", "비싸요", "멀어요"],
     "answer": "뭐예요 (what is)"
   },
   {
@@ -226,7 +226,7 @@
     "type": "FILL_IN_THE_BLANK",
     "problem": "이 자리에 다른 분이 ______?",
     "translation": "Is this seat taken? (Did someone else sit here?)",
-    "options": ["앉으셨어요 (sat down)", "서셨어요 (stood up)", "주무셨어요 (slept)", "오셨어요 (came)"],
+    "options": ["앉으셨어요", "서셨어요", "주무셨어요", "오셨어요"],
     "answer": "앉으셨어요 (sat down)"
   },
   {
@@ -236,7 +236,7 @@
     "type": "FILL_IN_THE_BLANK",
     "problem": "제가 한국 드라마를 좋아해서 한국어를 ______ 됐어요.",
     "translation": "I like K-dramas, so I came to learn Korean.",
-    "options": ["배우게 (came to learn)", "가르치게 (came to teach)", "만들게 (came to make)", "보게 (came to watch)"],
+    "options": ["배우게", "가르치게", "만들게", "보게"],
     "answer": "배우게 (came to learn)"
   },
   {
@@ -286,7 +286,7 @@
     "type": "FILL_IN_THE_BLANK",
     "problem": "그 친구는 약속을 밥 ______ 어겨서 믿을 수가 없어.",
     "translation": "I can't trust that friend because they break promises as habitually as they eat meals.",
-    "options": ["먹듯이 (like eating)", "보듯이 (like seeing)", "자듯이 (like sleeping)", "입듯이 (like wearing)"],
+    "options": ["먹듯이", "보듯이", "자듯이", "입듯이"],
     "answer": "먹듯이 (like eating)"
   },
   {
@@ -296,7 +296,7 @@
     "type": "FILL_IN_THE_BLANK",
     "problem": "한국의 배달 문화는 ______ 감탄스러울 정도예요.",
     "translation": "Korea's delivery culture is, once again, impressive.",
-    "options": ["새삼 (newly, once again)", "감히 (daringly)", "차마 (not daring to)", "결코 (never)"],
+    "options": ["새삼", "감히", "차마", "결코"],
     "answer": "새삼 (newly, once again)"
   }
 ]
