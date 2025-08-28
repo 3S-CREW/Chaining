@@ -23,7 +23,8 @@ fun HomeScreen(
     onCreatePostClick: () -> Unit,
     onJoinPostClick: () -> Unit,
     onCommunityClick: () -> Unit,
-    onKRQuizClick: () -> Unit
+    onKRQuizClick: () -> Unit,
+    onENQuizClick: () -> Unit
 ) {
     val user = Firebase.auth.currentUser
 
@@ -73,7 +74,12 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onKRQuizClick) {
-            Text(text = "외국인 전용 한국어 퀴즈")
+            Text(text = "한국어 퀴즈")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onENQuizClick) {
+            Text(text = "영어 퀴즈")
         }
     }
 }

@@ -9,6 +9,7 @@ import com.example.chaining.ui.login.LoginScreen
 import com.example.chaining.ui.screen.AreaScreen
 import com.example.chaining.ui.screen.CommunityScreen
 import com.example.chaining.ui.screen.CreatePostScreen
+import com.example.chaining.ui.screen.ENQuizScreen
 import com.example.chaining.ui.screen.HomeScreen
 import com.example.chaining.ui.screen.JoinPostScreen
 import com.example.chaining.ui.screen.KRQuizScreen
@@ -44,7 +45,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onCreatePostClick = { navController.navigate("createPost") },
                 onJoinPostClick = { navController.navigate("joinPost") },
                 onCommunityClick = { navController.navigate("community") },
-                onKRQuizClick = { navController.navigate("krQuiz") }
+                onKRQuizClick = { navController.navigate("krQuiz") },
+                onENQuizClick = { navController.navigate("enQuiz") }
             )
         }
         composable("area") {
@@ -69,6 +71,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
         composable("krQuiz") {
             KRQuizScreen()
+        }
+        composable("enQuiz") {
+            ENQuizScreen()
         }
     }
 }
