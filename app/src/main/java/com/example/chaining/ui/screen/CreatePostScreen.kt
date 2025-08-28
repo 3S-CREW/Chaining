@@ -47,6 +47,7 @@ import com.example.chaining.domain.model.LocationPref
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.domain.model.UserSummary
 import com.example.chaining.ui.component.DatePickerFieldToModal
+import com.example.chaining.ui.component.SaveButton
 import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
 
@@ -252,46 +253,49 @@ fun CreatePostScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            SaveButton {
-                val missingFields = mutableListOf<String>()
-                if (title.isBlank()) missingFields.add("제목")
-                if (content.isBlank()) missingFields.add("내용")
-                if (preferredDestinations.isBlank()) missingFields.add("선호 여행지 스타일")
-                if (preferredLocation.location.isBlank()) missingFields.add("선호 여행지/장소")
-                if (tourAt == null) missingFields.add("여행 시작일")
-                if (closeAt == null) missingFields.add("모집 마감일")
-                if (hasCar.isBlank()) missingFields.add("자차 여부")
-                if (selectedLanguages.isEmpty()) missingFields.add("선호 언어")
-                if (kakaoOpenChatUrl.isBlank()) missingFields.add("카카오톡 오픈채팅 링크")
+            SaveButton(
+                onSave = {
+                    val missingFields = mutableListOf<String>()
+                    if (title.isBlank()) missingFields.add("제목")
+                    if (content.isBlank()) missingFields.add("내용")
+                    if (preferredDestinations.isBlank()) missingFields.add("선호 여행지 스타일")
+                    if (preferredLocation.location.isBlank()) missingFields.add("선호 여행지/장소")
+                    if (tourAt == null) missingFields.add("여행 시작일")
+                    if (closeAt == null) missingFields.add("모집 마감일")
+                    if (hasCar.isBlank()) missingFields.add("자차 여부")
+                    if (selectedLanguages.isEmpty()) missingFields.add("선호 언어")
+                    if (kakaoOpenChatUrl.isBlank()) missingFields.add("카카오톡 오픈채팅 링크")
 
-                if (missingFields.isNotEmpty()) {
-                    // 어떤 항목이 비었는지 Toast 또는 Alert
-                    println("다음 항목을 입력해주세요: ${missingFields.joinToString(", ")}")
-                } else {
-                    // 모든 항목 유효
-                    val newPost = RecruitPost(
-                        postId = "",
-                        title = title,
-                        content = content,
-                        preferredDestinations = preferredDestinations,
-                        preferredLocations = preferredLocation,
-                        tourAt = tourAt!!,
-                        closeAt = closeAt!!,
-                        hasCar = hasCar,
-                        preferredLanguages = selectedLanguages.map { (lang, level) ->
-                            LanguagePref(lang, level)
-                        },
-                        kakaoOpenChatUrl = kakaoOpenChatUrl,
-                        createdAt = System.currentTimeMillis(),
-                        owner = UserSummary(
-                            id = userState?.id ?: "",
-                            nickname = userState?.nickname ?: "",
-                            profileImageUrl = userState?.profileImageUrl ?: ""
+                    if (missingFields.isNotEmpty()) {
+                        // 어떤 항목이 비었는지 Toast 또는 Alert
+                        println("다음 항목을 입력해주세요: ${missingFields.joinToString(", ")}")
+                    } else {
+                        // 모든 항목 유효
+                        val newPost = RecruitPost(
+                            postId = "",
+                            title = title,
+                            content = content,
+                            preferredDestinations = preferredDestinations,
+                            preferredLocations = preferredLocation,
+                            tourAt = tourAt!!,
+                            closeAt = closeAt!!,
+                            hasCar = hasCar,
+                            preferredLanguages = selectedLanguages.map { (lang, level) ->
+                                LanguagePref(lang, level)
+                            },
+                            kakaoOpenChatUrl = kakaoOpenChatUrl,
+                            createdAt = System.currentTimeMillis(),
+                            owner = UserSummary(
+                                id = userState?.id ?: "",
+                                nickname = userState?.nickname ?: "",
+                                profileImageUrl = userState?.profileImageUrl ?: ""
+                            )
                         )
-                    )
-                    postViewModel.createPost(newPost)
-                }
-            }
+                        postViewModel.createPost(newPost)
+                    }
+                },
+                text = "작성 완료"
+            )
         }
     }
 }
@@ -408,21 +412,5 @@ fun PreferenceSelector(
                 )
             }
         }
-    }
-}
-
-@Composable
-fun SaveButton(onSave: () -> Unit) {
-    Button(
-        onClick = onSave,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp),
-        shape = RoundedCornerShape(30.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF4285F4)
-        )
-    ) {
-        Text(text = "작성 완료", fontSize = 16.sp)
     }
 }
