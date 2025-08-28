@@ -21,9 +21,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,11 +36,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.chaining.R
+import com.example.chaining.domain.model.Application
+import com.example.chaining.domain.model.RecruitPost
+import com.example.chaining.domain.model.UserSummary
+import com.example.chaining.ui.component.SaveButton
+import com.example.chaining.viewmodel.ApplicationViewModel
+import com.example.chaining.viewmodel.UserViewModel
 
 @Composable
-fun JoinPostScreen() {
+fun JoinPostScreen(
+    applicationViewModel: ApplicationViewModel = hiltViewModel(),
+    userViewModel: UserViewModel = hiltViewModel(),
+    post: RecruitPost
+) {
+    val userState by userViewModel.user.collectAsState()
+
     var introduction by remember { mutableStateOf("") }
 
     Scaffold(
@@ -160,10 +174,11 @@ fun JoinPostScreen() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp),
-                    placeholder = { Text(
-                        "내용을 입력하세요. (300자 이내)",
-                        fontSize = 13.sp,
-                        color = Color.Gray
+                    placeholder = {
+                        Text(
+                            "내용을 입력하세요. (300자 이내)",
+                            fontSize = 13.sp,
+                            color = Color.Gray
                         )
                     },
                     shape = RoundedCornerShape(16.dp),
@@ -200,7 +215,9 @@ fun JoinPostScreen() {
             // '내 지원서 보기' 버튼 (보조 버튼)
             Button(
                 onClick = { /* TODO */ },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFD9DDE9),
@@ -213,18 +230,24 @@ fun JoinPostScreen() {
             Spacer(modifier = Modifier.height(16.dp))
 
             // '신청 완료' 버튼 (주요 버튼)
-            Button(
-                onClick = { /* TODO */ },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF4285F4),
-                    contentColor = Color.White
-                )
-            ) {
-                Text("신청 완료", fontSize = 16.sp)
-            }
-
+            SaveButton(onSave = {
+                if (introduction.isBlank()) {
+                    println("자기 소개를 입력해주세요.")
+                } else {
+                    val newApplication = Application(
+                        applicationId = "",
+                        postId = post.postId,
+                        recruitPostTitle = post.title,
+                        applicant = UserSummary(
+                            id = userState?.id ?: "",
+                            nickname = userState?.nickname ?: "",
+                            profileImageUrl = userState?.profileImageUrl ?: ""
+                        )
+                    )
+                    applicationViewModel.submitApplication(newApplication)
+                }
+            }, text = "신청 완료")
+            
             Spacer(modifier = Modifier.height(16.dp))
 
         }
