@@ -1,0 +1,302 @@
+[
+  {
+    "id": "kor_lv1_so_01",
+    "language": "KOREAN",
+    "level": 1,
+    "type": "SENTENCE_ORDER",
+    "problem": "안녕하세요 / ? / 만나서 / 반가워요",
+    "translation": "Hello? Nice to meet you.",
+    "options": [],
+    "answer": "안녕하세요? 만나서 반가워요."
+  },
+  {
+    "id": "kor_lv1_so_02",
+    "language": "KOREAN",
+    "level": 1,
+    "type": "SENTENCE_ORDER",
+    "problem": "이름이 / 뭐예요 / ?",
+    "translation": "What is your name?",
+    "options": [],
+    "answer": "이름이 뭐예요?"
+  },
+  {
+    "id": "kor_lv1_mc_01",
+    "language": "KOREAN",
+    "level": 1,
+    "type": "MULTIPLE_CHOICE",
+    "problem": "What does '감사합니다' mean?",
+    "translation": "",
+    "options": ["Hello", "Sorry", "Thank you", "Excuse me"],
+    "answer": "Thank you"
+  },
+  {
+    "id": "kor_lv1_mc_02",
+    "language": "KOREAN",
+    "level": 1,
+    "type": "MULTIPLE_CHOICE",
+    "problem": "What is '물'?",
+    "translation": "",
+    "options": ["Water", "Food", "Money", "House"],
+    "answer": "Water"
+  },
+  {
+    "id": "kor_lv1_fb_01",
+    "language": "KOREAN",
+    "level": 1,
+    "type": "FILL_IN_THE_BLANK",
+    "problem": "화장실은 ______에 있어요?",
+    "translation": "Where is the restroom?",
+    "options": ["어디 (Where)", "언제 (When)", "누구 (Who)", "무엇 (What)"],
+    "answer": "어디 (Where)"
+  },
+  {
+    "id": "kor_lv1_fb_02",
+    "language": "KOREAN",
+    "level": 1,
+    "type": "FILL_IN_THE_BLANK",
+    "problem": "이거 ______예요?",
+    "translation": "How much is this?",
+    "options": ["얼마 (How much)", "왜 (Why)", "어떻게 (How)", "몇 (How many)"],
+    "answer": "얼마 (How much)"
+  },
+  {
+    "id": "kor_lv2_so_01",
+    "language": "KOREAN",
+    "level": 2,
+    "type": "SENTENCE_ORDER",
+    "problem": "메뉴판 / 좀 / 주세요 / .",
+    "translation": "Please give me the menu.",
+    "options": [],
+    "answer": "메뉴판 좀 주세요."
+  },
+  {
+    "id": "kor_lv2_so_02",
+    "language": "KOREAN",
+    "level": 2,
+    "type": "SENTENCE_ORDER",
+    "problem": "가장 / 가까운 / 어디예요 / 지하철역은 / ?",
+    "translation": "Where is the nearest subway station?",
+    "options": [],
+    "answer": "가장 가까운 지하철역은 어디예요?"
+  },
+  {
+    "id": "kor_lv2_mc_01",
+    "language": "KOREAN",
+    "level": 2,
+    "type": "MULTIPLE_CHOICE",
+    "problem": "What is the meaning of '주문할게요'?",
+    "translation": "",
+    "options": ["I want to pay", "I'd like to order", "I have a reservation", "Please give me a discount"],
+    "answer": "I'd like to order"
+  },
+  {
+    "id": "kor_lv2_mc_02",
+    "language": "KOREAN",
+    "level": 2,
+    "type": "MULTIPLE_CHOICE",
+    "problem": "When do you use '잠시만요'?",
+    "translation": "",
+    "options": ["When you are very happy", "When you want to say goodbye", "When you ask someone to wait for a moment", "When you want to buy something"],
+    "answer": "When you ask someone to wait for a moment"
+  },
+  {
+    "id": "kor_lv2_fb_01",
+    "language": "KOREAN",
+    "level": 2,
+    "type": "FILL_IN_THE_BLANK",
+    "problem": "이 버스, 시청에 ______?",
+    "translation": "Does this bus go to the city hall?",
+    "options": ["가요 (go)", "와요 (come)", "먹어요 (eat)", "자요 (sleep)"],
+    "answer": "가요 (go)"
+  },
+  {
+    "id": "kor_lv2_fb_02",
+    "language": "KOREAN",
+    "level": 2,
+    "type": "FILL_IN_THE_BLANK",
+    "problem": "계산서 좀 ______.",
+    "translation": "The bill, please.",
+    "options": ["앉으세요 (sit down)", "주세요 (give me)", "입으세요 (wear)", "읽으세요 (read)"],
+    "answer": "주세요 (give me)"
+  },
+  {
+    "id": "kor_lv3_so_01",
+    "language": "KOREAN",
+    "level": 3,
+    "type": "SENTENCE_ORDER",
+    "problem": "추천해 / 메뉴 / 가장 / 인기 / 있는 / 주시겠어요 / ?",
+    "translation": "Could you recommend the most popular menu item?",
+    "options": [],
+    "answer": "가장 인기 있는 메뉴 추천해 주시겠어요?"
+  },
+  {
+    "id": "kor_lv3_so_02",
+    "language": "KOREAN",
+    "level": 3,
+    "type": "SENTENCE_ORDER",
+    "problem": "공항까지 / 택시로 / 얼마나 / 걸릴까요 / ?",
+    "translation": "How long will it take to get to the airport by taxi?",
+    "options": [],
+    "answer": "공항까지 택시로 얼마나 걸릴까요?"
+  },
+  {
+    "id": "kor_lv3_mc_01",
+    "language": "KOREAN",
+    "level": 3,
+    "type": "MULTIPLE_CHOICE",
+    "problem": "What does '따로따로 계산해 주세요' mean?",
+    "translation": "",
+    "options": ["We'll pay together.", "Please split the bill.", "Please give us a receipt.", "Can I pay with a credit card?"],
+    "answer": "Please split the bill."
+  },
+  {
+    "id": "kor_lv3_mc_02",
+    "language": "KOREAN",
+    "level": 3,
+    "type": "MULTIPLE_CHOICE",
+    "problem": "What is '환승'?",
+    "translation": "",
+    "options": ["Refund", "To board", "To transfer (e.g., subway)", "To get off"],
+    "answer": "To transfer (e.g., subway)"
+  },
+  {
+    "id": "kor_lv3_fb_01",
+    "language": "KOREAN",
+    "level": 3,
+    "type": "FILL_IN_THE_BLANK",
+    "problem": "창가 쪽 자리로 ______.",
+    "translation": "I'd like a window seat, please.",
+    "options": ["부탁드립니다 (I'd like to request)", "괜찮습니다 (It's okay)", "모릅니다 (I don't know)", "없습니다 (There isn't any)"],
+    "answer": "부탁드립니다 (I'd like to request)"
+  },
+  {
+    "id": "kor_lv3_fb_02",
+    "language": "KOREAN",
+    "level": 3,
+    "type": "FILL_IN_THE_BLANK",
+    "problem": "와이파이 비밀번호가 ______?",
+    "translation": "What is the Wi-Fi password?",
+    "options": ["뭐예요 (what is)", "예뻐요 (is pretty)", "비싸요 (is expensive)", "멀어요 (is far)"],
+    "answer": "뭐예요 (what is)"
+  },
+  {
+    "id": "kor_lv4_so_01",
+    "language": "KOREAN",
+    "level": 4,
+    "type": "SENTENCE_ORDER",
+    "problem": "혹시 / 이 / 근처에 / 있나요 / 돈을 / 인출할 / 만한 / 은행이 / ?",
+    "translation": "By any chance, is there a bank nearby where I can withdraw money?",
+    "options": [],
+    "answer": "혹시 이 근처에 돈을 인출할 만한 은행이 있나요?"
+  },
+  {
+    "id": "kor_lv4_so_02",
+    "language": "KOREAN",
+    "level": 4,
+    "type": "SENTENCE_ORDER",
+    "problem": "음식이 / 조금 / 것 / 같아요 / 입맛에 / 안 / 맞는 / .",
+    "translation": "I think the food doesn't quite suit my palate.",
+    "options": [],
+    "answer": "음식이 입맛에 조금 안 맞는 것 같아요."
+  },
+  {
+    "id": "kor_lv4_mc_01",
+    "language": "KOREAN",
+    "level": 4,
+    "type": "MULTIPLE_CHOICE",
+    "problem": "In a restaurant, what is '서비스'?",
+    "translation": "",
+    "options": ["The restroom", "An item that is free of charge, given by the restaurant", "The employee's break time", "The main dish"],
+    "answer": "An item that is free of charge, given by the restaurant"
+  },
+  {
+    "id": "kor_lv4_mc_02",
+    "language": "KOREAN",
+    "level": 4,
+    "type": "MULTIPLE_CHOICE",
+    "problem": "What is the nuance of '수고하세요'?",
+    "translation": "",
+    "options": ["A greeting when leaving a store or workplace, meaning 'Keep up the good work.'", "A phrase used to scold someone.", "A way to say 'I'm very tired.'", "A common way to say 'Hello' to a friend."],
+    "answer": "A greeting when leaving a store or workplace, meaning 'Keep up the good work.'"
+  },
+  {
+    "id": "kor_lv4_fb_01",
+    "language": "KOREAN",
+    "level": 4,
+    "type": "FILL_IN_THE_BLANK",
+    "problem": "이 자리에 다른 분이 ______?",
+    "translation": "Is this seat taken? (Did someone else sit here?)",
+    "options": ["앉으셨어요 (sat down)", "서셨어요 (stood up)", "주무셨어요 (slept)", "오셨어요 (came)"],
+    "answer": "앉으셨어요 (sat down)"
+  },
+  {
+    "id": "kor_lv4_fb_02",
+    "language": "KOREAN",
+    "level": 4,
+    "type": "FILL_IN_THE_BLANK",
+    "problem": "제가 한국 드라마를 좋아해서 한국어를 ______ 됐어요.",
+    "translation": "I like K-dramas, so I came to learn Korean.",
+    "options": ["배우게 (came to learn)", "가르치게 (came to teach)", "만들게 (came to make)", "보게 (came to watch)"],
+    "answer": "배우게 (came to learn)"
+  },
+  {
+    "id": "kor_lv5_so_01",
+    "language": "KOREAN",
+    "level": 5,
+    "type": "SENTENCE_ORDER",
+    "problem": "기대했던 / 아니지만 / 나쁘지 / 것만큼은 / 않았어요 / 솔직히 / .",
+    "translation": "To be honest, it wasn't as good as I expected, but it wasn't bad.",
+    "options": [],
+    "answer": "솔직히 기대했던 것만큼은 아니지만 나쁘지 않았어요."
+  },
+  {
+    "id": "kor_lv5_so_02",
+    "language": "KOREAN",
+    "level": 5,
+    "type": "SENTENCE_ORDER",
+    "problem": "배보다 / 큰 / 배꼽이 / 이럴 / 더 / 때 / 하죠 / 다고 / .",
+    "translation": "This is a case of 'the tail wagging the dog.' (The belly button is bigger than the belly.)",
+    "options": [],
+    "answer": "이럴 때 배보다 배꼽이 더 크다고 하죠."
+  },
+  {
+    "id": "kor_lv5_mc_01",
+    "language": "KOREAN",
+    "level": 5,
+    "type": "MULTIPLE_CHOICE",
+    "problem": "What does '눈치가 빠르다' mean?",
+    "translation": "",
+    "options": ["To be quick at running", "To be good at reading the room or understanding social cues", "To have sharp eyesight", "To be a fast reader"],
+    "answer": "To be good at reading the room or understanding social cues"
+  },
+  {
+    "id": "kor_lv5_mc_02",
+    "language": "KOREAN",
+    "level": 5,
+    "type": "MULTIPLE_CHOICE",
+    "problem": "What is '정'?",
+    "translation": "",
+    "options": ["A specific type of spicy soup", "A unique Korean cultural concept of deep connection, affection, and attachment", "The name of a traditional holiday", "A type of formal clothing"],
+    "answer": "A unique Korean cultural concept of deep connection, affection, and attachment"
+  },
+  {
+    "id": "kor_lv5_fb_01",
+    "language": "KOREAN",
+    "level": 5,
+    "type": "FILL_IN_THE_BLANK",
+    "problem": "그 친구는 약속을 밥 ______ 어겨서 믿을 수가 없어.",
+    "translation": "I can't trust that friend because they break promises as habitually as they eat meals.",
+    "options": ["먹듯이 (like eating)", "보듯이 (like seeing)", "자듯이 (like sleeping)", "입듯이 (like wearing)"],
+    "answer": "먹듯이 (like eating)"
+  },
+  {
+    "id": "kor_lv5_fb_02",
+    "language": "KOREAN",
+    "level": 5,
+    "type": "FILL_IN_THE_BLANK",
+    "problem": "한국의 배달 문화는 ______ 감탄스러울 정도예요.",
+    "translation": "Korea's delivery culture is, once again, impressive.",
+    "options": ["새삼 (newly, once again)", "감히 (daringly)", "차마 (not daring to)", "결코 (never)"],
+    "answer": "새삼 (newly, once again)"
+  }
+]
