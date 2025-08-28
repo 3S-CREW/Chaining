@@ -37,12 +37,12 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
         composable("home") {
             HomeScreen(
-                onTableClick = { navController.navigate("area") },
-                onMyPageClick = { navController.navigate("myPage") },
-                onMainHomeClick = { navController.navigate("mainHome") },
-                onCreatePostClick = { navController.navigate("createPost") },
-                onJoinPostClick = { navController.navigate("joinPost") },
-                onCommunityClick = { navController.navigate("community") }
+                onTableClick = { navController.navigate(Screen.Area.route) },
+                onMyPageClick = { navController.navigate(Screen.MyPage.route) },
+                onMainHomeClick = { navController.navigate(Screen.MainHome.route) },
+                onCreatePostClick = { navController.navigate(Screen.CreatePost.route) },
+                onJoinPostClick = { navController.navigate(Screen.JoinPost.route) },
+                onCommunityClick = { navController.navigate(Screen.Community.route) }
             )
         }
         composable("area") {
