@@ -6,7 +6,6 @@ data class Application(
     val recruitPostId: String = "",           // 어떤 모집글에 지원했는지
     val recruitPostTitle: String = "",        // 모집글 제목 (캐싱)
     val applicant: UserSummary = UserSummary(), // 지원자 간단 프로필
-    val preferredLanguages: List<LanguagePref> = emptyList(),
-    val introduction: String = "",            // 자기소개
+    val introduction: String = "",            // 자기 소개
     val createdAt: Long = 0L
 )
