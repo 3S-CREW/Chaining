@@ -16,6 +16,7 @@ import com.example.chaining.ui.screen.HomeScreen
 import com.example.chaining.ui.screen.JoinPostScreen
 import com.example.chaining.ui.screen.KRQuizScreen
 import com.example.chaining.ui.screen.MainHomeScreen
+import com.example.chaining.ui.screen.MyApplyScreen
 import com.example.chaining.ui.screen.MyPageScreen
 import com.example.chaining.ui.screen.QuizResultScreen
 import com.example.chaining.ui.screen.SplashScreen
@@ -108,6 +109,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
         composable("quizResult") {
             QuizResultScreen()
+        }
+
+        composable("myApply") {
+            MyApplyScreen()
         }
     }
 }
