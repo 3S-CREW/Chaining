@@ -30,19 +30,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.example.chaining.R
 import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.domain.model.UserSummary
 import com.example.chaining.ui.component.SaveButton
+import com.example.chaining.ui.component.ownerProfile
 import com.example.chaining.viewmodel.ApplicationViewModel
 import com.example.chaining.viewmodel.UserViewModel
 
@@ -118,35 +117,7 @@ fun JoinPostScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             // 작성자 정보
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                AsyncImage(
-                    model = "https://newsimg-hams.hankookilbo.com/2023/03/24/4531dada-e9cf-4775-951c-902e3558ca41.jpg",
-                    contentDescription = "작성자 프로필 사진",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                )
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                Column {
-                    Text(
-                        text = "차무식 (1975)",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
-                        color = Color(0xFF4A526A)
-                    )
-                    Text(
-                        text = "필리핀",
-                        fontSize = 12.sp,
-                        color = Color(0xFF4A526A)
-                    )
-                }
-
-            }
+            ownerProfile(owner = post.owner, where = "지원서")
             Spacer(modifier = Modifier.height(24.dp)) // 정보와 구분선 사이 간격
 
             HorizontalDivider(
@@ -247,7 +218,7 @@ fun JoinPostScreen(
                     applicationViewModel.submitApplication(newApplication)
                 }
             }, text = "신청 완료")
-            
+
             Spacer(modifier = Modifier.height(16.dp))
 
         }
