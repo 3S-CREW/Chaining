@@ -3,8 +3,10 @@ package com.example.chaining.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.chaining.ui.login.LoginScreen
 import com.example.chaining.ui.screen.AreaScreen
 import com.example.chaining.ui.screen.CommunityScreen
@@ -17,19 +19,20 @@ import com.example.chaining.ui.screen.MainHomeScreen
 import com.example.chaining.ui.screen.MyPageScreen
 import com.example.chaining.ui.screen.QuizResultScreen
 import com.example.chaining.ui.screen.SplashScreen
+import com.example.chaining.ui.screen.ViewPostScreen
 
 @Composable
 fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = "splash",
+        startDestination = Screen.Splash.route,
         modifier = modifier
     ) {
-        composable("splash") {
+        composable(Screen.Splash.route) {
             SplashScreen(navController)
         }
-        composable("login") {
+        composable(Screen.Login.route) {
             LoginScreen(
                 onLoginSuccess = {
                     navController.navigate("home") {
@@ -38,7 +41,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 }
             )
         }
-        composable("home") {
+        composable(Screen.Home.route) {
             HomeScreen(
                 onTableClick = { navController.navigate("area") },
                 onMyPageClick = { navController.navigate("myPage") },
@@ -50,25 +53,35 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onENQuizClick = { navController.navigate("enQuiz") }
             )
         }
-        composable("area") {
+        composable(Screen.Area.route) {
             AreaScreen()
         }
-        composable("myPage") {
+        composable(Screen.MyPage.route) {
             MyPageScreen()
         }
-        composable("mainHome") {
+        composable(Screen.MainHome.route) {
             MainHomeScreen()
         }
-        composable("createPost") {
+        composable(Screen.CreatePost.route) {
             CreatePostScreen()
         }
-        composable("joinPost") {
-            JoinPostScreen()
-        }
-        composable("community") {
+//        composable(Screen.JoinPost.route) {
+//            JoinPostScreen()
+//        }
+        composable(Screen.Community.route) {
             CommunityScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onViewPostClick = { postId ->
+                    navController.navigate(Screen.ViewPost.createRoute(postId))
+                }
             )
+        }
+
+        composable(
+            route = Screen.ViewPost.route,
+            arguments = listOf(navArgument("postId") { type = NavType.StringType })
+        ) {
+            ViewPostScreen()
         }
         composable("enQuiz") {
             ENQuizScreen(

@@ -35,7 +35,8 @@ import com.example.chaining.viewmodel.RecruitPostViewModel
 @Composable
 fun CommunityScreen(
     postViewModel: RecruitPostViewModel = hiltViewModel(),
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onViewPostClick: (postId: String) -> Unit = {}
 ) {
     val posts by postViewModel.posts.collectAsState()
 
@@ -102,6 +103,7 @@ fun CommunityScreen(
                 // 모집글 목록 표시
                 posts.forEach { post ->
                     CardItem(
+                        onClick = { onViewPostClick(post.postId) },
                         type = "모집글",
                         recruitPost = post,
                         remainingTime = formatRemainingTime(post.closeAt - System.currentTimeMillis())

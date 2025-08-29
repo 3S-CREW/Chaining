@@ -33,6 +33,7 @@ import com.example.chaining.domain.model.UserSummary
 
 @Composable
 fun CardItem(
+    onClick: () -> Unit,
     type: String, // "모집글" or "지원서"
     recruitPost: RecruitPost? = null,
     application: String? = null,
@@ -72,6 +73,7 @@ fun CardItem(
     }
 
     Card(
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 8.dp),
