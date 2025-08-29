@@ -10,5 +10,7 @@ sealed class Screen(val route: String) {
     object CreatePost : Screen("createPost")
     object JoinPost : Screen("joinPost")
     object Community : Screen("community")
-    object ViewPost : Screen("viewPost")
+    object ViewPost : Screen("viewPost/{postId}") {
+        fun createRoute(postId: String) = "viewPost/$postId"
+    }
 }

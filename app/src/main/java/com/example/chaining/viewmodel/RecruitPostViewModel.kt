@@ -1,6 +1,7 @@
 package com.example.chaining.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chaining.data.repository.RecruitPostRepository
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecruitPostViewModel @Inject constructor(
-    private val repo: RecruitPostRepository
+    private val repo: RecruitPostRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _post = MutableStateFlow<RecruitPost?>(null)
     val post: StateFlow<RecruitPost?> = _post
@@ -29,6 +31,10 @@ class RecruitPostViewModel @Inject constructor(
     init {
         // 앱 실행 시 한 번 초기 데이터 가져오기
         fetchAllPosts(force = true)
+
+        savedStateHandle.get<String>("postId")?.let { postId ->
+            fetchPost(postId)
+        }
 
         // 10분마다 자동 갱신
         viewModelScope.launch {
@@ -51,6 +57,16 @@ class RecruitPostViewModel @Inject constructor(
         fetchAllPosts(force = true)
     }
 //            || currentTime - lastFetchTime >= fetchInterval
+
+    /** Read - 모집글 상세보기 */
+    fun fetchPost(postId: String) = viewModelScope.launch {
+        try {
+            _post.value = repo.getPost(postId)
+        } catch (e: Exception) {
+            Log.e("PostVM", "Failed to fetch post", e)
+        }
+    }
+
     /** Read - 모집글 새로고침 */
     fun fetchAllPosts(force: Boolean = false) = viewModelScope.launch {
         val currentTime = System.currentTimeMillis()

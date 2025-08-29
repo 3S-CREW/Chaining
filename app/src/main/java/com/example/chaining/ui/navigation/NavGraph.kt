@@ -3,8 +3,10 @@ package com.example.chaining.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.chaining.ui.login.LoginScreen
 import com.example.chaining.ui.screen.AreaScreen
 import com.example.chaining.ui.screen.CommunityScreen
@@ -63,12 +65,17 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(Screen.Community.route) {
             CommunityScreen(
                 onBackClick = { navController.popBackStack() },
-                onViewPostClick = { navController.navigate(Screen.ViewPost.route) }
+                onViewPostClick = { postId ->
+                    navController.navigate(Screen.ViewPost.createRoute(postId))
+                }
             )
         }
-        
-        composable(Screen.ViewPost.route) {
-            ViewPostScreen(post = )
+
+        composable(
+            route = Screen.ViewPost.route,
+            arguments = listOf(navArgument("postId") { type = NavType.StringType })
+        ) {
+            ViewPostScreen()
         }
     }
 }
