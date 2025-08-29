@@ -111,6 +111,9 @@ dependencies {
     // @kotlinx.serialization.Serializable을 쓰기 위한 의존성 주입
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 
+    // JSON 파싱을 위한 의존성 주입
+    implementation("com.google.code.gson:gson:2.10.1")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
