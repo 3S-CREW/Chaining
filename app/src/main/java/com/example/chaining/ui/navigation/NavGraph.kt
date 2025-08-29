@@ -51,7 +51,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onJoinPostClick = { navController.navigate("joinPost") },
                 onCommunityClick = { navController.navigate("community") },
                 onKRQuizClick = { navController.navigate("krQuiz") },
-                onENQuizClick = { navController.navigate("enQuiz") }
+                onENQuizClick = { navController.navigate("enQuiz") },
+                onMyApplyClick = {navController.navigate("myApply")}
             )
         }
         composable(Screen.Area.route) {
