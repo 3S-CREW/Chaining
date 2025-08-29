@@ -10,23 +10,23 @@ import com.example.chaining.ui.screen.AreaScreen
 import com.example.chaining.ui.screen.CommunityScreen
 import com.example.chaining.ui.screen.CreatePostScreen
 import com.example.chaining.ui.screen.HomeScreen
-import com.example.chaining.ui.screen.JoinPostScreen
 import com.example.chaining.ui.screen.MainHomeScreen
 import com.example.chaining.ui.screen.MyPageScreen
 import com.example.chaining.ui.screen.SplashScreen
+import com.example.chaining.ui.screen.ViewPostScreen
 
 @Composable
 fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = "splash",
+        startDestination = Screen.Splash.route,
         modifier = modifier
     ) {
-        composable("splash") {
+        composable(Screen.Splash.route) {
             SplashScreen(navController)
         }
-        composable("login") {
+        composable(Screen.Login.route) {
             LoginScreen(
                 onLoginSuccess = {
                     navController.navigate("home") {
@@ -35,7 +35,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 }
             )
         }
-        composable("home") {
+        composable(Screen.Home.route) {
             HomeScreen(
                 onTableClick = { navController.navigate(Screen.Area.route) },
                 onMyPageClick = { navController.navigate(Screen.MyPage.route) },
@@ -45,26 +45,30 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onCommunityClick = { navController.navigate(Screen.Community.route) }
             )
         }
-        composable("area") {
+        composable(Screen.Area.route) {
             AreaScreen()
         }
-        composable("myPage") {
+        composable(Screen.MyPage.route) {
             MyPageScreen()
         }
-        composable("mainHome") {
+        composable(Screen.MainHome.route) {
             MainHomeScreen()
         }
-        composable("createPost") {
+        composable(Screen.CreatePost.route) {
             CreatePostScreen()
         }
-        composable("joinPost") {
-            JoinPostScreen()
-        }
-        composable("community") {
+//        composable(Screen.JoinPost.route) {
+//            JoinPostScreen()
+//        }
+        composable(Screen.Community.route) {
             CommunityScreen(
                 onBackClick = { navController.popBackStack() },
                 onViewPostClick = { navController.navigate(Screen.ViewPost.route) }
             )
+        }
+        
+        composable(Screen.ViewPost.route) {
+            ViewPostScreen(post = )
         }
     }
 }

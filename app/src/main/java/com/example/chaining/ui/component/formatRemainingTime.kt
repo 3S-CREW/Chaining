@@ -1,5 +1,9 @@
 package com.example.chaining.ui.component
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 fun formatRemainingTime(remainingMillis: Long): String {
     if (remainingMillis <= 0) return "마감됨"
 
@@ -13,4 +17,10 @@ fun formatRemainingTime(remainingMillis: Long): String {
         if (hours > 0) append("${hours}시간 ")
         append("${minutes}분")
     }
+}
+
+fun formatDate(timestamp: Long): String {
+    val date = Date(timestamp)
+    val format = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
+    return format.format(date)
 }
