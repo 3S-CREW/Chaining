@@ -2,6 +2,7 @@ package com.example.chaining.ui.screen
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
@@ -58,9 +60,10 @@ fun SplashScreen(navController: NavController) {
         launch {
             offsetY.animateTo(
                 70f,
-                animationSpec = tween(200, easing = FastOutSlowInEasing)
+                animationSpec = tween(400, easing = LinearOutSlowInEasing)
             )
         }
+        delay(50)
         chainVisible.value = true
 
         delay(1500)
@@ -87,18 +90,18 @@ fun SplashScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            if (chainVisible.value) {
-                SplashAnimation()
-            }
-
+            SplashAnimation(startAnimation = chainVisible.value)
             Text(
                 text = "Chaining",
                 fontSize = 50.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 modifier = Modifier
-                    .offset { IntOffset(offsetX.value.toInt(), offsetY.value.toInt()) }
-                    .alpha(alpha.value)
+                    .graphicsLayer {
+                        translationX = offsetX.value
+                        translationY = offsetY.value
+                        this.alpha = alpha.value
+                    }
             )
         }
     }
