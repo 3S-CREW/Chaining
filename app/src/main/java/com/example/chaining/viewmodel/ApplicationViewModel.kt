@@ -25,9 +25,9 @@ class ApplicationViewModel @Inject constructor(
 
     init {
         // 기존 목록 조회
-        fetchAllApplications()
+//        fetchAllApplications()
         // 상태 변경 구독
-        observeStatusUpdates()
+//        observeStatusUpdates()
     }
 
     private fun observeStatusUpdates() = viewModelScope.launch {

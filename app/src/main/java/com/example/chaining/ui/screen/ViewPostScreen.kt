@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
+import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.ui.component.SaveButton
 import com.example.chaining.ui.component.formatDate
 import com.example.chaining.ui.component.ownerProfile
@@ -39,6 +40,7 @@ import com.example.chaining.viewmodel.RecruitPostViewModel
 @Composable
 fun ViewPostScreen(
     postViewModel: RecruitPostViewModel = hiltViewModel(),
+    onJoinPostClick: (post: RecruitPost) -> Unit = {}
 ) {
 
     val post by postViewModel.post.collectAsState()
@@ -166,8 +168,8 @@ fun ViewPostScreen(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                SaveButton(onSave = { /*TODO*/ }, text = "신청")
-                SaveButton(onSave = { /*TODO*/ }, text = "숨김")
+                SaveButton(onSave = { onJoinPostClick(currentPost) }, text = "신청")
+//                SaveButton(onSave = { /*TODO*/ }, text = "숨김")
             }
 
         }

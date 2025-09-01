@@ -1,12 +1,14 @@
 package com.example.chaining.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.ui.login.LoginScreen
 import com.example.chaining.ui.screen.AreaScreen
 import com.example.chaining.ui.screen.CommunityScreen
@@ -21,6 +23,7 @@ import com.example.chaining.ui.screen.MyPageScreen
 import com.example.chaining.ui.screen.QuizResultScreen
 import com.example.chaining.ui.screen.SplashScreen
 import com.example.chaining.ui.screen.ViewPostScreen
+import com.google.gson.Gson
 
 @Composable
 fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -67,9 +70,6 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(Screen.CreatePost.route) {
             CreatePostScreen()
         }
-//        composable(Screen.JoinPost.route) {
-//            JoinPostScreen()
-//        }
         composable(Screen.Community.route) {
             CommunityScreen(
                 onBackClick = { navController.popBackStack() },
@@ -83,8 +83,22 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             route = Screen.ViewPost.route,
             arguments = listOf(navArgument("postId") { type = NavType.StringType })
         ) {
-            ViewPostScreen()
+            ViewPostScreen(onJoinPostClick = { post ->
+                navController.navigate(Screen.JoinPost.createRoute(post))
+            })
         }
+
+        composable(
+            route = Screen.JoinPost.route,
+            arguments = listOf(navArgument("post") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val json = backStackEntry.arguments?.getString("post")
+            json?.let {
+                val post = remember(it) { Gson().fromJson(it, RecruitPost::class.java) }
+                JoinPostScreen(post = post)
+            }
+        }
+
         composable("enQuiz") {
             ENQuizScreen(
                 // 퀴즈 종료 시 "quiz_result" 경로로 이동

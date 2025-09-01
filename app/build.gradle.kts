@@ -9,6 +9,9 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
 
+    // Parcelable 이용을 위한 플러그인 추가
+    id("kotlin-parcelize")
+
     // Compose Compiler 플러그인 추가
     id("org.jetbrains.kotlin.plugin.compose")
 }
