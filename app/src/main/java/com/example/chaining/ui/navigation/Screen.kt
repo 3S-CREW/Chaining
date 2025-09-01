@@ -27,4 +27,5 @@ sealed class Screen(val route: String) {
     object KRQuiz : Screen("krQuiz")
     object ENQuiz : Screen("enQuiz")
     object QuizResult : Screen("quizResult")
+    object MyApply : Screen("myApply")
 }
