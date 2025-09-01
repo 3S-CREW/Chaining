@@ -39,6 +39,7 @@ import com.example.chaining.viewmodel.RecruitPostViewModel
 @Composable
 fun ViewPostScreen(
     postViewModel: RecruitPostViewModel = hiltViewModel(),
+    onJoinPostClick: (postId: String) -> Unit = {}
 ) {
 
     val post by postViewModel.post.collectAsState()
@@ -166,8 +167,8 @@ fun ViewPostScreen(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                SaveButton(onSave = { /*TODO*/ }, text = "신청")
-                SaveButton(onSave = { /*TODO*/ }, text = "숨김")
+                SaveButton(onSave = { onJoinPostClick(currentPost.title) }, text = "신청")
+//                SaveButton(onSave = { /*TODO*/ }, text = "숨김")
             }
 
         }

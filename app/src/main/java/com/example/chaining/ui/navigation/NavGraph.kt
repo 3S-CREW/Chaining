@@ -65,9 +65,6 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(Screen.CreatePost.route) {
             CreatePostScreen()
         }
-//        composable(Screen.JoinPost.route) {
-//            JoinPostScreen()
-//        }
         composable(Screen.Community.route) {
             CommunityScreen(
                 onBackClick = { navController.popBackStack() },
@@ -81,7 +78,15 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             route = Screen.ViewPost.route,
             arguments = listOf(navArgument("postId") { type = NavType.StringType })
         ) {
-            ViewPostScreen()
+            ViewPostScreen(onJoinPostClick = { title ->
+                navController.navigate(Screen.ViewPost.createRoute(title))
+            })
+        }
+        composable(
+            route = Screen.JoinPost.route,
+            arguments = listOf(navArgument("title") { type = NavType.StringType })
+        ) {
+            JoinPostScreen()
         }
         composable("enQuiz") {
             ENQuizScreen(
