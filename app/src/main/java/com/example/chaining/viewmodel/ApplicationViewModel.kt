@@ -1,5 +1,6 @@
 package com.example.chaining.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chaining.data.repository.ApplicationRepository
@@ -25,9 +26,9 @@ class ApplicationViewModel @Inject constructor(
 
     init {
         // 기존 목록 조회
-        fetchAllApplications()
+//        fetchAllApplications()
         // 상태 변경 구독
-        observeStatusUpdates()
+//        observeStatusUpdates()
     }
 
     private fun observeStatusUpdates() = viewModelScope.launch {
@@ -37,6 +38,7 @@ class ApplicationViewModel @Inject constructor(
     }
 
     fun submitApplication(application: Application) = viewModelScope.launch {
+        Log.d("hihh", application.toString())
         val applicationId = repo.submitApplication(application)
 
         val updatedList = _applications.value.toMutableList()

@@ -38,18 +38,18 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
 import com.example.chaining.domain.model.Application
+import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.domain.model.UserSummary
 import com.example.chaining.ui.component.SaveButton
 import com.example.chaining.ui.component.ownerProfile
 import com.example.chaining.viewmodel.ApplicationViewModel
-import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
 
 @Composable
 fun JoinPostScreen(
     applicationViewModel: ApplicationViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
-    postViewModel: RecruitPostViewModel = hiltViewModel(),
+    post: RecruitPost
 ) {
     val userState by userViewModel.user.collectAsState()
 
@@ -108,7 +108,7 @@ fun JoinPostScreen(
 
             // 게시글 제목
             Text(
-                text = "제주도 하이킹 함께 하실 분!",
+                text = post.title,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF4A526A)
@@ -117,7 +117,7 @@ fun JoinPostScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             // 작성자 정보
-            ownerProfile(owner = currentPost.owner, where = "지원서")
+            ownerProfile(owner = post.owner, where = "지원서")
             Spacer(modifier = Modifier.height(24.dp)) // 정보와 구분선 사이 간격
 
             HorizontalDivider(
@@ -207,8 +207,9 @@ fun JoinPostScreen(
                 } else {
                     val newApplication = Application(
                         applicationId = "",
-                        postId = currentPost.postId,
-                        recruitPostTitle = currentPost.title,
+                        postId = post.postId,
+                        recruitPostTitle = post.title,
+                        introduction = introduction,
                         applicant = UserSummary(
                             id = userState?.id ?: "",
                             nickname = userState?.nickname ?: "",
