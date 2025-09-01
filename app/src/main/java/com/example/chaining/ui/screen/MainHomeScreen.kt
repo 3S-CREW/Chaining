@@ -49,10 +49,11 @@ fun MainHomeScreen() {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp) // 1. 원하는 높이로 조절 (기본값 64dp보다 작게)
+                    .height(60.dp)
                     .background(Color(0xFF4F3F6FF)) // 배경색 지정
-                    .padding(horizontal = 8.dp), // 2. 좌우 여백 추가
-                verticalAlignment = Alignment.CenterVertically // 3. 모든 내용물을 세로 중앙 정렬
+                    .padding(top = 4.dp)
+                    .padding(horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 // 햄버거 아이콘 버튼
                 IconButton(onClick = { /* TODO: 메뉴 열기 기능 */ }) {
