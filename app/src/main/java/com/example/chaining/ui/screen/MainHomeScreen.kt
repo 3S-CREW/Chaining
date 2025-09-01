@@ -1,9 +1,11 @@
 package com.example.chaining.ui.screen
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,9 +28,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -161,13 +165,21 @@ private fun CustomIconButton(
     iconRes: Int,
     description: String
 ) {
+    // 1. 버튼의 상호작용 상태를 추적하기 위한 interactionSource
+    val interactionSource = remember { MutableInteractionSource() }
+
+    // 2. interactionSource를 통해 현재 '눌려있는지' 여부를 Boolean 값으로 가져옴
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    // 3. isPressed 값에 따라 scale 값을 0.9f 또는 1f로 애니메이션
+    val scale by animateFloatAsState(targetValue = if (isPressed) 0.9f else 1f)
     Box(
         modifier = Modifier
             .clickable(
                 onClick = onClick,
                 // 리플 효과를 없애기 위한 핵심 코드
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() }
+                interactionSource = interactionSource
             )
             // 버튼의 터치 영역을 적절히 확보하기 위한 패딩
             .padding(10.dp),
@@ -176,7 +188,13 @@ private fun CustomIconButton(
         Icon(
             painter = painterResource(id = iconRes),
             contentDescription = description,
-            modifier = Modifier.size(30.dp)
+            modifier = Modifier
+                .size(30.dp)
+                // 4. 애니메이션으로 변경되는 scale 값을 아이콘에 적용
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                }
         )
     }
 }
