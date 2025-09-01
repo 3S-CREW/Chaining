@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 
@@ -44,39 +45,50 @@ import coil.compose.AsyncImage
 fun MainHomeScreen() {
     Scaffold(
         topBar = {
-            // TODO: 1. 상단 앱 바 구현
-            TopAppBar(title = { Text("Chaining") },
-                // actions: 앱 바 오른쪽에 위치하는 요소들
-                navigationIcon = {
-                    IconButton(onClick = { /* TODO: 메뉴 열기 기능 */ }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.hamburger),
-                            contentDescription = "메뉴"
-                        )
-                    }
-                },
-                actions = {
-                    // 방금 만든 프로필 이미지 컴포저블 호출
-                    ProfileImageWithStatus(
-                        // 임시 이미지 URL 사용
-                        model = "https://newsimg-hams.hankookilbo.com/2023/03/24/4531dada-e9cf-4775-951c-902e3558ca41.jpg",
-                        isOnline = true,
-                        modifier = Modifier.padding(end = 16.dp) // 오른쪽에 여백 추가
+            // 상단 앱 바 구현
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp) // 1. 원하는 높이로 조절 (기본값 64dp보다 작게)
+                    .background(Color(0xFF4F3F6FF)) // 배경색 지정
+                    .padding(horizontal = 8.dp), // 2. 좌우 여백 추가
+                verticalAlignment = Alignment.CenterVertically // 3. 모든 내용물을 세로 중앙 정렬
+            ) {
+                // 햄버거 아이콘 버튼
+                IconButton(onClick = { /* TODO: 메뉴 열기 기능 */ }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.hamburger),
+                        contentDescription = "메뉴"
                     )
                 }
-            )
+
+                // 제목 (앱 이름)
+                Text(
+                    text = "Chaining",
+                    modifier = Modifier.weight(1f), // 4. 남는 공간을 모두 차지
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center // 텍스트를 할당된 공간 중앙에 정렬
+                )
+
+                // 프로필 사진
+                ProfileImageWithStatus(
+                    model = "https://newsimg-hams.hankookilbo.com/2023/03/24/4531dada-e9cf-4775-951c-902e3558ca41.jpg",
+                    isOnline = true
+                )
+            }
         },
         bottomBar = {
-            // TODO: 2. 하단 네비게이션 바 구현
+            // 하단 네비게이션 바 구현
             AppBottomNavigation()
         },
     ) { innerPadding ->
-        // TODO: 3. 중앙 콘텐츠 구현 (환영 메시지, 매칭 카드, 팔로우 목록 등)
+        // 중앙 콘텐츠 구현 (환영 메시지, 매칭 카드, 팔로우 목록 등)
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp)
+                .background(Color(0xFF4F3F6FF))
         ) {
             Text(
                 "오팔만님 반갑습니다.", // TODO: 실제 사용자 닉네임으로 변경
@@ -84,7 +96,7 @@ fun MainHomeScreen() {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(top = 16.dp)
-                    .padding(start = 8.dp)
+                    .padding(horizontal = 32.dp)
             )
             Text(
                 text = "최근 접수된 지원서",
@@ -93,7 +105,7 @@ fun MainHomeScreen() {
                 color = Color.Gray,
                 modifier = Modifier
                     .padding(top = 24.dp)
-                    .padding(start = 8.dp)
+                    .padding(horizontal = 32.dp)
             )
             MatchingRequestCard()
 
@@ -104,7 +116,7 @@ fun MainHomeScreen() {
                 color = Color.Gray,
                 modifier = Modifier
                     .padding(top = 24.dp)
-                    .padding(start = 8.dp)
+                    .padding(horizontal = 32.dp)
             )
             FollowerListItem(
                 name = "강호동",
@@ -125,10 +137,9 @@ fun AppBottomNavigation() {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(75.dp)
-            .background(color = Color.White)
-            .border(width = 1.dp, color = Color.LightGray),
-        shadowElevation = 30.dp
+            .height(65.dp),
+        shadowElevation = 12.dp,
+        color = Color(0xFF4F3F6FF)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -235,7 +246,8 @@ fun MatchingRequestCard() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp), // 소제목과의 간격
+            .padding(top = 8.dp)
+            .padding(horizontal = 28.dp), // 소제목과의 간격
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFF4285F4) // 파란색 배경
@@ -372,7 +384,8 @@ fun FollowerListItem(name: String, timestamp: String, imageUrl: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp),
+            .padding(top = 8.dp)
+            .padding(horizontal = 24.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
