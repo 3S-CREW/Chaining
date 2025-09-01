@@ -1,5 +1,6 @@
 package com.example.chaining.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -89,6 +90,7 @@ fun CommunityScreen(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            Log.d("hhhh", posts.toString())
             if (posts.isEmpty()) {
                 // 데이터가 없을 때
                 Text(

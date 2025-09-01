@@ -108,7 +108,7 @@ fun JoinPostScreen(
 
             // 게시글 제목
             Text(
-                text = "제주도 하이킹 함께 하실 분!",
+                text = post.title,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF4A526A)
@@ -209,6 +209,7 @@ fun JoinPostScreen(
                         applicationId = "",
                         postId = post.postId,
                         recruitPostTitle = post.title,
+                        introduction = introduction,
                         applicant = UserSummary(
                             id = userState?.id ?: "",
                             nickname = userState?.nickname ?: "",
