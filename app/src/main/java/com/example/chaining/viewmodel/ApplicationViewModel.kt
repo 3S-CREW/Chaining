@@ -1,6 +1,5 @@
 package com.example.chaining.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chaining.data.repository.ApplicationRepository
@@ -38,7 +37,6 @@ class ApplicationViewModel @Inject constructor(
     }
 
     fun submitApplication(application: Application) = viewModelScope.launch {
-        Log.d("hihh", application.toString())
         val applicationId = repo.submitApplication(application)
 
         val updatedList = _applications.value.toMutableList()
