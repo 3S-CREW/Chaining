@@ -80,7 +80,7 @@ fun MainHomeScreen() {
         },
         bottomBar = {
             // 하단 네비게이션 바 구현
-            AppBottomNavigation()
+            AppBottomNavigation(selectedTab = "HOME")
         },
     ) { innerPadding ->
         // 중앙 콘텐츠 구현 (환영 메시지, 매칭 카드, 팔로우 목록 등)
@@ -133,7 +133,7 @@ fun MainHomeScreen() {
 }
 
 @Composable
-fun AppBottomNavigation() {
+fun AppBottomNavigation(selectedTab: String) { // ✅ "selectedTab" 파라미터 추가
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -146,24 +146,30 @@ fun AppBottomNavigation() {
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // ✅ if문을 사용해 선택된 탭에 따라 다른 아이콘을 표시
+            val homeIcon = if (selectedTab == "HOME") R.drawable.selected_home else R.drawable.home
+            val peopleIcon = if (selectedTab == "PEOPLE") R.drawable.selected_people else R.drawable.people
+            val searchIcon = if (selectedTab == "SEARCH") R.drawable.selected_search else R.drawable.search
+            val alarmIcon = if (selectedTab == "ALARM") R.drawable.selected_alarm else R.drawable.alarm
+
             CustomIconButton(
-                onClick = { /*TODO*/ },
-                iconRes = R.drawable.selected_home,
+                onClick = { /*TODO: 홈 화면으로 이동*/ },
+                iconRes = homeIcon,
                 description = "메인 홈"
             )
             CustomIconButton(
-                onClick = { /*TODO*/ },
-                iconRes = R.drawable.people,
+                onClick = { /*TODO: 매칭 화면으로 이동*/ },
+                iconRes = peopleIcon,
                 description = "매칭"
             )
             CustomIconButton(
-                onClick = { /*TODO*/ },
-                iconRes = R.drawable.search,
+                onClick = { /*TODO: 검색 화면으로 이동*/ },
+                iconRes = searchIcon,
                 description = "검색"
             )
             CustomIconButton(
-                onClick = { /*TODO*/ },
-                iconRes = R.drawable.alarm,
+                onClick = { /*TODO: 알림 화면으로 이동*/ },
+                iconRes = alarmIcon,
                 description = "알림"
             )
         }

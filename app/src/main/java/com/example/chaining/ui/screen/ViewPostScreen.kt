@@ -86,6 +86,9 @@ fun ViewPostScreen(
                 Spacer(modifier = Modifier.width(48.dp))
             }
         },
+        bottomBar = {
+            AppBottomNavigation(selectedTab = "PEOPLE")
+        },
         containerColor = Color(0xFFF3F6FF)
     ) { innerPadding ->
         Column(
