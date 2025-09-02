@@ -77,10 +77,13 @@ class QuizViewModel : ViewModel() {
     private val _toastMessage = MutableStateFlow<String?>(null)
     val toastMessage = _toastMessage.asStateFlow()
 
+    private var currentLanguage: String = "ENGLISH"
+
     /**
      * Assets 폴더에서 언어에 맞는 퀴즈 JSON 파일을 읽어오는 함수
      */
     fun loadQuizzes(context: Context, language: String) {
+        this.currentLanguage = language
         val fileName = if (language == "KOREAN") {
             "korean_quizzes.json"
         } else {
@@ -156,9 +159,14 @@ class QuizViewModel : ViewModel() {
 
             // 사용자가 모든 단어를 선택하지 않았다면
             if (userWords != totalWords) {
+                val message = if (currentLanguage == "KOREAN") {
+                    "Please complete the sentence"
+                } else {
+                    "문장을 완성해주세요"
+                }
                 // Toast 메시지를 설정하고 함수를 종료
                 viewModelScope.launch {
-                    _toastMessage.value = "문장을 완성해주세요"
+                    _toastMessage.value = message
                 }
                 return
             }
