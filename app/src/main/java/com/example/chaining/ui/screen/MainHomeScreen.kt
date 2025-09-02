@@ -133,7 +133,7 @@ fun MainHomeScreen() {
 }
 
 @Composable
-fun AppBottomNavigation(selectedTab: String) { // ✅ "selectedTab" 파라미터 추가
+fun AppBottomNavigation(selectedTab: String) { // "selectedTab" 파라미터 추가
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -146,7 +146,7 @@ fun AppBottomNavigation(selectedTab: String) { // ✅ "selectedTab" 파라미터
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // ✅ if문을 사용해 선택된 탭에 따라 다른 아이콘을 표시
+            // if문을 사용해 선택된 탭에 따라 다른 아이콘을 표시
             val homeIcon = if (selectedTab == "HOME") R.drawable.selected_home else R.drawable.home
             val peopleIcon = if (selectedTab == "PEOPLE") R.drawable.selected_people else R.drawable.people
             val searchIcon = if (selectedTab == "SEARCH") R.drawable.selected_search else R.drawable.search
