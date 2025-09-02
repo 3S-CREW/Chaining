@@ -269,7 +269,7 @@ fun MultipleChoiceAnswerArea(
             val isSelected = option == selectedOption
             OutlinedButton(
                 onClick = { onOptionSelected(option) },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                modifier = Modifier.fillMaxWidth().height(65.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = if (isSelected) Color(0xFF4285F4).copy(alpha = 0.1f) else Color.White,
