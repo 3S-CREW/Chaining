@@ -68,8 +68,11 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             MainHomeScreen()
         }
         composable(Screen.CreatePost.route) {
-            CreatePostScreen()
+            CreatePostScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
+
         composable(Screen.Community.route) {
             CommunityScreen(
                 onBackClick = { navController.popBackStack() },
@@ -83,9 +86,11 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             route = Screen.ViewPost.route,
             arguments = listOf(navArgument("postId") { type = NavType.StringType })
         ) {
-            ViewPostScreen(onJoinPostClick = { post ->
-                navController.navigate(Screen.JoinPost.createRoute(post))
-            })
+            ViewPostScreen(
+                onJoinPostClick = { post ->
+                navController.navigate(Screen.JoinPost.createRoute(post))},
+                onBackClick = { navController.popBackStack() }
+            )
         }
 
         composable(
@@ -95,7 +100,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             val json = backStackEntry.arguments?.getString("post")
             json?.let {
                 val post = remember(it) { Gson().fromJson(it, RecruitPost::class.java) }
-                JoinPostScreen(post = post)
+                JoinPostScreen(
+                    onBackClick = { navController.popBackStack() },
+                    post = post)
             }
         }
 
@@ -127,7 +134,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
 
         composable("myApply") {
-            MyApplyScreen()
+            MyApplyScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 }

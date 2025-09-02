@@ -12,7 +12,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,29 +49,29 @@ fun MainHomeScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp)
-                    .background(Color(0xFF4F3F6FF)) // 배경색 지정
+                    .background(Color(0xFFF3F6FF)) // 배경색 지정
                     .padding(top = 4.dp)
                     .padding(horizontal = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // 햄버거 아이콘 버튼
-                IconButton(onClick = { /* TODO: 메뉴 열기 기능 */ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.hamburger),
-                        contentDescription = "메뉴"
-                    )
-                }
-
+//                IconButton(onClick = { /* TODO: 메뉴 열기 기능 */ }) {
+//                    Icon(
+//                        painter = painterResource(id = R.drawable.hamburger),
+//                        contentDescription = "메뉴"
+//                    )
+//                }
+                Spacer(modifier = Modifier.width(40.dp))
                 // 제목 (앱 이름)
                 Text(
                     text = "Chaining",
-                    modifier = Modifier.weight(1f), // 4. 남는 공간을 모두 차지
+                    modifier = Modifier.weight(1f), // 남는 공간을 모두 차지
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center // 텍스트를 할당된 공간 중앙에 정렬
                 )
 
-                // 프로필 사진
+                // 프로필 사진 (추후 마이페이지 버튼)
                 ProfileImageWithStatus(
                     model = "https://newsimg-hams.hankookilbo.com/2023/03/24/4531dada-e9cf-4775-951c-902e3558ca41.jpg",
                     isOnline = true
@@ -89,7 +88,7 @@ fun MainHomeScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color(0xFF4F3F6FF))
+                .background(Color(0xFFF3F6FF))
         ) {
             Text(
                 "오팔만님 반갑습니다.", // TODO: 실제 사용자 닉네임으로 변경
@@ -140,7 +139,7 @@ fun AppBottomNavigation() {
             .fillMaxWidth()
             .height(65.dp),
         shadowElevation = 12.dp,
-        color = Color(0xFF4F3F6FF)
+        color = Color(0xFFF3F6FF)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -149,7 +148,7 @@ fun AppBottomNavigation() {
         ) {
             CustomIconButton(
                 onClick = { /*TODO*/ },
-                iconRes = R.drawable.selected_home, // 아이콘 변경 필요
+                iconRes = R.drawable.selected_home,
                 description = "메인 홈"
             )
             CustomIconButton(

@@ -40,6 +40,7 @@ import com.example.chaining.viewmodel.RecruitPostViewModel
 @Composable
 fun ViewPostScreen(
     postViewModel: RecruitPostViewModel = hiltViewModel(),
+    onBackClick: () -> Unit = {},
     onJoinPostClick: (post: RecruitPost) -> Unit = {}
 ) {
 
@@ -70,7 +71,7 @@ fun ViewPostScreen(
                     .background(Color(0xFF4A526A)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { /* TODO: 뒤로 가기 */ }) {
+                IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "뒤로 가기",

@@ -41,7 +41,9 @@ import com.example.chaining.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyApplyScreen() {
+fun MyApplyScreen(
+    onBackClick: () -> Unit = {},
+) {
     Scaffold(
         // 상단바 배경색을 직접 파란색으로 지정
         topBar = {
@@ -52,7 +54,7 @@ fun MyApplyScreen() {
                     .background(Color(0xFF4285F4)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { /* TODO: 뒤로 가기 */ }) {
+                IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "뒤로 가기",
