@@ -37,7 +37,9 @@ fun CardItem(
     type: String, // "모집글" or "지원서"
     recruitPost: RecruitPost? = null,
     application: String? = null,
-    remainingTime: String? = null
+    remainingTime: String? = null,
+    onLeftButtonClick: () -> Unit = {},
+    onRightButtonClick: () -> Unit = {}
 ) {
     val title = when (type) {
         "모집글" -> recruitPost?.title ?: "제목 없음"
@@ -176,7 +178,7 @@ fun CardItem(
                     ) {
                         // 왼쪽 버튼
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = onLeftButtonClick,
                             modifier = Modifier.weight(2f),
                             shape = RoundedCornerShape(20.dp),
                             colors = ButtonDefaults.buttonColors(
@@ -189,7 +191,7 @@ fun CardItem(
 
                         // 오른쪽 버튼
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = onRightButtonClick,
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(20.dp),
                             colors = ButtonDefaults.buttonColors(
