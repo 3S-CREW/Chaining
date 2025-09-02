@@ -88,7 +88,7 @@ fun CardItem(
             Text(
                 text = title,
                 color = Color.White,
-                fontSize = 12.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Bold
             )
 
