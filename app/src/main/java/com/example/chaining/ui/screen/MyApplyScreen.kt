@@ -75,7 +75,7 @@ fun MyApplyScreen(
             }
         },
         bottomBar = {
-            AppBottomNavigation()
+            AppBottomNavigation(selectedTab = "NONE")
         },
         // 전체 기본 배경은 흰색으로 둡니다.
         containerColor = Color.White

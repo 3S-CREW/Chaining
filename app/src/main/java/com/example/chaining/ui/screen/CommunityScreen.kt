@@ -2,16 +2,22 @@ package com.example.chaining.ui.screen
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -24,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,16 +76,7 @@ fun CommunityScreen(
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center
                 )
-
-                // 새로고침 버튼
-                IconButton(onClick = { postViewModel.refreshPosts() }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.change), // Todo: 새로고침 아이콘 필요
-                        contentDescription = "새로고침",
-                        modifier = Modifier.size(22.dp),
-                        tint = Color.White
-                    )
-                }
+                Spacer(modifier = Modifier.width(48.dp))
             }
         },
         containerColor = Color(0xFFF3F6FF)
@@ -90,6 +88,28 @@ fun CommunityScreen(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // 새로 만든 CommunityActionButton 호출
+                CommunityActionButton(
+                    modifier = Modifier.weight(1f),
+                    iconRes = R.drawable.post,
+                    text = "게시글 작성",
+                    onClick = { /* TODO: 게시글 작성 화면으로 이동 */ }
+                )
+
+                // 새로 만든 CommunityActionButton 호출
+                CommunityActionButton(
+                    modifier = Modifier.weight(1f),
+                    iconRes = R.drawable.reload,
+                    text = "새로고침",
+                    onClick = { postViewModel.refreshPosts() }
+                )
+            }
             Log.d("hhhh", posts.toString())
             if (posts.isEmpty()) {
                 // 데이터가 없을 때
@@ -113,5 +133,36 @@ fun CommunityScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun CommunityActionButton(
+    modifier: Modifier = Modifier,
+    iconRes: Int,
+    text: String,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier,
+        shape = RoundedCornerShape(30.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7282B4)),
+        // 버튼 내부 컨텐츠의 좌우 여백을 조절
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 6.dp)
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = text,
+            tint = Color.White,
+            modifier = Modifier.size(22.dp)
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = text,
+            color = Color.White,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 16.sp
+        )
     }
 }
