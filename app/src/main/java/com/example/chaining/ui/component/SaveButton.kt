@@ -2,6 +2,7 @@ package com.example.chaining.ui.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -18,11 +19,10 @@ fun SaveButton(onSave: () -> Unit, text: String) {
         onClick = onSave,
         modifier = Modifier
             .fillMaxWidth()
+            .padding(30.dp)
             .height(50.dp),
         shape = RoundedCornerShape(30.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF4285F4)
-        )
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4285F4))
     ) {
         Text(text = text, fontSize = 16.sp)
     }

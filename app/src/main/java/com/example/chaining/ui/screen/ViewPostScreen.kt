@@ -11,7 +11,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -95,81 +99,100 @@ fun ViewPostScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(30.dp)
+                .padding(start = 10.dp, end = 10.dp)
         ) {
-            Spacer(modifier = Modifier.height(30.dp))
+            // 스크롤이 필요한 콘텐츠 영역 (Card)
+            Card(
+                // weight(1f)를 주어 남는 공간을 모두 차지하게 함
+                modifier = Modifier
+                    .padding(12.dp)
+                    .weight(1f),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFF3F6FF))
+            ) {
+                // 카드 내부는 이전과 동일하게 스크롤 가능
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Spacer(modifier = Modifier.height(30.dp))
 
-            Text(
-                text = currentPost.title,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF4A526A)
-            )
+                    Text(
+                        text = currentPost.title,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF4A526A)
+                    )
 
-            Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
-            HorizontalDivider(
-                thickness = 1.dp,
-                color = Color.LightGray
-            )
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = Color.LightGray
+                    )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-            setInfo(
-                icon = R.drawable.global,
-                title = "선호 여행지 스타일",
-                content = currentPost.preferredDestinations
-            )
+                    setInfo(
+                        icon = R.drawable.global,
+                        title = "선호 여행지 스타일",
+                        content = currentPost.preferredDestinations
+                    )
 
-            setInfo(
-                icon = R.drawable.calendar,
-                title = "여행 일자",
-                content = formatDate(currentPost.tourAt)
-            )
+                    setInfo(
+                        icon = R.drawable.calendar,
+                        title = "여행 일자",
+                        content = formatDate(currentPost.tourAt)
+                    )
 
-            setInfo(
-                icon = R.drawable.car,
-                title = "자차 여부",
-                content = currentPost.hasCar
-            )
+                    setInfo(
+                        icon = R.drawable.car,
+                        title = "자차 여부",
+                        content = currentPost.hasCar
+                    )
 
-            setInfo(
-                icon = R.drawable.timer,
-                title = "모집 마감일",
-                content = formatDate(currentPost.closeAt)
-            )
+                    setInfo(
+                        icon = R.drawable.timer,
+                        title = "모집 마감일",
+                        content = formatDate(currentPost.closeAt)
+                    )
 
-            setInfo(
-                icon = R.drawable.language,
-                title = "선호하는 언어",
-                content = currentPost.preferredLanguages.joinToString { it.language }
-            )
+                    setInfo(
+                        icon = R.drawable.language,
+                        title = "선호하는 언어",
+                        content = currentPost.preferredLanguages.joinToString { it.language }
+                    )
 
-            setInfo(
-                icon = R.drawable.level,
-                title = "선호하는 언어 수준",
-                content = currentPost.preferredLanguages.joinToString { it.level.toString() }
-            )
+                    setInfo(
+                        icon = R.drawable.level,
+                        title = "선호하는 언어 수준",
+                        content = currentPost.preferredLanguages.joinToString { it.level.toString() }
+                    )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-            HorizontalDivider(
-                thickness = 1.dp,
-                color = Color.LightGray
-            )
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = Color.LightGray
+                    )
 
-            Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
-            Text(
-                text = currentPost.content,
-                fontSize = 16.sp,
-                lineHeight = 22.sp,
-                color = Color(0xFF4A526A)
-            )
+                    Text(
+                        text = currentPost.content,
+                        fontSize = 16.sp,
+                        lineHeight = 22.sp,
+                        color = Color(0xFF4A526A)
+                    )
+                }
+            }
+
 
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(bottom = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 SaveButton(onSave = { onJoinPostClick(currentPost) }, text = "신청")
@@ -195,25 +218,28 @@ fun setInfo(
         Icon(
             painter = painterResource(id = icon),
             contentDescription = "정보 아이콘",
-            modifier = Modifier.size(16.dp)
+            modifier = Modifier.size(25.dp),
+            tint = Color(0xFF4A526A)
         )
+
+        Spacer(modifier = Modifier.width(16.dp))
 
         Text(
             text = title,
             modifier = Modifier.weight(1f),
             color = Color(0xFF4A526A),
             fontSize = 16.sp,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Left
         )
 
-        Spacer(modifier = Modifier.width(20.dp))
+        Spacer(modifier = Modifier.width(16.dp))
 
         Text(
             text = content,
             modifier = Modifier.weight(1f),
             color = Color(0xFF4A526A),
             fontSize = 16.sp,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Left
         )
     }
 }
