@@ -1,5 +1,6 @@
 package com.example.chaining.ui.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
@@ -9,10 +10,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -32,10 +36,20 @@ fun KRQuizScreen(
 ) {
     val context = LocalContext.current
     val isQuizFinished = quizViewModel.isQuizFinished.value
+    val toastMessage by quizViewModel.toastMessage.collectAsState()
+
+    // toastMessage 상태가 변경될 때마다 실행
+    LaunchedEffect(toastMessage) {
+        toastMessage?.let { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            // Toast를 보여준 후에는 ViewModel의 상태를 다시 null로 초기화
+            quizViewModel.clearToastMessage()
+        }
+    }
 
     // 화면이 처음 생성될 때 한국어 퀴즈를 불러옵니다.
     LaunchedEffect(Unit) {
-        // ✅ "KOREAN"으로 변경된 부분
+        // "KOREAN"으로 변경된 부분
         quizViewModel.loadQuizzes(context, "KOREAN")
     }
 
@@ -114,16 +128,21 @@ fun KRQuizScreen(
 
                 Spacer(modifier = Modifier.weight(1f))
 
+                // '다음' 버튼
                 Button(
-                    onClick = { quizViewModel.submitAndGoToNext() },
+                    onClick = { quizViewModel.submitAndGoToNext() }, // 항상 다음 문제로 이동
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
-                    enabled = isAnswerSubmitted,
-                    shape = RoundedCornerShape(16.dp)
+                    enabled = isAnswerSubmitted, // 사용자가 답을 제출했을 때만 활성화
+                    shape = RoundedCornerShape(30.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF4285F4), // 버튼의 배경색
+                        contentColor = Color.White        // 버튼 안의 텍스트 색상
+                    )
                 ) {
                     Text(
-                        text = "다음",
+                        text = "다음", // 텍스트를 '다음'으로 고정
                         fontSize = 16.sp
                     )
                 }

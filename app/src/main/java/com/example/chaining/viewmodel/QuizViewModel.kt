@@ -5,10 +5,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.chaining.domain.model.QuizItem // 이전에 만든 QuizItem 데이터 클래스 import
 import com.example.chaining.domain.model.QuizType
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class QuizViewModel : ViewModel() {
 
@@ -69,10 +73,17 @@ class QuizViewModel : ViewModel() {
     private val _isQuizFinished = mutableStateOf(false)
     val isQuizFinished: State<Boolean> = _isQuizFinished
 
+    // UI에 Toast 메시지를 전달하기 위한 상태 변수
+    private val _toastMessage = MutableStateFlow<String?>(null)
+    val toastMessage = _toastMessage.asStateFlow()
+
+    private var currentLanguage: String = "ENGLISH"
+
     /**
      * Assets 폴더에서 언어에 맞는 퀴즈 JSON 파일을 읽어오는 함수
      */
     fun loadQuizzes(context: Context, language: String) {
+        this.currentLanguage = language
         val fileName = if (language == "KOREAN") {
             "korean_quizzes.json"
         } else {
@@ -141,6 +152,25 @@ class QuizViewModel : ViewModel() {
         // 현재 문제 가져오기 (ID를 얻기 위함)
         val quiz = currentQuestion.value ?: return
 
+        // '문장 순서 맞추기' 유형일 때만 유효성 검사
+        if (quiz.type == QuizType.SENTENCE_ORDER.name) {
+            val totalWords = quiz.answer.split(" ").size
+            val userWords = _userAnswerSentence.value.size
+
+            // 사용자가 모든 단어를 선택하지 않았다면
+            if (userWords != totalWords) {
+                val message = if (currentLanguage == "KOREAN") {
+                    "Please complete the sentence"
+                } else {
+                    "문장을 완성해주세요"
+                }
+                // Toast 메시지를 설정하고 함수를 종료
+                viewModelScope.launch {
+                    _toastMessage.value = message
+                }
+                return
+            }
+        }
         // 현재 문제 유형에 맞는 사용자 답변 가져오기
         val userAnswer = when (quiz.type) {
             QuizType.SENTENCE_ORDER.name -> _userAnswerSentence.value.joinToString(" ")
@@ -171,6 +201,11 @@ class QuizViewModel : ViewModel() {
         _userAnswerSentence.value = emptyList()
         _selectedOption.value = null
         _selectedBlankWord.value = null
+    }
+
+    // Toast 메시지를 보여준 후 호출할 함수
+    fun clearToastMessage() {
+        _toastMessage.value = null
     }
 
 }
