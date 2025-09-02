@@ -92,7 +92,7 @@ fun ENQuizScreen(
                     else -> currentQuiz.translation
                 }
                 // 진행률 표시줄과의 간격
-                Spacer(modifier = Modifier.height(60.dp))
+                Spacer(modifier = Modifier.height(80.dp))
 
                 // 문제(번역문) 텍스트
                 Text(
@@ -143,7 +143,11 @@ fun ENQuizScreen(
                         .fillMaxWidth()
                         .height(50.dp),
                     enabled = isAnswerSubmitted, // 사용자가 답을 제출했을 때만 활성화
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(30.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF4285F4), // 버튼의 배경색
+                        contentColor = Color.White        // 버튼 안의 텍스트 색상
+                    )
                 ) {
                     Text(
                         text = "다음", // 텍스트를 '다음'으로 고정
@@ -295,8 +299,9 @@ fun FillInTheBlankAnswerArea(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // 1. 빈칸이 채워지는 문장 UI
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             // 빈칸 앞부분
             Text(text = sentenceParts.getOrNull(0) ?: "", fontSize = 18.sp)
