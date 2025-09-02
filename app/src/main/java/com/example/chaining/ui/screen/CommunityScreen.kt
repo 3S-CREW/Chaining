@@ -39,13 +39,17 @@ import com.example.chaining.R
 import com.example.chaining.ui.component.CardItem
 import com.example.chaining.ui.component.formatRemainingTime
 import com.example.chaining.viewmodel.RecruitPostViewModel
+import com.example.chaining.viewmodel.UserViewModel
 
 @Composable
 fun CommunityScreen(
     postViewModel: RecruitPostViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {},
-    onViewPostClick: (postId: String) -> Unit = {}
+    onViewPostClick: (postId: String) -> Unit = {},
+    userViewModel: UserViewModel = hiltViewModel(),
+//    onLikeToggleClick: (uid: String, postId: String) -> Unit = { _, _ -> },
 ) {
+    val userState by userViewModel.user.collectAsState()
     val posts by postViewModel.posts.collectAsState()
 
     Scaffold(
@@ -128,7 +132,8 @@ fun CommunityScreen(
                         onClick = { onViewPostClick(post.postId) },
                         type = "모집글",
                         recruitPost = post,
-                        remainingTime = formatRemainingTime(post.closeAt - System.currentTimeMillis())
+                        remainingTime = formatRemainingTime(post.closeAt - System.currentTimeMillis()),
+                        onRightButtonClick = { userViewModel.toggleLike(post.postId) }
                     )
                 }
             }

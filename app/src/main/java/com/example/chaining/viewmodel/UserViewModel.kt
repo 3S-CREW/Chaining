@@ -59,6 +59,12 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun toggleLike(postId: String) = viewModelScope.launch {
+        _user.value?.id?.let { uid ->
+            repo.toggleLikedPost(uid, postId)
+        }
+    }
+
     /** Delete - Soft Delete */
     fun deleteUser() = viewModelScope.launch {
         _user.value?.id?.let { uid ->

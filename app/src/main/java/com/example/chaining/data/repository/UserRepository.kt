@@ -24,6 +24,7 @@ class UserRepository @Inject constructor(
         auth.currentUser?.uid ?: error("로그인이 필요합니다.")
 
     private fun usersRef(): DatabaseReference = rootRef.child("users")
+    private fun postsRef(): DatabaseReference = rootRef.child("posts")
 
     /** Create (신규 유저 추가) */
     suspend fun addUser(user: User): String {
@@ -73,6 +74,28 @@ class UserRepository @Inject constructor(
     suspend fun updateUser(id: String, updates: Map<String, Any?>) {
         if (updates.isEmpty()) return
         usersRef().child(id).updateChildren(updates).await()
+    }
+
+    /** Update (관심글 추가 / 삭제) */
+    suspend fun toggleLikedPost(uid: String, postId: String) {
+        val likedRef = usersRef().child(uid).child("likedPosts").child(postId)
+        val snapshot = likedRef.get().await()
+        val isCurrentlyLiked = snapshot.exists()
+
+        val updates = hashMapOf<String, Any?>()
+
+        if (isCurrentlyLiked) {
+            // 좋아요 해제
+            updates["/users/$uid/likedPosts/$postId"] = null
+            updates["/posts/$postId/whoLiked/$uid"] = null
+        } else {
+            // 좋아요 추가
+            updates["/users/$uid/likedPosts/$postId"] = true
+            updates["/posts/$postId/whoLiked/$uid"] = true
+        }
+
+        // 원자적 업데이트 수행
+        rootRef.updateChildren(updates).await()
     }
 
     /** 전체 User 객체 저장 */

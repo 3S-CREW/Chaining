@@ -55,7 +55,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onCommunityClick = { navController.navigate("community") },
                 onKRQuizClick = { navController.navigate("krQuiz") },
                 onENQuizClick = { navController.navigate("enQuiz") },
-                onMyApplyClick = {navController.navigate("myApply")}
+                onMyApplyClick = { navController.navigate("myApply") }
             )
         }
         composable(Screen.Area.route) {
@@ -88,7 +88,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         ) {
             ViewPostScreen(
                 onJoinPostClick = { post ->
-                navController.navigate(Screen.JoinPost.createRoute(post))},
+                    navController.navigate(Screen.JoinPost.createRoute(post))
+                },
                 onBackClick = { navController.popBackStack() }
             )
         }
@@ -102,7 +103,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 val post = remember(it) { Gson().fromJson(it, RecruitPost::class.java) }
                 JoinPostScreen(
                     onBackClick = { navController.popBackStack() },
-                    post = post)
+                    post = post
+                )
             }
         }
 
