@@ -26,6 +26,14 @@ fun QuizResultScreen(
 ) {
     val finalLevel by quizViewModel.finalLevel
     val totalScore by quizViewModel.totalScore
+    val language by quizViewModel.currentLanguage
+    val isKoreanQuiz = language == "KOREAN"
+    val topBarTitle = if (isKoreanQuiz) "Quiz Result" else "퀴즈 결과"
+    val mainTitle = if (isKoreanQuiz) "Nickname's Korean Level" else "닉네임님의 영어 레벨"
+    val scoreLabel = if (isKoreanQuiz) "Total Score" else "총점"
+    val scoreUnit = if (isKoreanQuiz) "pts" else "점"
+    val descriptionText = if (isKoreanQuiz) "The quiz consists of 3 types from LV 1 to 5." else "LV 1~5, 3가지 유형으로 출제되었습니다."
+    val confirmButtonText = if (isKoreanQuiz) "Confirm" else "확인"
 
     // 프로그레스 바 애니메이션을 위한 상태
     var animationPlayed by remember { mutableStateOf(false) }
@@ -53,7 +61,7 @@ fun QuizResultScreen(
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Text(
-                    text = "퀴즈 결과",
+                    text = "$topBarTitle",
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
@@ -72,7 +80,7 @@ fun QuizResultScreen(
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text("닉네임님의 영어 레벨", fontSize = 30.sp, fontWeight = FontWeight.SemiBold)
+            Text(mainTitle, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.weight(1f))
 
 
@@ -95,7 +103,7 @@ fun QuizResultScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                "총점: $totalScore / 45점",
+                "$scoreLabel: $totalScore / 45 $scoreUnit",
                 fontSize = 20.sp,
                 color = Color.Gray
             )
@@ -103,7 +111,7 @@ fun QuizResultScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                "해당 퀴즈는 LV 1~5, 3가지 유형으로 출제되었습니다.",
+                descriptionText,
                 fontSize = 12.sp,
                 color = Color.Gray
             )
@@ -119,7 +127,7 @@ fun QuizResultScreen(
                 shape = RoundedCornerShape(30.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4285F4))
             ) {
-                Text("확인", fontSize = 16.sp)
+                Text(confirmButtonText, fontSize = 16.sp)
             }
         }
     }

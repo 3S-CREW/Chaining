@@ -77,7 +77,8 @@ class QuizViewModel : ViewModel() {
     private val _toastMessage = MutableStateFlow<String?>(null)
     val toastMessage = _toastMessage.asStateFlow()
 
-    private var currentLanguage: String = "ENGLISH"
+    private val _currentLanguage = mutableStateOf("ENGLISH")
+    val currentLanguage: State<String> = _currentLanguage
     // 채점 결과를 저장할 상태 변수 추가
     private val _totalScore = mutableStateOf(0)
     val totalScore: State<Int> = _totalScore
@@ -89,7 +90,7 @@ class QuizViewModel : ViewModel() {
      * Assets 폴더에서 언어에 맞는 퀴즈 JSON 파일을 읽어오는 함수
      */
     fun loadQuizzes(context: Context, language: String) {
-        this.currentLanguage = language
+        _currentLanguage.value = language
         val fileName = if (language == "KOREAN") {
             "korean_quizzes.json"
         } else {
@@ -160,7 +161,7 @@ class QuizViewModel : ViewModel() {
         // '문장 순서 맞추기' 유형일 때만 유효성 검사
         if (quiz.type == QuizType.SENTENCE_ORDER.name) {
             if (remainingWordChips.value.isNotEmpty()) {
-                val message = if (currentLanguage == "KOREAN") {
+                val message = if (_currentLanguage.value == "KOREAN") {
                     "Please complete the sentence"
                 } else {
                     "문장을 완성해주세요"
