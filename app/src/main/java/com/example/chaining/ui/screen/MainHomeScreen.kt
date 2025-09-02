@@ -12,7 +12,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -66,7 +65,7 @@ fun MainHomeScreen() {
                 // 제목 (앱 이름)
                 Text(
                     text = "Chaining",
-                    modifier = Modifier.weight(1f), // 4. 남는 공간을 모두 차지
+                    modifier = Modifier.weight(1f), // 남는 공간을 모두 차지
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center // 텍스트를 할당된 공간 중앙에 정렬
@@ -149,7 +148,7 @@ fun AppBottomNavigation() {
         ) {
             CustomIconButton(
                 onClick = { /*TODO*/ },
-                iconRes = R.drawable.selected_home, // 아이콘 변경 필요
+                iconRes = R.drawable.selected_home,
                 description = "메인 홈"
             )
             CustomIconButton(
