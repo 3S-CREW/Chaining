@@ -28,7 +28,7 @@ class UserViewModel @Inject constructor(
         if (currentUser != null) {
             // 사용자가 로그인한 경우에만 데이터를 구독
             viewModelScope.launch {
-                repo.observeMyUsers().collect { newUser ->
+                repo.observeMyUser().collect { newUser ->
                     _user.value = newUser
                 }
             }
@@ -41,21 +41,14 @@ class UserViewModel @Inject constructor(
     }
 
     /** Update - 전체 User 객체 저장 */
-    fun saveUser() = viewModelScope.launch {
+    fun updateMyUser() = viewModelScope.launch {
         try {
             _user.value?.let {
-                repo.saveUser(it)
+                repo.updateMyUser(it)
                 Log.d("UserVM", "User saved: $it")
             } ?: Log.w("UserVM", "_user.value is null, skipping save")
         } catch (e: Exception) {
             Log.e("UserVM", "Failed to save user", e)
-        }
-    }
-
-    /** Update - 일부 필드 수정 */
-    fun updateUser(updates: Map<String, Any?>) = viewModelScope.launch {
-        _user.value?.id?.let { uid ->
-            repo.updateUser(uid, updates)
         }
     }
 
@@ -67,8 +60,6 @@ class UserViewModel @Inject constructor(
 
     /** Delete - Soft Delete */
     fun deleteUser() = viewModelScope.launch {
-        _user.value?.id?.let { uid ->
-            repo.deleteUser(uid)
-        }
+        repo.deleteMyUser()
     }
 }
