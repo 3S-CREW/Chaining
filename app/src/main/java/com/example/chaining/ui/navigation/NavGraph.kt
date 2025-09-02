@@ -98,7 +98,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             val json = backStackEntry.arguments?.getString("post")
             json?.let {
                 val post = remember(it) { Gson().fromJson(it, RecruitPost::class.java) }
-                JoinPostScreen(post = post)
+                JoinPostScreen(
+                    onBackClick = { navController.popBackStack() },
+                    post = post)
             }
         }
 
