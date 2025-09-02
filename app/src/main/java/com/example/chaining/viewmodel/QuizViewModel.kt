@@ -128,8 +128,7 @@ class QuizViewModel : ViewModel() {
                 }
             }
         }
-        // 생성된 15문제의 순서를 섞어서 레벨 순서대로 나오지 않게 함
-        // finalQuizList.shuffle()
+
         _quizSet.value = finalQuizList
     }
 
@@ -160,17 +159,12 @@ class QuizViewModel : ViewModel() {
 
         // '문장 순서 맞추기' 유형일 때만 유효성 검사
         if (quiz.type == QuizType.SENTENCE_ORDER.name) {
-            val totalWords = quiz.answer.split(" ").size
-            val userWords = _userAnswerSentence.value.size
-
-            // 사용자가 모든 단어를 선택하지 않았다면
-            if (userWords != totalWords) {
+            if (remainingWordChips.value.isNotEmpty()) {
                 val message = if (currentLanguage == "KOREAN") {
                     "Please complete the sentence"
                 } else {
                     "문장을 완성해주세요"
                 }
-                // Toast 메시지를 설정하고 함수를 종료
                 viewModelScope.launch {
                     _toastMessage.value = message
                 }

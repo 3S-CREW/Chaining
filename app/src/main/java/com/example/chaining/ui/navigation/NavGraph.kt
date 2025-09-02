@@ -9,6 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navigation
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.ui.login.LoginScreen
 import com.example.chaining.ui.screen.AreaScreen
@@ -110,42 +111,52 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             }
         }
 
-        composable("enQuiz") {
-            // ViewModel을 NavController의 BackStackEntry에 연결하여 공유
-            val backStackEntry = remember { navController.getBackStackEntry("en_quiz") }
-            val quizViewModel: QuizViewModel = hiltViewModel(backStackEntry)
-            ENQuizScreen(
-                quizViewModel = quizViewModel, // 공유 ViewModel 전달
-                // 퀴즈 종료 시 "quiz_result" 경로로 이동
-                onNavigateToResult = {
-                    navController.navigate("quizResult") {
-                        // 퀴즈 화면은 뒤로가기 스택에서 제거
-                        popUpTo("enQuiz") { inclusive = true }
+        navigation(
+            startDestination = "enQuiz", // 이 그룹의 시작 화면
+            route = "quiz_flow"           // 이 그룹의 고유한 이름(경로)
+        ) {
+            composable("enQuiz") {
+                // ✅ 부모 그래프("quiz_flow")의 BackStackEntry를 가져옵니다.
+                val parentEntry = remember(it) { navController.getBackStackEntry("quiz_flow") }
+                // ✅ 부모의 ViewModel을 가져와 사용합니다.
+                val quizViewModel: QuizViewModel = hiltViewModel(parentEntry)
+
+                ENQuizScreen(
+                    quizViewModel = quizViewModel,
+                    onNavigateToResult = {
+                        navController.navigate("quizResult") {
+                            popUpTo("enQuiz") { inclusive = true }
+                        }
                     }
-                }
-            )
-        }
+                )
+            }
 
-        composable("krquiz") {
-            KRQuizScreen(
-                onNavigateToResult = {
-                    navController.navigate("quizResult") {
-                        // 퀴즈 화면은 뒤로가기 스택에서 제거
-                        popUpTo("krQuiz") { inclusive = true }
+            // kr_quiz도 동일하게 수정
+            composable("krQuiz") {
+                val parentEntry = remember(it) { navController.getBackStackEntry("quiz_flow") }
+                val quizViewModel: QuizViewModel = hiltViewModel(parentEntry)
+
+                KRQuizScreen(
+                    quizViewModel = quizViewModel,
+                    onNavigateToResult = {
+                        navController.navigate("quizResult") {
+                            // 퀴즈 화면은 뒤로가기 기록에서 제거
+                            popUpTo("krQuiz") { inclusive = true }
+                        }
                     }
-                }
-            )
-        }
+                )
+            }
 
-        composable("quizResult") {
-            // 퀴즈 화면과 동일한 ViewModel 인스턴스를 가져옴
-            val backStackEntry = remember { navController.getBackStackEntry("en_quiz") }
-            val quizViewModel: QuizViewModel = hiltViewModel(backStackEntry)
+            composable("quizResult") {
+                // ✅ 퀴즈 화면과 동일한 부모의 ViewModel 인스턴스를 가져옵니다.
+                val parentEntry = remember(it) { navController.getBackStackEntry("quiz_flow") }
+                val quizViewModel: QuizViewModel = hiltViewModel(parentEntry)
 
-            QuizResultScreen(
-                quizViewModel = quizViewModel, // 공유 ViewModel 전달
-                onNavigateToMyPage = { /* TODO: 마이페이지로 이동 */ }
-            )
+                QuizResultScreen(
+                    quizViewModel = quizViewModel,
+                    onNavigateToMyPage = { /* TODO: 마이페이지로 이동 */ }
+                )
+            }
         }
 
         composable("myApply") {
