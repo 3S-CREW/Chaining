@@ -1,8 +1,8 @@
 package com.example.chaining.di
 
-import AppDatabase
 import android.content.Context
 import androidx.room.Room
+import com.example.chaining.data.local.AppDatabase
 import com.example.chaining.data.local.Converters
 import com.example.chaining.data.local.dao.UserDao
 import dagger.Module
