@@ -67,9 +67,7 @@ fun MyPageScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        ProfileSection(user = userState, onNicknameChange = { newNickname ->
-            userViewModel.updateUser(mapOf("nickname" to newNickname))
-        })
+        ProfileSection(user = userState)
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = "기본 정보",
@@ -79,7 +77,6 @@ fun MyPageScreen(
         DropDownField(
             items = listOf("한국", "미국", "일본"),
             selectedItem = userState?.country ?: "한국",
-            onItemSelected = { country -> userViewModel.updateUser(mapOf("country" to country)) },
             leadingIconRes = R.drawable.airport,
             placeholder = "출신 국가 선택"
         )
@@ -87,7 +84,6 @@ fun MyPageScreen(
         DropDownField(
             items = listOf("서울", "부산", "제주"),
             selectedItem = userState?.residence ?: "서울",
-            onItemSelected = { residence -> userViewModel.updateUser(mapOf("residence" to residence)) },
             leadingIconRes = R.drawable.country,
             placeholder = "현재 거주지 선택"
         )
@@ -95,7 +91,6 @@ fun MyPageScreen(
         DropDownField(
             items = listOf("파리", "도쿄", "뉴욕"),
             selectedItem = userState?.preferredDestinations ?: "파리",
-            onItemSelected = { preferredDestinations -> userViewModel.updateUser(mapOf("preferredDestinations" to preferredDestinations)) },
             leadingIconRes = R.drawable.forest_path,
             placeholder = "선호 여행지 선택"
         )
@@ -108,7 +103,7 @@ fun MyPageScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
         ActionButtons(
-            onSave = { userState?.let { userViewModel.saveUser() } }
+            onSave = { userState?.let { userViewModel.updateMyUser() } }
         )
     }
 }
@@ -116,7 +111,6 @@ fun MyPageScreen(
 @Composable
 fun ProfileSection(
     user: User?,
-    onNicknameChange: (String) -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var nicknameInput by remember { mutableStateOf(user?.nickname ?: "") }
@@ -200,7 +194,6 @@ fun ProfileSection(
             confirmButton = {
                 Button(
                     onClick = {
-                        onNicknameChange(nicknameInput)
                         showDialog = false
                     }
                 ) {
@@ -222,7 +215,6 @@ fun ProfileSection(
 fun DropDownField(
     items: List<String>,                   // 드롭다운 항목
     selectedItem: String,                  // 선택된 값
-    onItemSelected: (String) -> Unit,      // 선택 시 콜백
     leadingIconRes: Int,                   // 아이콘 리소스
     placeholder: String,                   // Placeholder 텍스트
 ) {
@@ -322,7 +314,6 @@ fun DropDownField(
                                 )
                             },
                             onClick = {
-                                onItemSelected(c)
                                 expanded = false
                             }
                         )
