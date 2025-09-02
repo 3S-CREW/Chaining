@@ -64,11 +64,6 @@ fun HomeScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onJoinPostClick) {
-            Text(text = "신청")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onCommunityClick) {
             Text(text = "모집글 조회")
         }
