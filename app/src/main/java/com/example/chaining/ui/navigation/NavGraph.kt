@@ -86,9 +86,11 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             route = Screen.ViewPost.route,
             arguments = listOf(navArgument("postId") { type = NavType.StringType })
         ) {
-            ViewPostScreen(onJoinPostClick = { post ->
-                navController.navigate(Screen.JoinPost.createRoute(post))
-            })
+            ViewPostScreen(
+                onJoinPostClick = { post ->
+                navController.navigate(Screen.JoinPost.createRoute(post))},
+                onBackClick = { navController.popBackStack() }
+            )
         }
 
         composable(
