@@ -3,6 +3,7 @@ package com.example.chaining.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -23,6 +24,7 @@ import com.example.chaining.ui.screen.MyPageScreen
 import com.example.chaining.ui.screen.QuizResultScreen
 import com.example.chaining.ui.screen.SplashScreen
 import com.example.chaining.ui.screen.ViewPostScreen
+import com.example.chaining.viewmodel.QuizViewModel
 import com.google.gson.Gson
 
 @Composable
@@ -109,7 +111,11 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
 
         composable("enQuiz") {
+            // ViewModel을 NavController의 BackStackEntry에 연결하여 공유
+            val backStackEntry = remember { navController.getBackStackEntry("en_quiz") }
+            val quizViewModel: QuizViewModel = hiltViewModel(backStackEntry)
             ENQuizScreen(
+                quizViewModel = quizViewModel, // 공유 ViewModel 전달
                 // 퀴즈 종료 시 "quiz_result" 경로로 이동
                 onNavigateToResult = {
                     navController.navigate("quizResult") {
@@ -132,7 +138,14 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
 
         composable("quizResult") {
-            QuizResultScreen()
+            // 퀴즈 화면과 동일한 ViewModel 인스턴스를 가져옴
+            val backStackEntry = remember { navController.getBackStackEntry("en_quiz") }
+            val quizViewModel: QuizViewModel = hiltViewModel(backStackEntry)
+
+            QuizResultScreen(
+                quizViewModel = quizViewModel, // 공유 ViewModel 전달
+                onNavigateToMyPage = { /* TODO: 마이페이지로 이동 */ }
+            )
         }
 
         composable("myApply") {
