@@ -77,9 +77,7 @@ class UserRepository @Inject constructor(
     }
 
     /** Update (관심글 추가 / 삭제) */
-    suspend fun toggleLikedPost(postId: String) {
-        val uid = uidOrThrow()
-
+    suspend fun toggleLikedPost(uid: String, postId: String) {
         val likedRef = usersRef().child(uid).child("likedPosts").child(postId)
         val snapshot = likedRef.get().await()
         val isCurrentlyLiked = snapshot.exists()
@@ -95,7 +93,7 @@ class UserRepository @Inject constructor(
             updates["/users/$uid/likedPosts/$postId"] = true
             updates["/posts/$postId/whoLiked/$uid"] = true
         }
-        
+
         // 원자적 업데이트 수행
         rootRef.updateChildren(updates).await()
     }
