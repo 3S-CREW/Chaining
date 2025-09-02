@@ -101,7 +101,8 @@ fun ENQuizScreen(
                     textAlign = TextAlign.Center,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = Color.Black,
+                    lineHeight = 32.sp
                 )
                 // 정답 입력 영역을 화면 중앙에 배치하기 위한 Spacer
                 Spacer(modifier = Modifier.weight(1f))
@@ -299,12 +300,15 @@ fun FillInTheBlankAnswerArea(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // 1. 빈칸이 채워지는 문장 UI
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalAlignment = Alignment.CenterVertically
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally)
         ) {
             // 빈칸 앞부분
-            Text(text = sentenceParts.getOrNull(0) ?: "", fontSize = 18.sp)
+            Text(text = sentenceParts.getOrNull(0) ?: "",
+                fontSize = 18.sp,
+                modifier = Modifier.align(Alignment.CenterVertically),
+                lineHeight = 20.sp
+            )
 
             // 빈칸 부분
             Box(
@@ -312,7 +316,8 @@ fun FillInTheBlankAnswerArea(
                     .width(100.dp)
                     .height(40.dp)
                     .background(Color.White, RoundedCornerShape(8.dp))
-                    .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp)),
+                    .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+                    .align(Alignment.CenterVertically),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -323,21 +328,23 @@ fun FillInTheBlankAnswerArea(
             }
 
             // 빈칸 뒷부분
-            Text(text = sentenceParts.getOrNull(1) ?: "", fontSize = 18.sp)
+            Text(text = sentenceParts.getOrNull(1) ?: "", fontSize = 18.sp,
+                modifier = Modifier.align(Alignment.CenterVertically), lineHeight = 20.sp)
         }
 
         Spacer(modifier = Modifier.height(40.dp))
 
         // 2. 선택지 단어 칩 UI
         FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.width(300.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             options.forEach { option ->
                 Button(
                     onClick = { onWordSelected(option) },
-                    shape = CircleShape,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.width(140.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
                         contentColor = Color.Black
