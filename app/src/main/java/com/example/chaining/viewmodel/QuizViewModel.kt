@@ -78,6 +78,12 @@ class QuizViewModel : ViewModel() {
     val toastMessage = _toastMessage.asStateFlow()
 
     private var currentLanguage: String = "ENGLISH"
+    // 채점 결과를 저장할 상태 변수 추가
+    private val _totalScore = mutableStateOf(0)
+    val totalScore: State<Int> = _totalScore
+
+    private val _finalLevel = mutableStateOf(0)
+    val finalLevel: State<Int> = _finalLevel
 
     /**
      * Assets 폴더에서 언어에 맞는 퀴즈 JSON 파일을 읽어오는 함수
@@ -192,6 +198,7 @@ class QuizViewModel : ViewModel() {
             clearUserAnswer()
         } else {
             // 모든 퀴즈를 다 푼 경우
+            calculateScore()
             _isQuizFinished.value = true
         }
     }
@@ -206,6 +213,36 @@ class QuizViewModel : ViewModel() {
     // Toast 메시지를 보여준 후 호출할 함수
     fun clearToastMessage() {
         _toastMessage.value = null
+    }
+
+    private fun calculateScore() {
+        var score = 0
+        _quizSet.value.forEach { quizItem ->
+            val userAnswer = _userAnswersMap.value[quizItem.id]
+            if (userAnswer == quizItem.answer) {
+                score += quizItem.level // 정답이면 레벨만큼 점수 추가
+            }
+        }
+        _totalScore.value = score
+        _finalLevel.value = mapScoreToLevel(score)
+    }
+
+    private fun mapScoreToLevel(score: Int): Int {
+        // 총점 45점을 11개 레벨(0~10)로 분배 (45 / 11 ≒ 4.1)
+        return when (score) {
+            in 0..4 -> 0
+            in 5..8 -> 1
+            in 9..12 -> 2
+            in 13..16 -> 3
+            in 17..20 -> 4
+            in 21..25 -> 5
+            in 26..30 -> 6
+            in 31..35 -> 7
+            in 36..40 -> 8
+            in 41..44 -> 9
+            45 -> 10
+            else -> 0
+        }
     }
 
 }
