@@ -132,7 +132,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
 
         composable("myApply") {
-            MyApplyScreen()
+            MyApplyScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 }
