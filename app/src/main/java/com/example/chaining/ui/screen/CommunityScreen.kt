@@ -40,7 +40,7 @@ fun CommunityScreen(
     onBackClick: () -> Unit = {},
     onViewPostClick: (postId: String) -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel(),
-    onLikeToggleClick: (uid: String, postId: String) -> Unit = { _, _ -> },
+//    onLikeToggleClick: (uid: String, postId: String) -> Unit = { _, _ -> },
 ) {
     val userState by userViewModel.user.collectAsState()
     val posts by postViewModel.posts.collectAsState()
@@ -113,14 +113,7 @@ fun CommunityScreen(
                         type = "모집글",
                         recruitPost = post,
                         remainingTime = formatRemainingTime(post.closeAt - System.currentTimeMillis()),
-                        onRightButtonClick = {
-                            userState?.let {
-                                onLikeToggleClick(
-                                    it.id,
-                                    post.postId
-                                )
-                            }
-                        }
+                        onRightButtonClick = { userViewModel.toggleLike(post.postId) }
                     )
                 }
             }
