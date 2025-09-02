@@ -148,7 +148,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             }
 
             composable("quizResult") {
-                // ✅ 퀴즈 화면과 동일한 부모의 ViewModel 인스턴스를 가져옵니다.
+                // 퀴즈 화면과 동일한 부모의 ViewModel 인스턴스를 가져옵니다.
                 val parentEntry = remember(it) { navController.getBackStackEntry("quiz_flow") }
                 val quizViewModel: QuizViewModel = hiltViewModel(parentEntry)
 
