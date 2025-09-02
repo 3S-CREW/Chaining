@@ -68,8 +68,11 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             MainHomeScreen()
         }
         composable(Screen.CreatePost.route) {
-            CreatePostScreen()
+            CreatePostScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
+
         composable(Screen.Community.route) {
             CommunityScreen(
                 onBackClick = { navController.popBackStack() },

@@ -54,6 +54,7 @@ import com.example.chaining.viewmodel.UserViewModel
 @Composable
 fun CreatePostScreen(
     postViewModel: RecruitPostViewModel = hiltViewModel(),
+    onBackClick: () -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel()
 
 ) {
@@ -87,7 +88,7 @@ fun CreatePostScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // 뒤로가기 아이콘 버튼
-                IconButton(onClick = { /* TODO: 뒤로 가기 */ }) {
+                IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "뒤로 가기",
