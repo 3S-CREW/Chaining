@@ -26,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -236,15 +237,17 @@ fun SentenceOrderAnswerArea(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             remainingWords.forEach { word ->
-                Button(
-                    onClick = { onWordChipClicked(word) }, // 클릭 시 단어 선택
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White,
-                        contentColor = Color.Black
-                    )
-                ) {
-                    Text(text = word)
+                key(word) {
+                    Button(
+                        onClick = { onWordChipClicked(word) },
+                        shape = CircleShape,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text(text = word)
+                    }
                 }
             }
         }
