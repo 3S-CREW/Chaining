@@ -16,7 +16,7 @@ data class RecruitPost(
     val owner: UserSummary = UserSummary(),                   // 작성자 프로필 (간단 정보)
     val applications: Map<String, Application> = emptyMap(),        // 지원자 리스트
     val isDeleted: Boolean = false,                            // 삭제 여부
-    val whoLiked: List<String> = emptyList()                    // 관심을 누른 사람들의 uid
+    val whoLiked: Map<String, Boolean> = emptyMap()                    // 관심을 누른 사람들의 uid
 )
 
 @kotlinx.serialization.Serializable
