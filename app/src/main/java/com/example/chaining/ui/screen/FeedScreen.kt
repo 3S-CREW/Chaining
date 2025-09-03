@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -36,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chaining.R
+import com.example.chaining.ui.component.FeedItem
 
 @Composable
 fun FeedScreen(
@@ -63,24 +66,31 @@ fun FeedScreen(
                 Text(
                     text = "피드",
                     fontSize = 20.sp,
-                    color = Color.Whitedd,
+                    color = Color.White,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center
                 )
                 // 제목을 완벽한 중앙에 맞추기 위한 빈 공간
                 Spacer(modifier = Modifier.width(48.dp))
             }
-        }
+        },
+        bottomBar = {
+            AppBottomNavigation(selectedTab = "NONE", onCommunityClick = {})
+        },
+        containerColor = Color(0xFFF3F6FF)
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 32.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally
+        LazyColumn(
+            modifier = Modifier.padding(innerPadding),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
+            item {
+                FeedItem(
+                    region = "강원도 정선",
+                    place = "강원랜드 카지노",
+                    imageUrl = "https://newsimg-hams.hankookilbo.com/2023/03/24/4531dada-e9cf-4775-951c-902e3558ca41.jpg"
+                )
+            }
         }
     }
 }
