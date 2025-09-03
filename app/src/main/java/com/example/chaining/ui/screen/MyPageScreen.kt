@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,7 +53,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.chaining.R
-import com.example.chaining.domain.model.User
 import com.example.chaining.ui.component.TestButton
 import com.example.chaining.viewmodel.UserViewModel
 
@@ -62,14 +62,32 @@ fun MyPageScreen(
 ) {
     val userState by userViewModel.user.collectAsState()
 
+    var nickname by remember { mutableStateOf("") }
+    var country by remember { mutableStateOf(userState?.country ?: "") }
+    var residence by remember { mutableStateOf(userState?.residence ?: "") }
+    var preferredDestinations by remember {
+        mutableStateOf(
+            userState?.preferredDestinations ?: ""
+        )
+    }
+
+    LaunchedEffect(userState) {
+        nickname = userState?.nickname ?: ""
+        country = userState?.country ?: ""
+        residence = userState?.residence ?: ""
+        preferredDestinations = userState?.preferredDestinations ?: ""
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        ProfileSection(user = userState, onNicknameChange = { newNickname ->
-            userViewModel.updateUser(mapOf("nickname" to newNickname))
-        })
+        ProfileSection(
+            nickname = nickname,
+            onNicknameChanged = { nickname = it },
+            profileImageUrl = userState?.profileImageUrl
+        )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = "기본 정보",
@@ -78,26 +96,26 @@ fun MyPageScreen(
         Spacer(modifier = Modifier.height(12.dp))
         DropDownField(
             items = listOf("한국", "미국", "일본"),
-            selectedItem = userState?.country ?: "한국",
-            onItemSelected = { country -> userViewModel.updateUser(mapOf("country" to country)) },
+            selectedItem = country,
             leadingIconRes = R.drawable.airport,
-            placeholder = "출신 국가 선택"
+            placeholder = "출신 국가 선택",
+            onItemSelected = { country = it }
         )
         Spacer(modifier = Modifier.height(12.dp))
         DropDownField(
             items = listOf("서울", "부산", "제주"),
-            selectedItem = userState?.residence ?: "서울",
-            onItemSelected = { residence -> userViewModel.updateUser(mapOf("residence" to residence)) },
+            selectedItem = residence,
             leadingIconRes = R.drawable.country,
-            placeholder = "현재 거주지 선택"
+            placeholder = "현재 거주지 선택",
+            onItemSelected = { residence = it }
         )
         Spacer(modifier = Modifier.height(12.dp))
         DropDownField(
             items = listOf("파리", "도쿄", "뉴욕"),
-            selectedItem = userState?.preferredDestinations ?: "파리",
-            onItemSelected = { preferredDestinations -> userViewModel.updateUser(mapOf("preferredDestinations" to preferredDestinations)) },
+            selectedItem = preferredDestinations,
             leadingIconRes = R.drawable.forest_path,
-            placeholder = "선호 여행지 선택"
+            placeholder = "선호 여행지 선택",
+            onItemSelected = { preferredDestinations = it }
         )
         Spacer(modifier = Modifier.height(12.dp))
         userState?.preferredLanguages?.let {
@@ -108,18 +126,30 @@ fun MyPageScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
         ActionButtons(
-            onSave = { userState?.let { userViewModel.saveUser() } }
+            onSave = {
+                userState?.let { currentUser ->
+                    val updatedUser = currentUser.copy(
+                        nickname = nickname,
+                        country = country,
+                        residence = residence,
+                        preferredDestinations = preferredDestinations
+                    )
+                    userViewModel.updateMyUser(updatedUser)
+                }
+            }
         )
     }
 }
 
 @Composable
 fun ProfileSection(
-    user: User?,
-    onNicknameChange: (String) -> Unit
+    nickname: String,
+    onNicknameChanged: (String) -> Unit,
+    profileImageUrl: String?
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    var nicknameInput by remember { mutableStateOf(user?.nickname ?: "") }
+    var tempNickname by remember { mutableStateOf(nickname) }
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
@@ -128,7 +158,7 @@ fun ProfileSection(
             Box {
                 Image(
                     painter = rememberAsyncImagePainter(
-                        model = user?.profileImageUrl.takeIf { !it.isNullOrEmpty() }
+                        model = profileImageUrl.takeIf { !it.isNullOrEmpty() }
                             ?: R.drawable.test_profile
                     ),
                     contentDescription = null,
@@ -152,14 +182,12 @@ fun ProfileSection(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .clickable {
-                        nicknameInput = user?.nickname ?: ""
-                        showDialog = true
-                    }
+                modifier = Modifier.clickable {
+                    showDialog = true
+                }
             ) {
                 Text(
-                    text = user?.nickname ?: "닉네임 없음",
+                    text = nickname.ifEmpty { "닉네임 없음" },
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                 )
@@ -190,8 +218,8 @@ fun ProfileSection(
             title = { Text("닉네임 변경") },
             text = {
                 TextField(
-                    value = nicknameInput,
-                    onValueChange = { nicknameInput = it },
+                    value = tempNickname,
+                    onValueChange = { tempNickname = it },
                     placeholder = { Text("닉네임 입력") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
@@ -200,7 +228,7 @@ fun ProfileSection(
             confirmButton = {
                 Button(
                     onClick = {
-                        onNicknameChange(nicknameInput)
+                        onNicknameChanged(tempNickname)
                         showDialog = false
                     }
                 ) {
@@ -222,9 +250,9 @@ fun ProfileSection(
 fun DropDownField(
     items: List<String>,                   // 드롭다운 항목
     selectedItem: String,                  // 선택된 값
-    onItemSelected: (String) -> Unit,      // 선택 시 콜백
     leadingIconRes: Int,                   // 아이콘 리소스
     placeholder: String,                   // Placeholder 텍스트
+    onItemSelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
@@ -322,8 +350,8 @@ fun DropDownField(
                                 )
                             },
                             onClick = {
-                                onItemSelected(c)
                                 expanded = false
+                                onItemSelected(c)
                             }
                         )
                     }

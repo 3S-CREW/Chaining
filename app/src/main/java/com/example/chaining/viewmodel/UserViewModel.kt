@@ -1,12 +1,10 @@
 package com.example.chaining.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chaining.data.repository.UserRepository
 import com.example.chaining.domain.model.User
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
+    auth: FirebaseAuth,
     private val repo: UserRepository
 ) : ViewModel() {
 
@@ -24,15 +23,15 @@ class UserViewModel @Inject constructor(
 
     init {
         // 앱 시작 시 내 계정 실시간 구독
-        val currentUser = Firebase.auth.currentUser
-        if (currentUser != null) {
-            // 사용자가 로그인한 경우에만 데이터를 구독
+        // 로그인 상태를 먼저 확인
+        if (auth.currentUser != null) {
             viewModelScope.launch {
-                repo.observeMyUsers().collect { newUser ->
+                repo.observeMyUser().collect { newUser ->
                     _user.value = newUser
                 }
             }
         }
+
     }
 
     /** Create - 최초 회원가입 시 User 등록 */
@@ -41,22 +40,8 @@ class UserViewModel @Inject constructor(
     }
 
     /** Update - 전체 User 객체 저장 */
-    fun saveUser() = viewModelScope.launch {
-        try {
-            _user.value?.let {
-                repo.saveUser(it)
-                Log.d("UserVM", "User saved: $it")
-            } ?: Log.w("UserVM", "_user.value is null, skipping save")
-        } catch (e: Exception) {
-            Log.e("UserVM", "Failed to save user", e)
-        }
-    }
-
-    /** Update - 일부 필드 수정 */
-    fun updateUser(updates: Map<String, Any?>) = viewModelScope.launch {
-        _user.value?.id?.let { uid ->
-            repo.updateUser(uid, updates)
-        }
+    fun updateMyUser(user: User) = viewModelScope.launch {
+        repo.updateMyUser(user)
     }
 
     fun toggleLike(postId: String) = viewModelScope.launch {
@@ -67,8 +52,6 @@ class UserViewModel @Inject constructor(
 
     /** Delete - Soft Delete */
     fun deleteUser() = viewModelScope.launch {
-        _user.value?.id?.let { uid ->
-            repo.deleteUser(uid)
-        }
+        repo.deleteMyUser()
     }
 }
