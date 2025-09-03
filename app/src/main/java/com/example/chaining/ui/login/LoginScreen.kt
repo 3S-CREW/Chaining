@@ -34,7 +34,8 @@ import com.google.firebase.auth.auth
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: () -> Unit,
+    onLoginSuccess: () -> Unit, // 구글 로그인
+    onAdminLoginClick: () -> Unit, // 관리자 로그인
     userViewModel: UserViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -111,7 +112,7 @@ fun LoginScreen(
             fontSize = 50.sp,
             fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 180.dp)
+            modifier = Modifier.padding(bottom = 150.dp)
         )
 
         // 3) 구글 로그인 버튼
@@ -170,6 +171,25 @@ fun LoginScreen(
                     style = MaterialTheme.typography.labelLarge.copy(fontSize = 18.sp)
                 )
             }
+        }
+
+
+        Button(
+            onClick = onAdminLoginClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp)
+                .shadow(4.dp, RoundedCornerShape(12.dp)),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF4285F4),
+                contentColor = Color.White
+            )
+        ) {
+            Text(
+                text = "관리자 로그인",
+                fontSize = 18.sp
+            )
         }
     }
 }
