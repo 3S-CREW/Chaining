@@ -54,7 +54,6 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onMainHomeClick = { navController.navigate("mainHome") },
                 onCreatePostClick = { navController.navigate("createPost") },
                 onJoinPostClick = { navController.navigate("joinPost") },
-                onCommunityClick = { navController.navigate("community") },
                 onKRQuizClick = { navController.navigate("krQuiz") },
                 onENQuizClick = { navController.navigate("enQuiz") },
                 onMyApplyClick = { navController.navigate("myApply") }
@@ -68,7 +67,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
         composable(Screen.MainHome.route) {
             MainHomeScreen(
-                onMyPageClick = { navController.navigate("myPage") }
+                onMyPageClick = { navController.navigate("myPage") },
+                onCommunityClick = { navController.navigate("community") }
             )
         }
         composable(Screen.CreatePost.route) {

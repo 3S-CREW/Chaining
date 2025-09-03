@@ -21,7 +21,6 @@ fun HomeScreen(
     onMainHomeClick: () -> Unit,
     onCreatePostClick: () -> Unit,
     onJoinPostClick: () -> Unit,
-    onCommunityClick: () -> Unit,
     onKRQuizClick: () -> Unit,
     onENQuizClick: () -> Unit,
     onMyApplyClick: () -> Unit
@@ -55,11 +54,6 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onCreatePostClick) {
             Text(text = "모집글 작성")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onCommunityClick) {
-            Text(text = "모집글 조회")
         }
 
         Spacer(modifier = Modifier.height(16.dp))

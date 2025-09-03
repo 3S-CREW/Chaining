@@ -91,7 +91,7 @@ fun ViewPostScreen(
             }
         },
         bottomBar = {
-            AppBottomNavigation(selectedTab = "PEOPLE")
+            AppBottomNavigation(selectedTab = "PEOPLE", onCommunityClick = {})
         },
         containerColor = Color(0xFFF3F6FF)
     ) { innerPadding ->

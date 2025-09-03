@@ -49,7 +49,8 @@ import com.example.chaining.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainHomeScreen(
-    onMyPageClick: () -> Unit
+    onMyPageClick: () -> Unit,
+    onCommunityClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -83,7 +84,7 @@ fun MainHomeScreen(
         },
         bottomBar = {
             // 하단 네비게이션 바 구현
-            AppBottomNavigation(selectedTab = "HOME")
+            AppBottomNavigation(selectedTab = "HOME", onCommunityClick = onCommunityClick)
         },
     ) { innerPadding ->
         // 중앙 콘텐츠 구현 (환영 메시지, 매칭 카드, 팔로우 목록 등)
@@ -136,7 +137,10 @@ fun MainHomeScreen(
 }
 
 @Composable
-fun AppBottomNavigation(selectedTab: String) { // "selectedTab" 파라미터 추가
+fun AppBottomNavigation(
+    selectedTab: String,
+    onCommunityClick: () -> Unit
+) { // "selectedTab" 파라미터 추가
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -164,7 +168,7 @@ fun AppBottomNavigation(selectedTab: String) { // "selectedTab" 파라미터 추
                 description = "메인 홈"
             )
             CustomIconButton(
-                onClick = { /*TODO: 매칭 화면으로 이동*/ },
+                onClick = onCommunityClick,
                 iconRes = peopleIcon,
                 description = "매칭"
             )
