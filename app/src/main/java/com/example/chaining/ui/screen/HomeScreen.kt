@@ -18,7 +18,6 @@ import com.google.firebase.auth.auth
 @Composable
 fun HomeScreen(
     onTableClick: () -> Unit,
-    onMyPageClick: () -> Unit,
     onMainHomeClick: () -> Unit,
     onCreatePostClick: () -> Unit,
     onJoinPostClick: () -> Unit,
@@ -46,11 +45,6 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onTableClick) {
             Text("테이블 보기")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onMyPageClick) {
-            Text("마이페이지")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
