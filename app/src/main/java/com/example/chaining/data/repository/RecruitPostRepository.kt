@@ -39,7 +39,15 @@ class RecruitPostRepository @Inject constructor(
             owner = UserSummary(id = uid)
         )
 
-        postRef.setValue(newPost).await()
+        val updates = hashMapOf<String, Any?>(
+            // 1. posts 노드에 모집글 저장
+            "/posts/$postId" to newPost,
+
+            // 2. user의 recruitPosts 노드에 모집글 저장
+            "/users/$uid/recruitPosts/$postId" to newPost
+        )
+
+        rootRef.updateChildren(updates).await()
 
         return postId
     }

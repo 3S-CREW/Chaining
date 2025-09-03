@@ -61,6 +61,7 @@ fun MyPageScreen(
     userViewModel: UserViewModel = hiltViewModel(),
     onKRQuizClick: () -> Unit,
     onENQuizClick: () -> Unit,
+    onMyPostsClick: () -> Unit,
 ) {
     val userState by userViewModel.user.collectAsState()
 
@@ -143,6 +144,12 @@ fun MyPageScreen(
                         preferredDestinations = preferredDestinations
                     )
                     userViewModel.updateMyUser(updatedUser)
+                }
+            },
+            onClick = { type ->
+                when (type) {
+                    "모집 현황" -> onMyPostsClick()
+                    "지원 현황" -> {}
                 }
             }
         )
@@ -372,11 +379,12 @@ fun DropDownField(
 
 @Composable
 fun ActionButtons(
-    onSave: () -> Unit
+    onSave: () -> Unit,
+    onClick: (String) -> Unit
 ) {
     Column {
         Button(
-            onClick = { /* 모집 현황 */ },
+            onClick = { onClick("모집 현황") },
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(vertical = 14.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
@@ -396,7 +404,7 @@ fun ActionButtons(
 
         Spacer(modifier = Modifier.height(8.dp))
         Button(
-            onClick = { /* 지원 현황 */ },
+            onClick = { onClick("지원 현황") },
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(vertical = 14.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.White),

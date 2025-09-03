@@ -5,6 +5,7 @@ import com.example.chaining.data.local.dao.UserDao
 import com.example.chaining.data.local.entity.UserEntity
 import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.LanguagePref
+import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.domain.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -189,7 +190,7 @@ class UserRepository @Inject constructor(
             likedPosts = updates["likedPosts"] as? Map<String, Boolean> ?: likedPosts,
             preferredLanguages = updates["preferredLanguages"] as? List<LanguagePref>
                 ?: preferredLanguages,
-            recruitPosts = updates["recruitPosts"] as? List<Application> ?: recruitPosts,
+            recruitPosts = updates["recruitPosts"] as? Map<String, RecruitPost> ?: recruitPosts,
             applications = updates["applications"] as? List<Application> ?: applications
         )
     }
