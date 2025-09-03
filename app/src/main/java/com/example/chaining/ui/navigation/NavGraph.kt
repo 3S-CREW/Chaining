@@ -53,8 +53,6 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onTableClick = { navController.navigate("area") },
                 onMainHomeClick = { navController.navigate("mainHome") },
                 onJoinPostClick = { navController.navigate("joinPost") },
-                onKRQuizClick = { navController.navigate("krQuiz") },
-                onENQuizClick = { navController.navigate("enQuiz") },
                 onMyApplyClick = { navController.navigate("myApply") }
             )
         }
@@ -62,7 +60,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             AreaScreen()
         }
         composable(Screen.MyPage.route) {
-            MyPageScreen()
+            MyPageScreen(
+                onKRQuizClick = { navController.navigate("krQuiz") },
+                onENQuizClick = { navController.navigate("enQuiz") },
+            )
         }
         composable(Screen.MainHome.route) {
             MainHomeScreen(

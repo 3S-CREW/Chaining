@@ -40,7 +40,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TestButton(
-    preferredLanguages: List<LanguagePref>
+    preferredLanguages: List<LanguagePref>,
+    onTestClick: (String) -> Unit
 ) {
     val languageText = if (preferredLanguages.isNotEmpty()) {
         preferredLanguages.joinToString(" · ") {
@@ -120,12 +121,11 @@ fun TestButton(
                         language = language,
                         level = pref?.level,
                         onTestClick = {
-                            // TODO: 테스트 화면 이동
-                            // navController.navigate("test/$language")
                             coroutineScope.launch {
                                 sheetState.hide()
                                 isSheetOpen = false
                             }
+                            onTestClick(language)
                         }
                     )
                 }

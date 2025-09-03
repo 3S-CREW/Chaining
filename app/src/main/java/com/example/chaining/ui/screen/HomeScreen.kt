@@ -20,8 +20,6 @@ fun HomeScreen(
     onTableClick: () -> Unit,
     onMainHomeClick: () -> Unit,
     onJoinPostClick: () -> Unit,
-    onKRQuizClick: () -> Unit,
-    onENQuizClick: () -> Unit,
     onMyApplyClick: () -> Unit
 ) {
     val user = Firebase.auth.currentUser
@@ -48,16 +46,6 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { Firebase.auth.signOut() }) {
             Text("로그아웃")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onKRQuizClick) {
-            Text(text = "한국어 퀴즈")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onENQuizClick) {
-            Text(text = "영어 퀴즈")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
