@@ -44,7 +44,7 @@ class RecruitPostRepository @Inject constructor(
             "/posts/$postId" to newPost,
 
             // 2. user의 recruitPosts 노드에 모집글 저장
-            "/users/$uid/recruitPosts" to newPost
+            "/users/$uid/recruitPosts/$postId" to newPost
         )
 
         rootRef.updateChildren(updates).await()
