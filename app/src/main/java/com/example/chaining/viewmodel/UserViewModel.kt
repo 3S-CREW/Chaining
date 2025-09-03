@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chaining.data.repository.UserRepository
 import com.example.chaining.domain.model.User
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,6 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
+    auth: FirebaseAuth,
     private val repo: UserRepository
 ) : ViewModel() {
 
@@ -21,11 +23,15 @@ class UserViewModel @Inject constructor(
 
     init {
         // 앱 시작 시 내 계정 실시간 구독
-        viewModelScope.launch {
-            repo.observeMyUser().collect { newUser ->
-                _user.value = newUser
+        // 로그인 상태를 먼저 확인
+        if (auth.currentUser != null) {
+            viewModelScope.launch {
+                repo.observeMyUser().collect { newUser ->
+                    _user.value = newUser
+                }
             }
         }
+
     }
 
     /** Create - 최초 회원가입 시 User 등록 */
@@ -34,10 +40,8 @@ class UserViewModel @Inject constructor(
     }
 
     /** Update - 전체 User 객체 저장 */
-    fun updateMyUser() = viewModelScope.launch {
-        _user.value?.let { user ->
-            repo.updateMyUser(user)
-        }
+    fun updateMyUser(user: User) = viewModelScope.launch {
+        repo.updateMyUser(user)
     }
 
     fun toggleLike(postId: String) = viewModelScope.launch {

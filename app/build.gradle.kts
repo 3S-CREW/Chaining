@@ -14,6 +14,8 @@ plugins {
 
     // Compose Compiler 플러그인 추가
     id("org.jetbrains.kotlin.plugin.compose")
+
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
 }
 
 val properties = Properties().apply {

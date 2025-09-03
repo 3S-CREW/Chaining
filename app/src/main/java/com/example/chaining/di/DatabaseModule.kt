@@ -3,7 +3,6 @@ package com.example.chaining.di
 import android.content.Context
 import androidx.room.Room
 import com.example.chaining.data.local.AppDatabase
-import com.example.chaining.data.local.Converters
 import com.example.chaining.data.local.dao.UserDao
 import dagger.Module
 import dagger.Provides
@@ -20,7 +19,6 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(context, AppDatabase::class.java, "app_database")
-            .addTypeConverter(Converters())
             .build()
     }
 
