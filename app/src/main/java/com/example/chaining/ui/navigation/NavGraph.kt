@@ -22,6 +22,7 @@ import com.example.chaining.ui.screen.KRQuizScreen
 import com.example.chaining.ui.screen.MainHomeScreen
 import com.example.chaining.ui.screen.MyApplyScreen
 import com.example.chaining.ui.screen.MyPageScreen
+import com.example.chaining.ui.screen.MyPostsScreen
 import com.example.chaining.ui.screen.QuizResultScreen
 import com.example.chaining.ui.screen.SplashScreen
 import com.example.chaining.ui.screen.ViewPostScreen
@@ -63,6 +64,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             MyPageScreen(
                 onKRQuizClick = { navController.navigate("krQuiz") },
                 onENQuizClick = { navController.navigate("enQuiz") },
+                onMyPostsClick = { navController.navigate(route = Screen.MyPosts.route) }
             )
         }
         composable(Screen.MainHome.route) {
@@ -165,6 +167,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             MyApplyScreen(
                 onBackClick = { navController.popBackStack() }
             )
+        }
+
+        composable(route = Screen.MyPosts.route) {
+            MyPostsScreen()
         }
     }
 }
