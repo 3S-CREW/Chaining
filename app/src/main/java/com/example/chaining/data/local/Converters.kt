@@ -3,6 +3,7 @@ package com.example.chaining.data.local
 import androidx.room.TypeConverter
 import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.LanguagePref
+import com.example.chaining.domain.model.RecruitPost
 import kotlinx.serialization.json.Json
 
 class Converters {
@@ -18,7 +19,14 @@ class Converters {
     fun fromApplicationList(list: List<Application>): String = Json.encodeToString(list)
 
     @TypeConverter
+    fun fromPostList(list: List<RecruitPost>): String = Json.encodeToString(list)
+
+    @TypeConverter
     fun toApplicationList(value: String): List<Application> =
+        if (value.isEmpty()) emptyList() else Json.decodeFromString(value)
+
+    @TypeConverter
+    fun toPostList(value: String): List<RecruitPost> =
         if (value.isEmpty()) emptyList() else Json.decodeFromString(value)
 
     @TypeConverter
