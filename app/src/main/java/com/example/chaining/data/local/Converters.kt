@@ -19,15 +19,15 @@ class Converters {
     fun fromApplicationList(list: List<Application>): String = Json.encodeToString(list)
 
     @TypeConverter
-    fun fromPostList(list: List<RecruitPost>): String = Json.encodeToString(list)
+    fun fromPostMap(map: Map<String, RecruitPost>): String = Json.encodeToString(map)
 
     @TypeConverter
     fun toApplicationList(value: String): List<Application> =
         if (value.isEmpty()) emptyList() else Json.decodeFromString(value)
 
     @TypeConverter
-    fun toPostList(value: String): List<RecruitPost> =
-        if (value.isEmpty()) emptyList() else Json.decodeFromString(value)
+    fun toPostMap(value: String): Map<String, RecruitPost> =
+        if (value.isEmpty()) emptyMap() else Json.decodeFromString(value)
 
     @TypeConverter
     fun fromLikedPosts(map: Map<String, Boolean>): String = Json.encodeToString(map)

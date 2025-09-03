@@ -55,9 +55,9 @@ fun MyPostsScreen(
     var showOnlyOpenPosts by remember { mutableStateOf(false) }
 
     val filteredPosts = if (showOnlyOpenPosts) {
-        myPosts.filter { post -> !post.isDeleted && post.closeAt > System.currentTimeMillis() }
+        myPosts.filter { post -> !post.value.isDeleted && post.value.closeAt > System.currentTimeMillis() }
     } else {
-        myPosts.filter { post -> !post.isDeleted } // 삭제된 글은 항상 제외
+        myPosts.filter { post -> !post.value.isDeleted } // 삭제된 글은 항상 제외
     }
 
     Scaffold(
@@ -129,10 +129,10 @@ fun MyPostsScreen(
                 // 모집글 목록 표시
                 filteredPosts.forEach { post ->
                     CardItem(
-                        onClick = { onViewPostClick(post.postId) },
+                        onClick = { onViewPostClick(post.value.postId) },
                         type = "모집글",
-                        recruitPost = post,
-                        remainingTime = formatRemainingTime(post.closeAt - System.currentTimeMillis()),
+                        recruitPost = post.value,
+                        remainingTime = formatRemainingTime(post.value.closeAt - System.currentTimeMillis()),
                     )
                 }
             }
