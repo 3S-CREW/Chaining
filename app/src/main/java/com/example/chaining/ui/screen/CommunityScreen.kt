@@ -47,6 +47,7 @@ fun CommunityScreen(
     onBackClick: () -> Unit = {},
     onViewPostClick: (postId: String) -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel(),
+    onCreatePostClick: () -> Unit,
 //    onLikeToggleClick: (uid: String, postId: String) -> Unit = { _, _ -> },
 ) {
     val userState by userViewModel.user.collectAsState()
@@ -103,7 +104,7 @@ fun CommunityScreen(
                     modifier = Modifier.weight(1f),
                     iconRes = R.drawable.post,
                     text = "게시글 작성",
-                    onClick = { /* TODO: 게시글 작성 화면으로 이동 */ }
+                    onClick = onCreatePostClick
                 )
 
                 // 새로 만든 CommunityActionButton 호출

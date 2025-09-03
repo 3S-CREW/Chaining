@@ -52,7 +52,6 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             HomeScreen(
                 onTableClick = { navController.navigate("area") },
                 onMainHomeClick = { navController.navigate("mainHome") },
-                onCreatePostClick = { navController.navigate("createPost") },
                 onJoinPostClick = { navController.navigate("joinPost") },
                 onKRQuizClick = { navController.navigate("krQuiz") },
                 onENQuizClick = { navController.navigate("enQuiz") },
@@ -82,7 +81,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onBackClick = { navController.popBackStack() },
                 onViewPostClick = { postId ->
                     navController.navigate(Screen.ViewPost.createRoute(postId))
-                }
+                },
+                onCreatePostClick = { navController.navigate("createPost") },
             )
         }
 
