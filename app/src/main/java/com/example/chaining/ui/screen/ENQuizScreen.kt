@@ -1,5 +1,6 @@
 package com.example.chaining.ui.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,6 +27,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +49,16 @@ fun ENQuizScreen(
     onNavigateToResult: () -> Unit
 ) {
     val context = LocalContext.current
+    val toastMessage by quizViewModel.toastMessage.collectAsState()
+
+    // toastMessage 상태가 변경될 때마다 실행
+    LaunchedEffect(toastMessage) {
+        toastMessage?.let { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            // Toast를 보여준 후에는 ViewModel의 상태를 다시 null로 초기화
+            quizViewModel.clearToastMessage()
+        }
+    }
 
     LaunchedEffect(Unit) {
         quizViewModel.loadQuizzes(context, "ENGLISH")
@@ -92,7 +106,7 @@ fun ENQuizScreen(
                     else -> currentQuiz.translation
                 }
                 // 진행률 표시줄과의 간격
-                Spacer(modifier = Modifier.height(60.dp))
+                Spacer(modifier = Modifier.height(80.dp))
 
                 // 문제(번역문) 텍스트
                 Text(
@@ -101,7 +115,8 @@ fun ENQuizScreen(
                     textAlign = TextAlign.Center,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = Color.Black,
+                    lineHeight = 32.sp
                 )
                 // 정답 입력 영역을 화면 중앙에 배치하기 위한 Spacer
                 Spacer(modifier = Modifier.weight(1f))
@@ -143,7 +158,11 @@ fun ENQuizScreen(
                         .fillMaxWidth()
                         .height(50.dp),
                     enabled = isAnswerSubmitted, // 사용자가 답을 제출했을 때만 활성화
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(30.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF4285F4), // 버튼의 배경색
+                        contentColor = Color.White        // 버튼 안의 텍스트 색상
+                    )
                 ) {
                     Text(
                         text = "다음", // 텍스트를 '다음'으로 고정
@@ -231,15 +250,17 @@ fun SentenceOrderAnswerArea(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             remainingWords.forEach { word ->
-                Button(
-                    onClick = { onWordChipClicked(word) }, // 클릭 시 단어 선택
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White,
-                        contentColor = Color.Black
-                    )
-                ) {
-                    Text(text = word)
+                key(word) {
+                    Button(
+                        onClick = { onWordChipClicked(word) },
+                        shape = CircleShape,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text(text = word)
+                    }
                 }
             }
         }
@@ -261,7 +282,7 @@ fun MultipleChoiceAnswerArea(
             val isSelected = option == selectedOption
             OutlinedButton(
                 onClick = { onOptionSelected(option) },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                modifier = Modifier.fillMaxWidth().height(65.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = if (isSelected) Color(0xFF4285F4).copy(alpha = 0.1f) else Color.White,
@@ -296,10 +317,14 @@ fun FillInTheBlankAnswerArea(
     ) {
         // 1. 빈칸이 채워지는 문장 UI
         FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally)
         ) {
             // 빈칸 앞부분
-            Text(text = sentenceParts.getOrNull(0) ?: "", fontSize = 18.sp)
+            Text(text = sentenceParts.getOrNull(0) ?: "",
+                fontSize = 18.sp,
+                modifier = Modifier.align(Alignment.CenterVertically),
+                lineHeight = 20.sp
+            )
 
             // 빈칸 부분
             Box(
@@ -307,7 +332,8 @@ fun FillInTheBlankAnswerArea(
                     .width(100.dp)
                     .height(40.dp)
                     .background(Color.White, RoundedCornerShape(8.dp))
-                    .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp)),
+                    .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+                    .align(Alignment.CenterVertically),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -318,21 +344,23 @@ fun FillInTheBlankAnswerArea(
             }
 
             // 빈칸 뒷부분
-            Text(text = sentenceParts.getOrNull(1) ?: "", fontSize = 18.sp)
+            Text(text = sentenceParts.getOrNull(1) ?: "", fontSize = 18.sp,
+                modifier = Modifier.align(Alignment.CenterVertically), lineHeight = 20.sp)
         }
 
         Spacer(modifier = Modifier.height(40.dp))
 
         // 2. 선택지 단어 칩 UI
         FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.width(300.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             options.forEach { option ->
                 Button(
                     onClick = { onWordSelected(option) },
-                    shape = CircleShape,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.width(140.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
                         contentColor = Color.Black

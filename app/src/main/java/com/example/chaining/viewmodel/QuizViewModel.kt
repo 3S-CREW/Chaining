@@ -5,10 +5,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.chaining.domain.model.QuizItem // 이전에 만든 QuizItem 데이터 클래스 import
 import com.example.chaining.domain.model.QuizType
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class QuizViewModel : ViewModel() {
 
@@ -69,10 +73,24 @@ class QuizViewModel : ViewModel() {
     private val _isQuizFinished = mutableStateOf(false)
     val isQuizFinished: State<Boolean> = _isQuizFinished
 
+    // UI에 Toast 메시지를 전달하기 위한 상태 변수
+    private val _toastMessage = MutableStateFlow<String?>(null)
+    val toastMessage = _toastMessage.asStateFlow()
+
+    private val _currentLanguage = mutableStateOf("ENGLISH")
+    val currentLanguage: State<String> = _currentLanguage
+    // 채점 결과를 저장할 상태 변수 추가
+    private val _totalScore = mutableStateOf(0)
+    val totalScore: State<Int> = _totalScore
+
+    private val _finalLevel = mutableStateOf(0)
+    val finalLevel: State<Int> = _finalLevel
+
     /**
      * Assets 폴더에서 언어에 맞는 퀴즈 JSON 파일을 읽어오는 함수
      */
     fun loadQuizzes(context: Context, language: String) {
+        _currentLanguage.value = language
         val fileName = if (language == "KOREAN") {
             "korean_quizzes.json"
         } else {
@@ -111,8 +129,7 @@ class QuizViewModel : ViewModel() {
                 }
             }
         }
-        // 생성된 15문제의 순서를 섞어서 레벨 순서대로 나오지 않게 함
-        // finalQuizList.shuffle()
+
         _quizSet.value = finalQuizList
     }
 
@@ -141,6 +158,20 @@ class QuizViewModel : ViewModel() {
         // 현재 문제 가져오기 (ID를 얻기 위함)
         val quiz = currentQuestion.value ?: return
 
+        // '문장 순서 맞추기' 유형일 때만 유효성 검사
+        if (quiz.type == QuizType.SENTENCE_ORDER.name) {
+            if (remainingWordChips.value.isNotEmpty()) {
+                val message = if (_currentLanguage.value == "KOREAN") {
+                    "Please complete the sentence"
+                } else {
+                    "문장을 완성해주세요"
+                }
+                viewModelScope.launch {
+                    _toastMessage.value = message
+                }
+                return
+            }
+        }
         // 현재 문제 유형에 맞는 사용자 답변 가져오기
         val userAnswer = when (quiz.type) {
             QuizType.SENTENCE_ORDER.name -> _userAnswerSentence.value.joinToString(" ")
@@ -162,6 +193,7 @@ class QuizViewModel : ViewModel() {
             clearUserAnswer()
         } else {
             // 모든 퀴즈를 다 푼 경우
+            calculateScore()
             _isQuizFinished.value = true
         }
     }
@@ -171,6 +203,41 @@ class QuizViewModel : ViewModel() {
         _userAnswerSentence.value = emptyList()
         _selectedOption.value = null
         _selectedBlankWord.value = null
+    }
+
+    // Toast 메시지를 보여준 후 호출할 함수
+    fun clearToastMessage() {
+        _toastMessage.value = null
+    }
+
+    private fun calculateScore() {
+        var score = 0
+        _quizSet.value.forEach { quizItem ->
+            val userAnswer = _userAnswersMap.value[quizItem.id]
+            if (userAnswer == quizItem.answer) {
+                score += quizItem.level // 정답이면 레벨만큼 점수 추가
+            }
+        }
+        _totalScore.value = score
+        _finalLevel.value = mapScoreToLevel(score)
+    }
+
+    private fun mapScoreToLevel(score: Int): Int {
+        // 총점 45점을 11개 레벨(0~10)로 분배 (45 / 11 ≒ 4.1)
+        return when (score) {
+            in 0..4 -> 0
+            in 5..8 -> 1
+            in 9..12 -> 2
+            in 13..16 -> 3
+            in 17..20 -> 4
+            in 21..25 -> 5
+            in 26..30 -> 6
+            in 31..35 -> 7
+            in 36..40 -> 8
+            in 41..44 -> 9
+            45 -> 10
+            else -> 0
+        }
     }
 
 }
