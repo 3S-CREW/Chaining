@@ -17,6 +17,7 @@ import com.example.chaining.ui.screen.AreaScreen
 import com.example.chaining.ui.screen.CommunityScreen
 import com.example.chaining.ui.screen.CreatePostScreen
 import com.example.chaining.ui.screen.ENQuizScreen
+import com.example.chaining.ui.screen.FeedScreen
 import com.example.chaining.ui.screen.HomeScreen
 import com.example.chaining.ui.screen.JoinPostScreen
 import com.example.chaining.ui.screen.KRQuizScreen
@@ -63,7 +64,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onTableClick = { navController.navigate("area") },
                 onMainHomeClick = { navController.navigate("mainHome") },
                 onJoinPostClick = { navController.navigate("joinPost") },
-                onMyApplyClick = { navController.navigate("myApply") }
+                onMyApplyClick = { navController.navigate("myApply") },
+                onFeedClick = { navController.navigate("feed") }
             )
         }
         composable(Screen.Area.route) {
@@ -173,6 +175,12 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
         composable("myApply") {
             MyApplyScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable("feed") {
+            FeedScreen(
                 onBackClick = { navController.popBackStack() }
             )
         }
