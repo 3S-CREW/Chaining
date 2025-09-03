@@ -12,10 +12,12 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.ui.login.LoginScreen
+import com.example.chaining.ui.screen.AdminLoginScreen
 import com.example.chaining.ui.screen.AreaScreen
 import com.example.chaining.ui.screen.CommunityScreen
 import com.example.chaining.ui.screen.CreatePostScreen
 import com.example.chaining.ui.screen.ENQuizScreen
+import com.example.chaining.ui.screen.FeedScreen
 import com.example.chaining.ui.screen.HomeScreen
 import com.example.chaining.ui.screen.JoinPostScreen
 import com.example.chaining.ui.screen.KRQuizScreen
@@ -46,7 +48,16 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     navController.navigate("home") {
                         popUpTo("login") { inclusive = true }
                     }
+                },
+                // 관리자 로그인 버튼 클릭 시
+                onAdminLoginClick = {
+                    navController.navigate("adminLogin")
                 }
+            )
+        }
+        composable(Screen.AdminLogin.route){
+            AdminLoginScreen(
+                onBackClick = { navController.popBackStack() }
             )
         }
         composable(Screen.Home.route) {
@@ -54,7 +65,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onTableClick = { navController.navigate("area") },
                 onMainHomeClick = { navController.navigate("mainHome") },
                 onJoinPostClick = { navController.navigate("joinPost") },
-                onMyApplyClick = { navController.navigate("myApply") }
+                onMyApplyClick = { navController.navigate("myApply") },
+                onFeedClick = { navController.navigate("feed") }
             )
         }
         composable(Screen.Area.route) {
@@ -120,9 +132,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             route = "quiz_flow"           // 이 그룹의 고유한 이름(경로)
         ) {
             composable("enQuiz") {
-                // ✅ 부모 그래프("quiz_flow")의 BackStackEntry를 가져옵니다.
+                // 부모 그래프("quiz_flow")의 BackStackEntry를 가져옵니다.
                 val parentEntry = remember(it) { navController.getBackStackEntry("quiz_flow") }
-                // ✅ 부모의 ViewModel을 가져와 사용합니다.
+                // 부모의 ViewModel을 가져와 사용합니다.
                 val quizViewModel: QuizViewModel = hiltViewModel(parentEntry)
 
                 ENQuizScreen(
@@ -165,6 +177,12 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
         composable("myApply") {
             MyApplyScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable("feed") {
+            FeedScreen(
                 onBackClick = { navController.popBackStack() }
             )
         }
