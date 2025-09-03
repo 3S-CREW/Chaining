@@ -18,13 +18,8 @@ import com.google.firebase.auth.auth
 @Composable
 fun HomeScreen(
     onTableClick: () -> Unit,
-    onMyPageClick: () -> Unit,
     onMainHomeClick: () -> Unit,
-    onCreatePostClick: () -> Unit,
     onJoinPostClick: () -> Unit,
-    onCommunityClick: () -> Unit,
-    onKRQuizClick: () -> Unit,
-    onENQuizClick: () -> Unit,
     onMyApplyClick: () -> Unit
 ) {
     val user = Firebase.auth.currentUser
@@ -49,33 +44,8 @@ fun HomeScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onMyPageClick) {
-            Text("마이페이지")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { Firebase.auth.signOut() }) {
             Text("로그아웃")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onCreatePostClick) {
-            Text(text = "모집글 작성")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onCommunityClick) {
-            Text(text = "모집글 조회")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onKRQuizClick) {
-            Text(text = "한국어 퀴즈")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onENQuizClick) {
-            Text(text = "영어 퀴즈")
         }
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -6,42 +6,52 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import com.example.chaining.R
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.chaining.R
 
 // OptIn annotation for using experimental Material 3 APIs
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainHomeScreen() {
+fun MainHomeScreen(
+    onMyPageClick: () -> Unit,
+    onCommunityClick: () -> Unit
+) {
     Scaffold(
         topBar = {
             // 상단 앱 바 구현
@@ -54,13 +64,6 @@ fun MainHomeScreen() {
                     .padding(horizontal = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // 햄버거 아이콘 버튼
-//                IconButton(onClick = { /* TODO: 메뉴 열기 기능 */ }) {
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.hamburger),
-//                        contentDescription = "메뉴"
-//                    )
-//                }
                 Spacer(modifier = Modifier.width(40.dp))
                 // 제목 (앱 이름)
                 Text(
@@ -74,13 +77,14 @@ fun MainHomeScreen() {
                 // 프로필 사진 (추후 마이페이지 버튼)
                 ProfileImageWithStatus(
                     model = "https://newsimg-hams.hankookilbo.com/2023/03/24/4531dada-e9cf-4775-951c-902e3558ca41.jpg",
-                    isOnline = true
+                    isOnline = true,
+                    onMyPageClick = onMyPageClick
                 )
             }
         },
         bottomBar = {
             // 하단 네비게이션 바 구현
-            AppBottomNavigation(selectedTab = "HOME")
+            AppBottomNavigation(selectedTab = "HOME", onCommunityClick = onCommunityClick)
         },
     ) { innerPadding ->
         // 중앙 콘텐츠 구현 (환영 메시지, 매칭 카드, 팔로우 목록 등)
@@ -133,7 +137,10 @@ fun MainHomeScreen() {
 }
 
 @Composable
-fun AppBottomNavigation(selectedTab: String) { // "selectedTab" 파라미터 추가
+fun AppBottomNavigation(
+    selectedTab: String,
+    onCommunityClick: () -> Unit
+) { // "selectedTab" 파라미터 추가
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -148,9 +155,12 @@ fun AppBottomNavigation(selectedTab: String) { // "selectedTab" 파라미터 추
         ) {
             // if문을 사용해 선택된 탭에 따라 다른 아이콘을 표시
             val homeIcon = if (selectedTab == "HOME") R.drawable.selected_home else R.drawable.home
-            val peopleIcon = if (selectedTab == "PEOPLE") R.drawable.selected_people else R.drawable.people
-            val searchIcon = if (selectedTab == "SEARCH") R.drawable.selected_search else R.drawable.search
-            val alarmIcon = if (selectedTab == "ALARM") R.drawable.selected_alarm else R.drawable.alarm
+            val peopleIcon =
+                if (selectedTab == "PEOPLE") R.drawable.selected_people else R.drawable.people
+            val searchIcon =
+                if (selectedTab == "SEARCH") R.drawable.selected_search else R.drawable.search
+            val alarmIcon =
+                if (selectedTab == "ALARM") R.drawable.selected_alarm else R.drawable.alarm
 
             CustomIconButton(
                 onClick = { /*TODO: 홈 화면으로 이동*/ },
@@ -158,7 +168,7 @@ fun AppBottomNavigation(selectedTab: String) { // "selectedTab" 파라미터 추
                 description = "메인 홈"
             )
             CustomIconButton(
-                onClick = { /*TODO: 매칭 화면으로 이동*/ },
+                onClick = onCommunityClick,
                 iconRes = peopleIcon,
                 description = "매칭"
             )
@@ -218,12 +228,17 @@ private fun CustomIconButton(
 
 @Composable
 fun ProfileImageWithStatus(
-    model : Any,
+    model: Any,
     isOnline: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onMyPageClick: () -> Unit
 ) {
     // Box를 사용해 이미지와 상태 점을 겹치게 만듭니다.
-    Box(modifier = modifier.size(40.dp)) {
+    Box(
+        modifier = modifier
+            .size(40.dp)
+            .clickable { onMyPageClick() }
+    ) {
         // 프로필 이미지
         AsyncImage(
             model = model,
@@ -303,7 +318,7 @@ fun MatchingRequestCard() {
             ) {
                 Column(
                     modifier = Modifier.padding(12.dp)
-                ){
+                ) {
                     Row(
                         modifier = Modifier.padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -401,7 +416,7 @@ fun FollowerListItem(name: String, timestamp: String, imageUrl: String) {
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ProfileImageWithStatus(model = imageUrl, isOnline = true)
+            ProfileImageWithStatus(model = imageUrl, onMyPageClick = {}, isOnline = true)
 
             Spacer(modifier = Modifier.width(12.dp))
 
@@ -419,9 +434,4 @@ fun FollowerListItem(name: String, timestamp: String, imageUrl: String) {
             }
         }
     }
-}
-
-@Composable
-fun MainHomeScreenPreview() {
-    MainHomeScreen()
 }

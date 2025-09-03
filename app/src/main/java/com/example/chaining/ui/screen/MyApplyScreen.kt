@@ -16,8 +16,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -75,7 +73,7 @@ fun MyApplyScreen(
             }
         },
         bottomBar = {
-            AppBottomNavigation(selectedTab = "NONE")
+            AppBottomNavigation(selectedTab = "NONE", onCommunityClick = {})
         },
         // 전체 기본 배경은 흰색으로 둡니다.
         containerColor = Color.White

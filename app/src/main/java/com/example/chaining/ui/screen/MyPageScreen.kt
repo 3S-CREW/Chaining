@@ -58,7 +58,9 @@ import com.example.chaining.viewmodel.UserViewModel
 
 @Composable
 fun MyPageScreen(
-    userViewModel: UserViewModel = hiltViewModel()
+    userViewModel: UserViewModel = hiltViewModel(),
+    onKRQuizClick: () -> Unit,
+    onENQuizClick: () -> Unit,
 ) {
     val userState by userViewModel.user.collectAsState()
 
@@ -120,7 +122,13 @@ fun MyPageScreen(
         Spacer(modifier = Modifier.height(12.dp))
         userState?.preferredLanguages?.let {
             TestButton(
-                preferredLanguages = it
+                preferredLanguages = it,
+                onTestClick = { language ->
+                    when (language) {
+                        "한국어" -> onKRQuizClick()
+                        "영어" -> onENQuizClick()
+                    }
+                }
             )
         }
 

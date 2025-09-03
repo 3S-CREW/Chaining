@@ -51,13 +51,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(Screen.Home.route) {
             HomeScreen(
                 onTableClick = { navController.navigate("area") },
-                onMyPageClick = { navController.navigate("myPage") },
                 onMainHomeClick = { navController.navigate("mainHome") },
-                onCreatePostClick = { navController.navigate("createPost") },
                 onJoinPostClick = { navController.navigate("joinPost") },
-                onCommunityClick = { navController.navigate("community") },
-                onKRQuizClick = { navController.navigate("krQuiz") },
-                onENQuizClick = { navController.navigate("enQuiz") },
                 onMyApplyClick = { navController.navigate("myApply") }
             )
         }
@@ -65,10 +60,16 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             AreaScreen()
         }
         composable(Screen.MyPage.route) {
-            MyPageScreen()
+            MyPageScreen(
+                onKRQuizClick = { navController.navigate("krQuiz") },
+                onENQuizClick = { navController.navigate("enQuiz") },
+            )
         }
         composable(Screen.MainHome.route) {
-            MainHomeScreen()
+            MainHomeScreen(
+                onMyPageClick = { navController.navigate("myPage") },
+                onCommunityClick = { navController.navigate("community") }
+            )
         }
         composable(Screen.CreatePost.route) {
             CreatePostScreen(
@@ -81,7 +82,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onBackClick = { navController.popBackStack() },
                 onViewPostClick = { postId ->
                     navController.navigate(Screen.ViewPost.createRoute(postId))
-                }
+                },
+                onCreatePostClick = { navController.navigate("createPost") },
             )
         }
 
