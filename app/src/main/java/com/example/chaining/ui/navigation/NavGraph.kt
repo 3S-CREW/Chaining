@@ -110,7 +110,11 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onViewPostClick = { postId ->
                     navController.navigate(Screen.ViewPost.createRoute(postId))
                 },
-                onCreatePostClick = { navController.navigate("createPost") },
+                onCreatePostClick = {
+                    navController.navigate(
+                        Screen.CreatePost.createRoute(type = "생성")
+                    )
+                },
             )
         }
 
@@ -122,7 +126,15 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onJoinPostClick = { post ->
                     navController.navigate(Screen.JoinPost.createRoute(post))
                 },
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onEditClick = { postId ->
+                    navController.navigate(
+                        Screen.CreatePost.createRoute(
+                            type = "수정",
+                            postId = postId
+                        )
+                    )
+                }
             )
         }
 
