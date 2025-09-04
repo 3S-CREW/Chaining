@@ -16,14 +16,14 @@ class Converters {
         if (value.isEmpty()) emptyList() else Json.decodeFromString(value)
 
     @TypeConverter
-    fun fromApplicationList(list: List<Application>): String = Json.encodeToString(list)
+    fun fromApplicationMap(map: Map<String, Application>): String = Json.encodeToString(map)
 
     @TypeConverter
     fun fromPostMap(map: Map<String, RecruitPost>): String = Json.encodeToString(map)
 
     @TypeConverter
-    fun toApplicationList(value: String): List<Application> =
-        if (value.isEmpty()) emptyList() else Json.decodeFromString(value)
+    fun toApplicationMap(value: String): Map<String, Application> =
+        if (value.isEmpty()) emptyMap() else Json.decodeFromString(value)
 
     @TypeConverter
     fun toPostMap(value: String): Map<String, RecruitPost> =

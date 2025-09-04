@@ -14,7 +14,7 @@ data class User(
     @get:PropertyName("isPublic")
     val isPublic: Boolean = true,                 // 모집/지원 현황 공개 여부
     val recruitPosts: Map<String, RecruitPost> = emptyMap(), // 내가 모집한 글
-    val applications: List<Application> = emptyList(), // 내가 지원한 글
+    val applications: Map<String, Application> = emptyMap(), // 내가 지원한 글
     val createdAt: Long = 0L,                     // 서버 타임스탬프
     @get:PropertyName("isDeleted")
     val isDeleted: Boolean = false,                // Soft Delete 플래그 추가

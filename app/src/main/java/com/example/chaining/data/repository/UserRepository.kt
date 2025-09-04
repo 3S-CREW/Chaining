@@ -191,7 +191,7 @@ class UserRepository @Inject constructor(
             preferredLanguages = updates["preferredLanguages"] as? List<LanguagePref>
                 ?: preferredLanguages,
             recruitPosts = updates["recruitPosts"] as? Map<String, RecruitPost> ?: recruitPosts,
-            applications = updates["applications"] as? List<Application> ?: applications
+            applications = updates["applications"] as? Map<String, Application> ?: applications
         )
     }
 }
