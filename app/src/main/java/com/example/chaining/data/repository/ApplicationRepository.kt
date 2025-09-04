@@ -47,7 +47,7 @@ class ApplicationRepository @Inject constructor(
             "/posts/${application.postId}/applications/$applicationId" to newApplication,
 
             // 3. users/{uid}/myApplications/{applicationId} = true
-            "/users/$uid/myApplications/$applicationId" to newApplication
+            "/users/$uid/applications/$applicationId" to newApplication
         )
 
         // 원자적 업데이트 수행
