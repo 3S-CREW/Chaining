@@ -87,8 +87,19 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onCommunityClick = { navController.navigate("community") }
             )
         }
-        composable(Screen.CreatePost.route) {
+        composable(
+            route = "${Screen.CreatePost.route}?type={type}&postId={postId}",
+            arguments = listOf(
+                navArgument("type") { type = NavType.StringType; defaultValue = "생성" },
+                navArgument("postId") { type = NavType.StringType; defaultValue = "" }
+            )
+        ) { backStackEntry ->
+            val type = backStackEntry.arguments?.getString("type") ?: "생성"
+            val postId = backStackEntry.arguments?.getString("postId")
+
             CreatePostScreen(
+                type = type,
+                postId = postId,
                 onBackClick = { navController.popBackStack() }
             )
         }
