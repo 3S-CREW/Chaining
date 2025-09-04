@@ -88,7 +88,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             )
         }
         composable(
-            route = "${Screen.CreatePost.route}?type={type}&postId={postId}",
+            route = Screen.CreatePost.route,
             arguments = listOf(
                 navArgument("type") { type = NavType.StringType; defaultValue = "생성" },
                 navArgument("postId") { type = NavType.StringType; defaultValue = "" }
