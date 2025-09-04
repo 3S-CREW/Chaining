@@ -107,26 +107,17 @@ class RecruitPostRepository @Inject constructor(
 
     /** 전체 RecruitPost 객체 저장 */
     suspend fun savePost(post: RecruitPost) {
-        postsRef().child(post.postId).setValue(post).await()
-    }
-
-    /** 부분 업데이트 (제목, 내용, 기술 스택 등 일부만 수정) */
-    suspend fun updatePost(
-        postId: String,
-        updates: Map<String, Any?>
-    ) {
         val uid = uidOrThrow()
-        val paths = hashMapOf<String, Any?>()
 
-        updates.forEach { (key, value) ->
-            paths["/posts/$postId/$key"] = value
-        }
+        val updates = hashMapOf<String, Any?>(
+            // 1. posts 노드에 모집글 저장
+            "/posts/${post.postId}" to post,
 
-        updates.forEach { (key, value) ->
-            paths["users/$uid/recruitPosts/$postId/$key"] = value
-        }
+            // 2. user의 recruitPosts 노드에 모집글 저장
+            "/users/$uid/recruitPosts/${post.postId}" to post
+        )
 
-        rootRef.updateChildren(paths).await()
+        rootRef.updateChildren(updates).await()
     }
 
     /** Delete (Soft Delete) */
