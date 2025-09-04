@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.chaining.R
+import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.domain.model.UserSummary
 
@@ -36,14 +37,14 @@ fun CardItem(
     onClick: () -> Unit,
     type: String, // "모집글" or "지원서"
     recruitPost: RecruitPost? = null,
-    application: String? = null,
+    application: Application? = null,
     remainingTime: String? = null,
     onLeftButtonClick: () -> Unit = {},
     onRightButtonClick: () -> Unit = {}
 ) {
     val title = when (type) {
         "모집글" -> recruitPost?.title ?: "제목 없음"
-        "지원서" -> application ?: "지원서 제목 없음"
+        "지원서" -> application?.recruitPostTitle ?: "지원서 제목 없음"
         else -> "제목 없음"
     }
 
