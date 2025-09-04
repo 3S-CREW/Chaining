@@ -22,6 +22,7 @@ import com.example.chaining.ui.screen.HomeScreen
 import com.example.chaining.ui.screen.JoinPostScreen
 import com.example.chaining.ui.screen.KRQuizScreen
 import com.example.chaining.ui.screen.MainHomeScreen
+import com.example.chaining.ui.screen.MyApplicationsScreen
 import com.example.chaining.ui.screen.MyApplyScreen
 import com.example.chaining.ui.screen.MyPageScreen
 import com.example.chaining.ui.screen.MyPostsScreen
@@ -55,7 +56,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 }
             )
         }
-        composable(Screen.AdminLogin.route){
+        composable(Screen.AdminLogin.route) {
             AdminLoginScreen(
                 onBackClick = { navController.popBackStack() }
             )
@@ -76,7 +77,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             MyPageScreen(
                 onKRQuizClick = { navController.navigate("krQuiz") },
                 onENQuizClick = { navController.navigate("enQuiz") },
-                onMyPostsClick = { navController.navigate(route = Screen.MyPosts.route) }
+                onMyPostsClick = { navController.navigate(route = Screen.MyPosts.route) },
+                onMyApplicationsClick = { navController.navigate(route = Screen.MyApplications.route) }
             )
         }
         composable(Screen.MainHome.route) {
@@ -189,6 +191,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
         composable(route = Screen.MyPosts.route) {
             MyPostsScreen()
+        }
+        composable(route = Screen.MyApplications.route) {
+            MyApplicationsScreen()
         }
     }
 }

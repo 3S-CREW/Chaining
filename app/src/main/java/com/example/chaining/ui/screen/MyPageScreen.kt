@@ -62,6 +62,7 @@ fun MyPageScreen(
     onKRQuizClick: () -> Unit,
     onENQuizClick: () -> Unit,
     onMyPostsClick: () -> Unit,
+    onMyApplicationsClick: () -> Unit,
 ) {
     val userState by userViewModel.user.collectAsState()
 
@@ -149,7 +150,7 @@ fun MyPageScreen(
             onClick = { type ->
                 when (type) {
                     "모집 현황" -> onMyPostsClick()
-                    "지원 현황" -> {}
+                    "지원 현황" -> onMyApplicationsClick()
                 }
             }
         )
