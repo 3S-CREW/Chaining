@@ -107,12 +107,33 @@ class RecruitPostRepository @Inject constructor(
 
     /** 전체 RecruitPost 객체 저장 */
     suspend fun savePost(post: RecruitPost) {
-        postsRef().child(post.postId).setValue(post).await()
+        val uid = uidOrThrow()
+
+        val updates = hashMapOf<String, Any?>(
+            // 1. posts 노드에 모집글 저장
+            "/posts/${post.postId}" to post,
+
+            // 2. user의 recruitPosts 노드에 모집글 저장
+            "/users/$uid/recruitPosts/${post.postId}" to post
+        )
+
+        rootRef.updateChildren(updates).await()
     }
 
     /** Delete (Soft Delete) */
-    suspend fun deletePost(id: String) {
-        val updates = mapOf("isDeleted" to true)
-        postsRef().child(id).updateChildren(updates).await()
+    suspend fun deletePost(postId: String) {
+        val uid = uidOrThrow()
+
+        // 멀티패스 업데이트 경로 구성
+        val updates = hashMapOf<String, Any?>(
+            // 1. posts 노드에서 해당 모집글을 찾아 isDeleted를 true로 수정
+            "/posts/$postId/isDeleted" to true,
+
+            // 2. user의 recruitPosts 노드에서 해당 모집글을 찾아 isDeleted를 true로 수정
+            "/users/$uid/recruitPosts/$postId/isDeleted" to true
+        )
+
+        // 원자적 업데이트 수행
+        rootRef.updateChildren(updates).await()
     }
 }

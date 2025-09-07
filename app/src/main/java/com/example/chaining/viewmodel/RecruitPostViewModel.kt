@@ -83,12 +83,14 @@ class RecruitPostViewModel @Inject constructor(
     }
 
     /** Update - 전체 User 객체 저장 */
-    fun savePost() = viewModelScope.launch {
+    fun savePost(post: RecruitPost) = viewModelScope.launch {
         try {
-            _post.value?.let {
-                repo.savePost(it)
-                fetchAllPosts(force = true)
-            }
+            repo.savePost(post)
+            fetchAllPosts(force = true)
+//            _post.value?.let {
+//                repo.savePost(it)
+//                fetchAllPosts(force = true)
+//            }
         } catch (e: Exception) {
             Log.e("PostVM", "Failed to save post", e)
         }
