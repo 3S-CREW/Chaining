@@ -27,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,12 +54,21 @@ import com.example.chaining.viewmodel.UserViewModel
 
 @Composable
 fun CreatePostScreen(
+    postId: String? = null,
     postViewModel: RecruitPostViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {},
-    userViewModel: UserViewModel = hiltViewModel()
+    userViewModel: UserViewModel = hiltViewModel(),
+    type: String // "생성" or "수정"
 
 ) {
     val userState by userViewModel.user.collectAsState()
+    val postState by postViewModel.post.collectAsState()
+
+    LaunchedEffect(key1 = type, key2 = postId) {
+        if (type == "수정" && postId != null) {
+            postViewModel.fetchPost(postId)
+        }
+    }
 
     var title by remember { mutableStateOf(userState?.nickname ?: "") }
     var content by remember { mutableStateOf("") }
@@ -76,6 +86,22 @@ fun CreatePostScreen(
 
     val languages = listOf("한국어", "영어", "중국어", "일본어")
     var selectedLanguages by remember { mutableStateOf(mapOf<String, Int>()) }
+    val buttonText = if (type == "생성") "작성 완료" else "수정 완료"
+
+    LaunchedEffect(postState) {
+        val currentPost = postState
+        if (type == "수정" && currentPost != null) {
+            title = currentPost.title
+            content = currentPost.content
+            preferredDestinations = currentPost.preferredDestinations
+            preferredLocation = currentPost.preferredLocations
+            preferredLanguages = currentPost.preferredLanguages
+            hasCar = currentPost.hasCar
+            tourAt = currentPost.tourAt
+            closeAt = currentPost.closeAt
+            kakaoOpenChatUrl = currentPost.kakaoOpenChatUrl
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -273,7 +299,7 @@ fun CreatePostScreen(
                     } else {
                         // 모든 항목 유효
                         val newPost = RecruitPost(
-                            postId = "",
+                            postId = postId ?: "",
                             title = title,
                             content = content,
                             preferredDestinations = preferredDestinations,
@@ -292,10 +318,15 @@ fun CreatePostScreen(
                                 profileImageUrl = userState?.profileImageUrl ?: ""
                             )
                         )
-                        postViewModel.createPost(newPost)
+                        if (type == "생성") {
+                            postViewModel.createPost(newPost)
+                        } else {
+                            println("키키" + newPost)
+                            postViewModel.savePost(newPost)
+                        }
                     }
                 },
-                text = "작성 완료"
+                text = buttonText
             )
         }
     }

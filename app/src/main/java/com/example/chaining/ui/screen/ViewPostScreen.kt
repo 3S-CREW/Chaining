@@ -40,14 +40,17 @@ import com.example.chaining.ui.component.SaveButton
 import com.example.chaining.ui.component.formatDate
 import com.example.chaining.ui.component.ownerProfile
 import com.example.chaining.viewmodel.RecruitPostViewModel
+import com.example.chaining.viewmodel.UserViewModel
 
 @Composable
 fun ViewPostScreen(
+    userViewModel: UserViewModel = hiltViewModel(),
     postViewModel: RecruitPostViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {},
-    onJoinPostClick: (post: RecruitPost) -> Unit = {}
+    onJoinPostClick: (post: RecruitPost) -> Unit = {},
+    onEditClick: (postId: String) -> Unit = {}
 ) {
-
+    val userState by userViewModel.user.collectAsState()
     val post by postViewModel.post.collectAsState()
     val currentPost = post
 
@@ -84,7 +87,7 @@ fun ViewPostScreen(
                     )
                 }
 
-                ownerProfile(owner = currentPost.owner, where = "모집글 상세보기")
+                ownerProfile(owner = currentPost.owner, where = "모집글 상세보기", type = "상세 보기")
 
                 // 제목을 완벽한 중앙에 맞추기 위한 빈 공간
                 Spacer(modifier = Modifier.width(48.dp))
@@ -195,8 +198,14 @@ fun ViewPostScreen(
                     .padding(bottom = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                SaveButton(onSave = { onJoinPostClick(currentPost) }, text = "신청")
-//                SaveButton(onSave = { /*TODO*/ }, text = "숨김")
+                if (userState?.id == currentPost.owner.id) {
+                    SaveButton(onSave = { onEditClick(currentPost.postId) }, text = "수정")
+                    //                SaveButton(onSave = { /*TODO*/ }, text = "삭제")
+                } else {
+                    SaveButton(onSave = { onJoinPostClick(currentPost) }, text = "신청")
+                    //                SaveButton(onSave = { /*TODO*/ }, text = "숨김")
+
+                }
             }
 
         }

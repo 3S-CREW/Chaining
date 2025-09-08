@@ -11,7 +11,12 @@ sealed class Screen(val route: String) {
     object Area : Screen("area")
     object MyPage : Screen("myPage")
     object MainHome : Screen("mainHome")
-    object CreatePost : Screen("createPost")
+    object CreatePost : Screen("createPost?type={type}&postId={postId}") {
+        fun createRoute(type: String, postId: String? = ""): String {
+            return "createPost?type=$type&postId=${postId ?: ""}"
+        }
+    }
+
     object JoinPost : Screen("joinPost?post={post}") {
         fun createRoute(post: RecruitPost): String {
             val json = Gson().toJson(post)

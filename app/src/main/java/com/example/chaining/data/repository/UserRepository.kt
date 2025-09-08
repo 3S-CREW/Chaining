@@ -7,6 +7,7 @@ import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.LanguagePref
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.domain.model.User
+import com.example.chaining.domain.model.UserSummary
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -117,6 +118,40 @@ class UserRepository @Inject constructor(
         userDao.updateUser(updatedEntity)
     }
 
+    /** Update (팔로우 추가 / 삭제) */
+    suspend fun toggleFollow(
+        myInfo: UserSummary,
+        otherInfo: UserSummary
+    ) {
+        val followedRef = usersRef().child(myInfo.id).child("following").child(otherInfo.id)
+        val snapshot = followedRef.get().await()
+        val isCurrentlyFollowed = snapshot.exists()
+
+        val updates = hashMapOf<String, Any?>()
+
+        if (isCurrentlyFollowed) {
+            // 팔로우 해제
+            updates["/users/${myInfo.id}/following/${otherInfo.id}"] = null
+            updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = null
+        } else {
+            // 팔로우 추가
+            updates["/users/${myInfo.id}/following/${otherInfo.id}"] = otherInfo
+            updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = myInfo
+        }
+
+        // 원자적 업데이트 수행
+        rootRef.updateChildren(updates).await()
+
+        // Room DB에도 반영 (copyWith 사용)
+        val current = userDao.getUser(myInfo.id).firstOrNull() ?: return
+        val newFollowing = current.following.toMutableMap()
+        if (isCurrentlyFollowed) newFollowing.remove(otherInfo.id) else newFollowing[otherInfo.id] =
+            otherInfo
+
+        val updatedEntity = current.copyWith(mapOf("following" to newFollowing))
+        userDao.updateUser(updatedEntity)
+    }
+
     /** 전체 User 객체 저장 */
     suspend fun updateMyUser(user: User) {
         val uid = uidOrThrow()
@@ -153,7 +188,9 @@ class UserRepository @Inject constructor(
             applications = applications,
             createdAt = createdAt,
             isDeleted = isDeleted,
-            likedPosts = likedPosts
+            likedPosts = likedPosts,
+            following = following,
+            follower = follower
         )
     }
 
@@ -172,7 +209,9 @@ class UserRepository @Inject constructor(
             applications = applications,
             createdAt = createdAt,
             isDeleted = isDeleted,
-            likedPosts = likedPosts
+            likedPosts = likedPosts,
+            following = following,
+            follower = follower
         )
     }
 
@@ -191,7 +230,9 @@ class UserRepository @Inject constructor(
             preferredLanguages = updates["preferredLanguages"] as? List<LanguagePref>
                 ?: preferredLanguages,
             recruitPosts = updates["recruitPosts"] as? Map<String, RecruitPost> ?: recruitPosts,
-            applications = updates["applications"] as? Map<String, Application> ?: applications
+            applications = updates["applications"] as? Map<String, Application> ?: applications,
+            following = updates["following"] as? Map<String, UserSummary> ?: following,
+            follower = updates["follower"] as? Map<String, UserSummary> ?: follower
         )
     }
 }

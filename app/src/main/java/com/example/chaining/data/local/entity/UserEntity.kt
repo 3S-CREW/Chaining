@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.LanguagePref
 import com.example.chaining.domain.model.RecruitPost
+import com.example.chaining.domain.model.UserSummary
 
 @Entity(tableName = "user_table")
 data class UserEntity(
@@ -20,5 +21,7 @@ data class UserEntity(
     val applications: Map<String, Application> = emptyMap(), // 내가 지원한 글 (Application ID만 저장)
     val createdAt: Long = 0L,                     // 서버 타임스탬프
     val isDeleted: Boolean = false,                // Soft Delete 플래그 추가
-    val likedPosts: Map<String, Boolean> = emptyMap()     // 관심글 postId
+    val likedPosts: Map<String, Boolean> = emptyMap(),     // 관심글 postId
+    val following: Map<String, UserSummary> = emptyMap(),
+    val follower: Map<String, UserSummary> = emptyMap()
 )
