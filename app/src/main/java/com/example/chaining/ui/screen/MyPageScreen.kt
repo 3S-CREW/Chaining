@@ -184,6 +184,14 @@ fun ProfileSection(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         uri?.let {
+            val contentResolver = context.contentResolver
+            val fileSize = contentResolver.openInputStream(uri)?.available() ?: 0
+
+            if (fileSize > 2 * 1024 * 1024) {
+                Toast.makeText(context, "사진 용량은 2MB 이하만 가능합니다.", Toast.LENGTH_SHORT).show()
+                return@let
+            }
+
             val storageRef = Firebase.storage.reference
             val imageRef = storageRef.child("profile_images/${UUID.randomUUID()}.jpg")
 
