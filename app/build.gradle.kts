@@ -120,6 +120,9 @@ dependencies {
     // JSON 파싱을 위한 의존성 주입
     implementation("com.google.code.gson:gson:2.10.1")
 
+    // Http 통신 로그를 보기 위한 라이브러리
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
