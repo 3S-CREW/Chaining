@@ -98,7 +98,7 @@ fun MyPageScreen(
         ProfileSection(
             nickname = nickname,
             onNicknameChanged = { nickname = it },
-            profileImageUrl = userState?.profileImageUrl,
+            profileImageUrl = profileImageUrl,
             onImageSelected = { newImageUrl ->
                 profileImageUrl = newImageUrl
             }
