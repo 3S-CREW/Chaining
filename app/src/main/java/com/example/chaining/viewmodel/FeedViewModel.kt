@@ -5,15 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chaining.data.model.TourItem
 import com.example.chaining.data.repository.FeedRepository
-import com.example.chaining.network.FeedApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
+@HiltViewModel
 class FeedViewModel @Inject constructor(
     private val repository: FeedRepository // TourRepository를 주입받음
 ) : ViewModel() {
@@ -31,7 +29,7 @@ class FeedViewModel @Inject constructor(
             try {
                 val items = repository.getTourItems(areaCode)
                 _tourItems.value = items
-                // ✅ 데이터를 성공적으로 불러온 후, 바로 랜덤 아이템 선택 함수 호출
+                // 데이터를 성공적으로 불러온 후, 바로 랜덤 아이템 선택 함수 호출
                 randomizeFeedItems()
             } catch (e: Exception) {
                 Log.e("FeedViewModel", "Failed to fetch tour items", e)

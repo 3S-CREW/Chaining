@@ -3,9 +3,8 @@ package com.example.chaining.data.repository
 import com.example.chaining.BuildConfig
 import com.example.chaining.data.model.TourItem
 import com.example.chaining.network.FeedApiService
-import jakarta.inject.Inject
 
-class FeedRepository @Inject constructor(
+class FeedRepository (
     private val apiService: FeedApiService
 ) {
     suspend fun getTourItems(areaCode: Int?): List<TourItem> {
