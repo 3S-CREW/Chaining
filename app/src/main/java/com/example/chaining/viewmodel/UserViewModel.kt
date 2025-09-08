@@ -1,5 +1,6 @@
 package com.example.chaining.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chaining.data.repository.UserRepository
@@ -33,6 +34,17 @@ class UserViewModel @Inject constructor(
             }
         }
 
+    }
+
+    fun updateProfileImage(newUrl: String) {
+        viewModelScope.launch {
+            try {
+                repo.updateProfileImage(newUrl)
+                _user.value = _user.value?.copy(profileImageUrl = newUrl)
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "프로필 이미지 업데이트 실패", e)
+            }
+        }
     }
 
     /** Create - 최초 회원가입 시 User 등록 */

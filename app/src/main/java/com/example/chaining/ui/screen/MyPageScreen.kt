@@ -1,5 +1,11 @@
 package com.example.chaining.ui.screen
 
+import android.content.Context
+import android.net.Uri
+import android.provider.OpenableColumns
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -46,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -55,6 +62,9 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.chaining.R
 import com.example.chaining.ui.component.TestButton
 import com.example.chaining.viewmodel.UserViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 @Composable
 fun MyPageScreen(
@@ -90,7 +100,8 @@ fun MyPageScreen(
         ProfileSection(
             nickname = nickname,
             onNicknameChanged = { nickname = it },
-            profileImageUrl = userState?.profileImageUrl
+            profileImageUrl = userState?.profileImageUrl,
+            userViewModel = userViewModel
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
@@ -161,17 +172,45 @@ fun MyPageScreen(
 fun ProfileSection(
     nickname: String,
     onNicknameChanged: (String) -> Unit,
-    profileImageUrl: String?
+    profileImageUrl: String?,
+    userViewModel: UserViewModel
 ) {
+    val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
     var tempNickname by remember { mutableStateOf(nickname) }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            val size = getFileSize(context, uri)
+            if (size > 2 * 1024 * 1024) {
+                Toast.makeText(context, "2MB 이하 이미지를 선택해주세요.", Toast.LENGTH_SHORT).show()
+                return@let
+            }
+
+            val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return@let
+            val storageRef = Firebase.storage.reference.child("profileImages/$uid.jpg")
+
+            storageRef.putFile(uri)
+                .addOnSuccessListener {
+                    storageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
+                        userViewModel.updateProfileImage(downloadUrl.toString())
+                        Toast.makeText(context, "프로필 이미지가 변경되었습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, "이미지 업로드 실패", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Box {
+            Box(modifier = Modifier.clickable { galleryLauncher.launch("image/*") }) {
                 Image(
                     painter = rememberAsyncImagePainter(
                         model = profileImageUrl.takeIf { !it.isNullOrEmpty() }
@@ -225,8 +264,6 @@ fun ProfileSection(
             )
         }
     }
-
-
 
     if (showDialog) {
         androidx.compose.material3.AlertDialog(
@@ -442,4 +479,13 @@ fun ActionButtons(
             )
         }
     }
+}
+
+private fun getFileSize(context: Context, uri: Uri): Long {
+    val cursor = context.contentResolver.query(uri, null, null, null, null)
+    val sizeIndex = cursor?.getColumnIndex(OpenableColumns.SIZE) ?: -1
+    cursor?.moveToFirst()
+    val size = if (sizeIndex >= 0) cursor?.getLong(sizeIndex) else 0L
+    cursor?.close()
+    return size ?: 0L
 }
