@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,17 +26,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.chaining.R
 import com.example.chaining.domain.model.UserSummary
+import com.example.chaining.viewmodel.UserViewModel
 
 @Composable
 fun ownerProfile(
     owner: UserSummary,
     where: String, // 카드뷰, 모집글 상세보기, 지원서
-    onOwnerProfileClick: () -> Unit,
-    type: String // "상세 보기"
+    userViewModel: UserViewModel = hiltViewModel(),
+    type: String? = "" // "상세 보기"
 ) {
+    val userState by userViewModel.user.collectAsState()
     val nicknameInfo = when (where) {
         "카드뷰" -> 18.sp to 0xFF4A526A
         "모집글 상세보기" -> 14.sp to 0xFFFFFFFF
@@ -56,11 +61,8 @@ fun ownerProfile(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .clickable {
-                onOwnerProfileClick()
-            }
-    ) {
+
+        ) {
         AsyncImage(
             model = if (owner.profileImageUrl.isNotBlank()) owner.profileImageUrl else R.drawable.test_profile,
             contentDescription = "작성자 프로필 사진",
@@ -93,7 +95,15 @@ fun ownerProfile(
                     .background(Color(0xFF3ECDFF))
                     .border(2.dp, Color.White, CircleShape)
                     .padding(3.dp)
-                    .clickable { onOwnerProfileClick() },
+                    .clickable {
+                        val currentUserSummary = UserSummary(
+                            id = userState?.id ?: "",
+                            nickname = userState?.nickname ?: "",
+                            profileImageUrl = userState?.profileImageUrl ?: "",
+                            country = userState?.country ?: ""
+                        )
+                        userViewModel.toggleFollow(currentUserSummary, owner)
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

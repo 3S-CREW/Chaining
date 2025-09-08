@@ -87,7 +87,7 @@ fun ViewPostScreen(
                     )
                 }
 
-                ownerProfile(owner = currentPost.owner, where = "모집글 상세보기")
+                ownerProfile(owner = currentPost.owner, where = "모집글 상세보기", type = "상세 보기")
 
                 // 제목을 완벽한 중앙에 맞추기 위한 빈 공간
                 Spacer(modifier = Modifier.width(48.dp))
