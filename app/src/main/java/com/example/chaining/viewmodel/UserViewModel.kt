@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chaining.data.repository.UserRepository
 import com.example.chaining.domain.model.User
+import com.example.chaining.domain.model.UserSummary
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,6 +49,10 @@ class UserViewModel @Inject constructor(
         _user.value?.id?.let { uid ->
             repo.toggleLikedPost(uid, postId)
         }
+    }
+
+    fun toggleFollow(user: UserSummary, other: UserSummary) = viewModelScope.launch {
+        repo.toggleFollow(user, other)
     }
 
     /** Delete - Soft Delete */

@@ -120,12 +120,10 @@ class UserRepository @Inject constructor(
 
     /** Update (팔로우 추가 / 삭제) */
     suspend fun toggleFollow(
-        uid: String,
-        otherUid: String,
         myInfo: UserSummary,
         otherInfo: UserSummary
     ) {
-        val followedRef = usersRef().child(uid).child("following").child(otherUid)
+        val followedRef = usersRef().child(myInfo.id).child("following").child(otherInfo.id)
         val snapshot = followedRef.get().await()
         val isCurrentlyFollowed = snapshot.exists()
 
@@ -133,12 +131,12 @@ class UserRepository @Inject constructor(
 
         if (isCurrentlyFollowed) {
             // 팔로우 해제
-            updates["/users/$uid/following/$otherUid"] = null
-            updates["/users/$otherUid/follower/$uid"] = null
+            updates["/users/${myInfo.id}/following/${otherInfo.id}"] = null
+            updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = null
         } else {
             // 팔로우 추가
-            updates["/users/$uid/following/$otherUid"] = otherInfo
-            updates["/users/$otherUid/follower/$uid"] = myInfo
+            updates["/users/${myInfo.id}/following/${otherInfo.id}"] = otherInfo
+            updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = myInfo
         }
 
         // 원자적 업데이트 수행
