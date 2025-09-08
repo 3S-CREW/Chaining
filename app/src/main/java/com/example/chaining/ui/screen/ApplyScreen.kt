@@ -39,8 +39,9 @@ import com.example.chaining.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyApplyScreen(
+fun ApplyScreen(
     onBackClick: () -> Unit = {},
+    type: String // My, Other
 ) {
     Scaffold(
         // 상단바 배경색을 직접 파란색으로 지정
@@ -180,19 +181,58 @@ fun MyApplyScreen(
 
                     Spacer(modifier = Modifier.height(100.dp))
 
-                    // 닫기 버튼
-                    Button(
-                        onClick = { /* TODO: 창 닫기 */ },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFF0F2F5), // 연한 회색 배경
-                            contentColor = Color.DarkGray
-                        )
-                    ) {
-                        Text("닫기", fontSize = 16.sp)
+                    if (type == "Other") {
+                        Row {
+                            // 수락 버튼
+                            Button(
+                                onClick = { /* TODO: 수락 */ },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp)
+                                    .width(200.dp),
+                                shape = RoundedCornerShape(20.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF2C80FF),
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text("수락", fontSize = 16.sp)
+                            }
+
+                            // 거절 버튼
+                            Button(
+                                onClick = { /* TODO: 거절 */ },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp)
+                                    .width(120.dp),
+                                shape = RoundedCornerShape(20.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFFF0F2F5),
+                                    contentColor = Color.DarkGray
+                                )
+                            ) {
+                                Text("거절", fontSize = 16.sp)
+                            }
+                        }
+
+
+                    } else {
+                        // 닫기 버튼
+                        Button(
+                            onClick = { /* TODO: 창 닫기 */ },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFF0F2F5), // 연한 회색 배경
+                                contentColor = Color.DarkGray
+                            )
+                        ) {
+                            Text("닫기", fontSize = 16.sp)
+                        }
+
                     }
 
                     Spacer(modifier = Modifier.height(24.dp)) // 하단 네비게이션 바와의 간격

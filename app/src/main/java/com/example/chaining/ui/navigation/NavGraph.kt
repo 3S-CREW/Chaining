@@ -13,6 +13,7 @@ import androidx.navigation.navigation
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.ui.login.LoginScreen
 import com.example.chaining.ui.screen.AdminLoginScreen
+import com.example.chaining.ui.screen.ApplyScreen
 import com.example.chaining.ui.screen.AreaScreen
 import com.example.chaining.ui.screen.CommunityScreen
 import com.example.chaining.ui.screen.CreatePostScreen
@@ -23,7 +24,6 @@ import com.example.chaining.ui.screen.JoinPostScreen
 import com.example.chaining.ui.screen.KRQuizScreen
 import com.example.chaining.ui.screen.MainHomeScreen
 import com.example.chaining.ui.screen.MyApplicationsScreen
-import com.example.chaining.ui.screen.MyApplyScreen
 import com.example.chaining.ui.screen.MyPageScreen
 import com.example.chaining.ui.screen.MyPostsScreen
 import com.example.chaining.ui.screen.QuizResultScreen
@@ -201,8 +201,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
 
         composable("myApply") {
-            MyApplyScreen(
-                onBackClick = { navController.popBackStack() }
+            ApplyScreen(
+                onBackClick = { navController.popBackStack() },
+                type = "My"
             )
         }
 
