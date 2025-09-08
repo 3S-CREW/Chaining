@@ -48,7 +48,6 @@ fun CommunityScreen(
     onViewPostClick: (postId: String) -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel(),
     onCreatePostClick: () -> Unit,
-//    onLikeToggleClick: (uid: String, postId: String) -> Unit = { _, _ -> },
 ) {
     val userState by userViewModel.user.collectAsState()
     val posts by postViewModel.posts.collectAsState()

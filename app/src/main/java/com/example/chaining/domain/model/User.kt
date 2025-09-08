@@ -18,7 +18,9 @@ data class User(
     val createdAt: Long = 0L,                     // 서버 타임스탬프
     @get:PropertyName("isDeleted")
     val isDeleted: Boolean = false,                // Soft Delete 플래그 추가
-    val likedPosts: Map<String, Boolean> = emptyMap()     // 관심글 postId
+    val likedPosts: Map<String, Boolean> = emptyMap(),     // 관심글 postId
+    val following: Map<String, UserSummary> = emptyMap(), // 팔로잉
+    val follower: Map<String, UserSummary> = emptyMap()  // 팔로워
 )
 
 @kotlinx.serialization.Serializable

@@ -4,6 +4,7 @@ import androidx.room.TypeConverter
 import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.LanguagePref
 import com.example.chaining.domain.model.RecruitPost
+import com.example.chaining.domain.model.UserSummary
 import kotlinx.serialization.json.Json
 
 class Converters {
@@ -34,5 +35,12 @@ class Converters {
 
     @TypeConverter
     fun toLikedPosts(value: String): Map<String, Boolean> =
+        if (value.isEmpty()) emptyMap() else Json.decodeFromString(value)
+
+    @TypeConverter
+    fun fromFollowMap(map: Map<String, UserSummary>): String = Json.encodeToString(map)
+
+    @TypeConverter
+    fun toFollowMap(value: String): Map<String, UserSummary> =
         if (value.isEmpty()) emptyMap() else Json.decodeFromString(value)
 }
