@@ -30,7 +30,7 @@ fun FeedItem(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            // 1. 지역명과 명소명
+            // 지역명과 명소명
             Text(
                 text = "${region}에 위치한 $place",
                 color = Color.White,
@@ -40,7 +40,7 @@ fun FeedItem(
             Spacer(modifier = Modifier.height(8.dp))
 
 
-            // 3. 사진
+            // 사진
             AsyncImage(
                 model = imageUrl,
                 contentDescription = "$region $place 사진",
