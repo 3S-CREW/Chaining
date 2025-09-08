@@ -1,5 +1,8 @@
 package com.example.chaining.ui.screen
 
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -46,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -55,6 +59,9 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.chaining.R
 import com.example.chaining.ui.component.TestButton
 import com.example.chaining.viewmodel.UserViewModel
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import java.util.UUID
 
 @Composable
 fun MyPageScreen(
@@ -74,6 +81,7 @@ fun MyPageScreen(
             userState?.preferredDestinations ?: ""
         )
     }
+    var profileImageUrl by remember { mutableStateOf(userState?.profileImageUrl ?: "") }
 
     LaunchedEffect(userState) {
         nickname = userState?.nickname ?: ""
@@ -90,7 +98,10 @@ fun MyPageScreen(
         ProfileSection(
             nickname = nickname,
             onNicknameChanged = { nickname = it },
-            profileImageUrl = userState?.profileImageUrl
+            profileImageUrl = userState?.profileImageUrl,
+            onImageSelected = { newImageUrl ->
+                profileImageUrl = newImageUrl
+            }
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
@@ -142,7 +153,8 @@ fun MyPageScreen(
                         nickname = nickname,
                         country = country,
                         residence = residence,
-                        preferredDestinations = preferredDestinations
+                        preferredDestinations = preferredDestinations,
+                        profileImageUrl = profileImageUrl
                     )
                     userViewModel.updateMyUser(updatedUser)
                 }
@@ -161,17 +173,38 @@ fun MyPageScreen(
 fun ProfileSection(
     nickname: String,
     onNicknameChanged: (String) -> Unit,
-    profileImageUrl: String?
+    profileImageUrl: String?,
+    onImageSelected: (String) -> Unit
 ) {
+    val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
     var tempNickname by remember { mutableStateOf(nickname) }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            val storageRef = Firebase.storage.reference
+            val imageRef = storageRef.child("profile_images/${UUID.randomUUID()}.jpg")
+
+            imageRef.putFile(uri)
+                .addOnSuccessListener {
+                    imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
+                        onImageSelected(downloadUrl.toString())
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, "이미지 업로드 실패", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Box {
+            Box(modifier = Modifier.clickable { galleryLauncher.launch("image/*") }) {
                 Image(
                     painter = rememberAsyncImagePainter(
                         model = profileImageUrl.takeIf { !it.isNullOrEmpty() }
@@ -225,8 +258,6 @@ fun ProfileSection(
             )
         }
     }
-
-
 
     if (showDialog) {
         androidx.compose.material3.AlertDialog(

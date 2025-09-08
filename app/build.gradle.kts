@@ -91,6 +91,7 @@ dependencies {
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-storage")
 
     // Hilt 의존성 주입 (DI) 라이브러리 사용
     implementation("com.google.dagger:hilt-android:2.55")
