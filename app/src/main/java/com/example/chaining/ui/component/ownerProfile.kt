@@ -1,5 +1,6 @@
 package com.example.chaining.ui.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,7 +24,8 @@ import com.example.chaining.domain.model.UserSummary
 @Composable
 fun ownerProfile(
     owner: UserSummary,
-    where: String // 카드뷰, 모집글 상세보기, 지원서
+    where: String, // 카드뷰, 모집글 상세보기, 지원서
+    onOwnerProfileClick: () -> Unit
 ) {
     val nicknameInfo = when (where) {
         "카드뷰" -> 18.sp to 0xFF4A526A
@@ -45,7 +47,11 @@ fun ownerProfile(
     }
 
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .clickable {
+                onOwnerProfileClick()
+            }
     ) {
         AsyncImage(
             model = if (owner.profileImageUrl.isNotBlank()) owner.profileImageUrl else R.drawable.test_profile,
