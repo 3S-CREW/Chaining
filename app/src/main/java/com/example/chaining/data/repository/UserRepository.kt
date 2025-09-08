@@ -143,9 +143,9 @@ class UserRepository @Inject constructor(
         rootRef.updateChildren(updates).await()
 
         // Room DB에도 반영 (copyWith 사용)
-        val current = userDao.getUser(uid).firstOrNull() ?: return
+        val current = userDao.getUser(myInfo.id).firstOrNull() ?: return
         val newFollowing = current.following.toMutableMap()
-        if (isCurrentlyFollowed) newFollowing.remove(otherUid) else newFollowing[otherUid] =
+        if (isCurrentlyFollowed) newFollowing.remove(otherInfo.id) else newFollowing[otherInfo.id] =
             otherInfo
 
         val updatedEntity = current.copyWith(mapOf("following" to newFollowing))
