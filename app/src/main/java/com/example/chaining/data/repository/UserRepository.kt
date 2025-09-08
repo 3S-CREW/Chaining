@@ -121,7 +121,6 @@ class UserRepository @Inject constructor(
     /** 프로필 사진 변경 */
     suspend fun updateProfileImage(newUrl: String) {
         val uid = uidOrThrow()
-
         usersRef().child(uid).child("profileImageUrl").setValue(newUrl).await()
 
         val current = userDao.getUser(uid).firstOrNull() ?: return

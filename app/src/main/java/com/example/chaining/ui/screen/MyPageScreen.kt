@@ -1,5 +1,8 @@
 package com.example.chaining.ui.screen
 
+import android.content.Context
+import android.net.Uri
+import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -59,9 +62,9 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.chaining.R
 import com.example.chaining.ui.component.TestButton
 import com.example.chaining.viewmodel.UserViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import java.util.UUID
 
 @Composable
 fun MyPageScreen(
@@ -81,7 +84,6 @@ fun MyPageScreen(
             userState?.preferredDestinations ?: ""
         )
     }
-    var profileImageUrl by remember { mutableStateOf(userState?.profileImageUrl ?: "") }
 
     LaunchedEffect(userState) {
         nickname = userState?.nickname ?: ""
@@ -98,10 +100,8 @@ fun MyPageScreen(
         ProfileSection(
             nickname = nickname,
             onNicknameChanged = { nickname = it },
-            profileImageUrl = profileImageUrl,
-            onImageSelected = { newImageUrl ->
-                profileImageUrl = newImageUrl
-            }
+            profileImageUrl = userState?.profileImageUrl,
+            userViewModel = userViewModel
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
@@ -153,8 +153,7 @@ fun MyPageScreen(
                         nickname = nickname,
                         country = country,
                         residence = residence,
-                        preferredDestinations = preferredDestinations,
-                        profileImageUrl = profileImageUrl
+                        preferredDestinations = preferredDestinations
                     )
                     userViewModel.updateMyUser(updatedUser)
                 }
@@ -174,7 +173,7 @@ fun ProfileSection(
     nickname: String,
     onNicknameChanged: (String) -> Unit,
     profileImageUrl: String?,
-    onImageSelected: (String) -> Unit
+    userViewModel: UserViewModel
 ) {
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
@@ -184,21 +183,20 @@ fun ProfileSection(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         uri?.let {
-            val contentResolver = context.contentResolver
-            val fileSize = contentResolver.openInputStream(uri)?.available() ?: 0
-
-            if (fileSize > 2 * 1024 * 1024) {
-                Toast.makeText(context, "사진 용량은 2MB 이하만 가능합니다.", Toast.LENGTH_SHORT).show()
+            val size = getFileSize(context, uri)
+            if (size > 2 * 1024 * 1024) {
+                Toast.makeText(context, "2MB 이하 이미지를 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return@let
             }
 
-            val storageRef = Firebase.storage.reference
-            val imageRef = storageRef.child("profile_images/${UUID.randomUUID()}.jpg")
+            val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return@let
+            val storageRef = Firebase.storage.reference.child("profileImages/$uid.jpg")
 
-            imageRef.putFile(uri)
+            storageRef.putFile(uri)
                 .addOnSuccessListener {
-                    imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
-                        onImageSelected(downloadUrl.toString())
+                    storageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
+                        userViewModel.updateProfileImage(downloadUrl.toString())
+                        Toast.makeText(context, "프로필 이미지가 변경되었습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
                 .addOnFailureListener {
@@ -481,4 +479,13 @@ fun ActionButtons(
             )
         }
     }
+}
+
+private fun getFileSize(context: Context, uri: Uri): Long {
+    val cursor = context.contentResolver.query(uri, null, null, null, null)
+    val sizeIndex = cursor?.getColumnIndex(OpenableColumns.SIZE) ?: -1
+    cursor?.moveToFirst()
+    val size = if (sizeIndex >= 0) cursor?.getLong(sizeIndex) else 0L
+    cursor?.close()
+    return size ?: 0L
 }

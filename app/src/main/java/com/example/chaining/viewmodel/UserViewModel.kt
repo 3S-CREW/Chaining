@@ -40,7 +40,6 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repo.updateProfileImage(newUrl)
-
                 _user.value = _user.value?.copy(profileImageUrl = newUrl)
             } catch (e: Exception) {
                 Log.e("UserViewModel", "프로필 이미지 업데이트 실패", e)
