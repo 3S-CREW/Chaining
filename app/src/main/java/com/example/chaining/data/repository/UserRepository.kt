@@ -118,6 +118,17 @@ class UserRepository @Inject constructor(
         userDao.updateUser(updatedEntity)
     }
 
+    /** 프로필 사진 변경 */
+    suspend fun updateProfileImage(newUrl: String) {
+        val uid = uidOrThrow()
+
+        usersRef().child(uid).child("profileImageUrl").setValue(newUrl).await()
+
+        val current = userDao.getUser(uid).firstOrNull() ?: return
+        val updatedEntity = current.copy(profileImageUrl = newUrl)
+        userDao.updateUser(updatedEntity)
+    }
+
     /** Update (팔로우 추가 / 삭제) */
     suspend fun toggleFollow(
         myInfo: UserSummary,
