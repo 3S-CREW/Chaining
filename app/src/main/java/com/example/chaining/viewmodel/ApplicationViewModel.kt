@@ -52,6 +52,11 @@ class ApplicationViewModel @Inject constructor(
         _application.value = repo.getApplication(applicationId)
     }
 
+    /** Update - 전체 User 객체 저장 */
+    fun updateStatus(application: Application, value: String) = viewModelScope.launch {
+        repo.updateStatus(application, value)
+    }
+
     fun fetchAllApplications() = viewModelScope.launch {
         _applications.value = repo.getMyApplications()
     }
