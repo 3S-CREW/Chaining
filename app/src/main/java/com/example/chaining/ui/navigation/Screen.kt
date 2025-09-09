@@ -36,6 +36,11 @@ sealed class Screen(val route: String) {
     object KRQuiz : Screen("krQuiz")
     object ENQuiz : Screen("enQuiz")
     object QuizResult : Screen("quizResult")
-    object MyApply : Screen("myApply")
+    object Apply : Screen("apply?type={type}&applicationId={applicationId}") {
+        fun createRoute(type: String, applicationId: String? = ""): String {
+            return "createPost?type=$type&applicationId=${applicationId ?: ""}"
+        }
+    }
+
     object Feed : Screen("feed")
 }

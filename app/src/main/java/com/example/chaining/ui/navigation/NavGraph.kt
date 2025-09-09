@@ -200,10 +200,18 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             }
         }
 
-        composable("myApply") {
+        composable(
+            route = Screen.Apply.route,
+            arguments = listOf(
+                navArgument("type") { type = NavType.StringType; defaultValue = "Other" },
+                navArgument("applicationId") { type = NavType.StringType; defaultValue = "" },
+            )
+        ) { backStackEntry ->
+            val type = backStackEntry.arguments?.getString("type") ?: "Other"
+            val applicationId = backStackEntry.arguments?.getString("applicationId") ?: ""
             ApplyScreen(
                 onBackClick = { navController.popBackStack() },
-                type = "My"
+                type = type,
             )
         }
 
