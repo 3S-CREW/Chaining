@@ -79,7 +79,6 @@ class ApplicationRepository @Inject constructor(
         awaitClose { ref.removeEventListener(listener) }
     }
 
-
     /** Read (지원서 보기) */
     suspend fun getApplication(id: String): Application? {
         val snap = applicationsRef().child(id).get().await()
@@ -116,6 +115,24 @@ class ApplicationRepository @Inject constructor(
 
         ref.addValueEventListener(listener)
         awaitClose { ref.removeEventListener(listener) }
+    }
+
+    /** Update (지원서 승인) */
+    suspend fun updateStatus(application: Application, value: String) {
+        // 멀티패스 업데이트 경로 구성
+        val updates = hashMapOf<String, Any?>(
+            // 1. applications 노드에 지원서 저장
+            "/applications/${application.applicationId}/status" to value,
+
+            // 2. posts/{postId}/applications/{applicationId} = true
+            "/posts/${application.postId}/applications/${application.applicationId}/status" to value,
+
+            // 3. users/{uid}/myApplications/{applicationId} = true
+            "/users/${application.applicant.id}/applications/${application.applicationId}/status" to value
+        )
+
+        // 원자적 업데이트 수행
+        rootRef.updateChildren(updates).await()
     }
 
     /** Delete (Soft Delete) */
