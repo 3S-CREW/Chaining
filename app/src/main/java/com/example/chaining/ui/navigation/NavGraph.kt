@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.ui.login.LoginScreen
 import com.example.chaining.ui.screen.AdminLoginScreen
@@ -203,15 +204,17 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(
             route = Screen.Apply.route,
             arguments = listOf(
-                navArgument("type") { type = NavType.StringType; defaultValue = "Other" },
-                navArgument("applicationId") { type = NavType.StringType; defaultValue = "" },
+                navArgument("type") { type = NavType.StringType; defaultValue = "Other" }
             )
         ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type") ?: "Other"
-            val applicationId = backStackEntry.arguments?.getString("applicationId") ?: ""
+            val application = navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.get<Application>("application") ?: return@composable
             ApplyScreen(
                 onBackClick = { navController.popBackStack() },
                 type = type,
+                application = application
             )
         }
 
