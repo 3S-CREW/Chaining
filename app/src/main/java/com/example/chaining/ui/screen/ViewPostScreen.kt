@@ -48,7 +48,8 @@ fun ViewPostScreen(
     postViewModel: RecruitPostViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {},
     onJoinPostClick: (post: RecruitPost) -> Unit = {},
-    onEditClick: (postId: String) -> Unit = {}
+    onEditClick: (postId: String) -> Unit = {},
+    onApplicationListClick: (postId: String) -> Unit = {},
 ) {
     val userState by userViewModel.user.collectAsState()
     val post by postViewModel.post.collectAsState()
@@ -199,7 +200,22 @@ fun ViewPostScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (userState?.id == currentPost.owner.id) {
-                    SaveButton(onSave = { onEditClick(currentPost.postId) }, text = "수정")
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        SaveButton(
+                            onSave = { onEditClick(currentPost.postId) },
+                            text = "수정",
+                            modifier = Modifier.weight(1f)
+                        )
+                        SaveButton(
+                            onSave = { onApplicationListClick(currentPost.postId) },
+                            text = "보기",
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
                     //                SaveButton(onSave = { /*TODO*/ }, text = "삭제")
                 } else {
                     SaveButton(onSave = { onJoinPostClick(currentPost) }, text = "신청")

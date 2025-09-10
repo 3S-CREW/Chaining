@@ -1,6 +1,5 @@
 package com.example.chaining.ui.component
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,11 +13,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SaveButton(onSave: () -> Unit, text: String) {
+fun SaveButton(onSave: () -> Unit, text: String, modifier: Modifier = Modifier) {
     Button(
         onClick = onSave,
         modifier = Modifier
-            .fillMaxWidth()
             .padding(30.dp)
             .height(50.dp),
         shape = RoundedCornerShape(30.dp),

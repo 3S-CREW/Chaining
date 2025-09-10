@@ -10,10 +10,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.ui.login.LoginScreen
 import com.example.chaining.ui.screen.AdminLoginScreen
+import com.example.chaining.ui.screen.ApplicationsScreen
 import com.example.chaining.ui.screen.ApplyScreen
 import com.example.chaining.ui.screen.AreaScreen
 import com.example.chaining.ui.screen.CommunityScreen
@@ -24,7 +24,6 @@ import com.example.chaining.ui.screen.HomeScreen
 import com.example.chaining.ui.screen.JoinPostScreen
 import com.example.chaining.ui.screen.KRQuizScreen
 import com.example.chaining.ui.screen.MainHomeScreen
-import com.example.chaining.ui.screen.MyApplicationsScreen
 import com.example.chaining.ui.screen.MyPageScreen
 import com.example.chaining.ui.screen.MyPostsScreen
 import com.example.chaining.ui.screen.QuizResultScreen
@@ -79,8 +78,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onKRQuizClick = { navController.navigate("krQuiz") },
                 onENQuizClick = { navController.navigate("enQuiz") },
                 onMyPostsClick = { navController.navigate(route = Screen.MyPosts.route) },
-                onMyApplicationsClick = { navController.navigate(route = Screen.MyApplications.route) }
-            )
+                onMyApplicationsClick = {
+                    navController.navigate(Screen.Applications.createRoute(type = "My"))
+                })
         }
         composable(Screen.MainHome.route) {
             MainHomeScreen(
@@ -132,6 +132,14 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     navController.navigate(
                         Screen.CreatePost.createRoute(
                             type = "수정",
+                            postId = postId
+                        )
+                    )
+                },
+                onApplicationListClick = { postId ->
+                    navController.navigate(
+                        Screen.Applications.createRoute(
+                            type = "Owner",
                             postId = postId
                         )
                     )
@@ -204,17 +212,20 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(
             route = Screen.Apply.route,
             arguments = listOf(
-                navArgument("type") { type = NavType.StringType; defaultValue = "Other" }
-            )
+                navArgument("type") {
+                    type = NavType.StringType
+                    defaultValue = "My"
+                })
         ) { backStackEntry ->
-            val type = backStackEntry.arguments?.getString("type") ?: "Other"
-            val application = navController.previousBackStackEntry
-                ?.savedStateHandle
-                ?.get<Application>("application") ?: return@composable
+            val type = backStackEntry.arguments?.getString("type") ?: "My"
+            val applicationId =
+                backStackEntry.arguments?.getString("applicationId") ?: return@composable
+
+
             ApplyScreen(
                 onBackClick = { navController.popBackStack() },
                 type = type,
-                application = application
+                applicationId = applicationId
             )
         }
 
@@ -227,8 +238,28 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(route = Screen.MyPosts.route) {
             MyPostsScreen()
         }
-        composable(route = Screen.MyApplications.route) {
-            MyApplicationsScreen()
+        composable(
+            route = Screen.Applications.route,
+            arguments = listOf(
+                navArgument("type") {
+                    type = NavType.StringType
+                    defaultValue = "My"
+                },
+            )
+        ) { backStackEntry ->
+            val type = backStackEntry.arguments?.getString("type") ?: "My"
+            ApplicationsScreen(
+                type = type,
+                onBackClick = { navController.popBackStack() },
+                onViewApplyClick = { applicationId ->
+                    navController.navigate(
+                        Screen.Apply.createRoute(
+                            type = type,
+                            applicationId = applicationId
+                        )
+                    )
+                },
+            )
         }
     }
 }

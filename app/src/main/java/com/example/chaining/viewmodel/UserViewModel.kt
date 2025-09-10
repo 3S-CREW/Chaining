@@ -36,6 +36,13 @@ class UserViewModel @Inject constructor(
 
     }
 
+    fun checkUserExists(uid: String, callback: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val exists = repo.checkUserExists(uid)
+            callback(exists)
+        }
+    }
+
     fun updateProfileImage(newUrl: String) {
         viewModelScope.launch {
             try {

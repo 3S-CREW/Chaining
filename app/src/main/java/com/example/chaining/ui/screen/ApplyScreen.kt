@@ -2,7 +2,6 @@ package com.example.chaining.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,12 +18,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -40,31 +41,26 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.chaining.R
-import com.example.chaining.domain.model.Application
 import com.example.chaining.viewmodel.ApplicationViewModel
-import com.example.chaining.viewmodel.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApplyScreen(
     onBackClick: () -> Unit = {},
-    type: String, // My, Other
-    application: Application? = null,
-    userViewModel: UserViewModel = hiltViewModel(),
+    type: String, // My, Owner
+    applicationId: String? = null,
     applicationViewModel: ApplicationViewModel = hiltViewModel()
 ) {
-    val userState by userViewModel.user.collectAsState()
-
+    val application by applicationViewModel.application.collectAsState()
+    LaunchedEffect(key1 = applicationId) {
+        if (applicationId != null) {
+            applicationViewModel.fetchApplication(applicationId)
+        }
+    }
     // post가 null이면 로딩 UI 표시
-    if (type == "Other" && application == null) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(30.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text("Loading...", fontSize = 18.sp)
+    if (application == null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
         }
         return
     }
@@ -89,7 +85,7 @@ fun ApplyScreen(
                 }
 
                 Text(
-                    text = if (type == "Other") {
+                    text = if (type == "Owner") {
                         "지원서 보기"
                     } else {
                         "내 지원서 보기"
@@ -159,21 +155,15 @@ fun ApplyScreen(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        text = if (type == "Other") {
-                            application?.applicant?.nickname ?: "알 수 없음"
-                        } else {
-                            userState?.nickname ?: "알 수 없음"
-                        },
+                        text =
+                        application?.applicant?.nickname ?: "알 수 없음",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF4A526A)
                     )
                     Text(
-                        text = if (type == "Other") {
-                            application?.applicant?.country ?: "알 수 없음"
-                        } else {
-                            userState?.country ?: "알 수 없음"
-                        },
+                        text =
+                        application?.applicant?.country ?: "알 수 없음",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF7282B4),
@@ -188,28 +178,30 @@ fun ApplyScreen(
                         horizontalAlignment = Alignment.Start // 이 부분만 왼쪽 정렬
                     ) {
                         Text(
-                            text = if (type == "Other") {
-                                "${application?.applicationId ?: "알 수 없음"} 수정 필요"
-                            } else {
-                                "${userState?.preferredLanguages?.get(0)?.language ?: "알 수 없음"} 수준 : ${
-                                    userState?.preferredLanguages?.get(
-                                        0
-                                    )?.level ?: "알 수 없음"
-                                } / 10"
-                            },
+//                            text = if (type == "Owner") {
+//                                "${application?.applicationId ?: "알 수 없음"} 수정 필요"
+//                            } else {
+//                                "${userState?.preferredLanguages?.get(0)?.language ?: "알 수 없음"} 수준 : ${
+//                                    userState?.preferredLanguages?.get(
+//                                        0
+//                                    )?.level ?: "알 수 없음"
+//                                } / 10"
+//                            },
+                            text = "알 수 없음",
                             color = Color(0xFF4A526A)
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = if (type == "Other") {
-                                "${application?.applicationId ?: "알 수 없음"} 수정 필요"
-                            } else {
-                                "${userState?.preferredLanguages?.get(0)?.language ?: "알 수 없음"} 수준 : ${
-                                    userState?.preferredLanguages?.get(
-                                        0
-                                    )?.level ?: "알 수 없음"
-                                } / 10"
-                            },
+//                            text = if (type == "Owner") {
+//                                "${application?.applicationId ?: "알 수 없음"} 수정 필요"
+//                            } else {
+//                                "${userState?.preferredLanguages?.get(0)?.language ?: "알 수 없음"} 수준 : ${
+//                                    userState?.preferredLanguages?.get(
+//                                        0
+//                                    )?.level ?: "알 수 없음"
+//                                } / 10"
+//                            },
+                            text = "알 수 없음",
                             color = Color(0xFF4A526A)
                         )
                     }
@@ -228,31 +220,28 @@ fun ApplyScreen(
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = if (type == "Other") {
-                                application?.introduction ?: "알 수 없음"
-                            } else {
-                                "이전 페이지에서 넘어와야함"
-                            },
+                            text =
+                            application?.introduction ?: "알 수 없음",
                             color = Color(0xFF4A526A)
                         )
                     }
 
                     Spacer(modifier = Modifier.height(100.dp))
 
-                    if (type == "Other") {
+                    if (type == "Owner") {
                         Row {
                             // 수락 버튼
                             Button(
                                 onClick = {
-                                    if (application != null) {
+                                    application?.let { apply ->
                                         applicationViewModel.updateStatus(
-                                            application = application,
+                                            application = apply,
                                             value = "승인"
                                         )
                                     }
                                 },
                                 modifier = Modifier
-                                    .fillMaxWidth()
+                                    .weight(1f)
                                     .height(50.dp)
                                     .width(200.dp),
                                 shape = RoundedCornerShape(20.dp),
@@ -261,21 +250,21 @@ fun ApplyScreen(
                                     contentColor = Color.White
                                 )
                             ) {
-                                Text("수락", fontSize = 16.sp)
+                                Text("승인", fontSize = 16.sp)
                             }
 
                             // 거절 버튼
                             Button(
                                 onClick = {
-                                    if (application != null) {
+                                    application?.let { apply ->
                                         applicationViewModel.updateStatus(
-                                            application = application,
+                                            application = apply,
                                             value = "거절"
                                         )
                                     }
                                 },
                                 modifier = Modifier
-                                    .fillMaxWidth()
+                                    .weight(1f)
                                     .height(50.dp)
                                     .width(120.dp),
                                 shape = RoundedCornerShape(20.dp),

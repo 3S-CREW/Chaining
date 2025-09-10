@@ -124,10 +124,10 @@ class ApplicationRepository @Inject constructor(
             // 1. applications 노드에 지원서 저장
             "/applications/${application.applicationId}/status" to value,
 
-            // 2. posts/{postId}/applications/{applicationId} = true
+            // 2. posts/{postId}/applications/{applicationId}
             "/posts/${application.postId}/applications/${application.applicationId}/status" to value,
 
-            // 3. users/{uid}/myApplications/{applicationId} = true
+            // 3. users/{uid}/myApplications/{applicationId}
             "/users/${application.applicant.id}/applications/${application.applicationId}/status" to value
         )
 
