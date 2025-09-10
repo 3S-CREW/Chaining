@@ -31,11 +31,20 @@ sealed class Screen(val route: String) {
     }
 
     object MyPosts : Screen("myPosts")
-    object MyApplications : Screen("myApplications")
+    object Applications : Screen("applications?type={type}&postId={postId}") {
+        fun createRoute(type: String, postId: String? = ""): String {
+            return "applications?type=$type&postId=${postId ?: ""}"
+        }
+    }
 
     object KRQuiz : Screen("krQuiz")
     object ENQuiz : Screen("enQuiz")
     object QuizResult : Screen("quizResult")
-    object MyApply : Screen("myApply")
+    object Apply : Screen("apply?type={type}&applicationId={applicationId}") {
+        fun createRoute(type: String, applicationId: String? = ""): String {
+            return "apply?type=$type&applicationId=${applicationId ?: ""}"
+        }
+    }
+
     object Feed : Screen("feed")
 }

@@ -34,24 +34,41 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
+import com.example.chaining.domain.model.Application
 import com.example.chaining.ui.component.CardItem
+import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
 
 @Composable
-fun MyApplicationsScreen(
+fun ApplicationsScreen(
     onBackClick: () -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel(),
+    postViewModel: RecruitPostViewModel = hiltViewModel(),
+    type: String, // "My" or "Owner"
+    onViewApplyClick: (applicationId: String) -> Unit = {}
 ) {
     val userState by userViewModel.user.collectAsState()
-
     val myApplications = userState?.applications.orEmpty()
+    val post by postViewModel.post.collectAsState()
+
+    val ownerApplications: Map<String, Application> = if (type == "Owner") {
+        post?.applications ?: emptyMap()
+    } else {
+        emptyMap()
+    }
 
     var showOnlyFinishedApplications by remember { mutableStateOf(false) }
 
-    val filteredApplications = if (showOnlyFinishedApplications) {
-        myApplications.filter { application -> application.value.status != "PENDING" }
+    val applications: List<Application> = if (type == "Owner") {
+        ownerApplications.values.toList()
     } else {
-        myApplications
+        myApplications.values.toList()
+    }
+
+    val filteredApplications: List<Application> = if (showOnlyFinishedApplications) {
+        applications.filter { application -> application.status != "PENDING" }
+    } else {
+        applications
     }
 
     Scaffold(
@@ -75,7 +92,7 @@ fun MyApplicationsScreen(
 
                 // 제목
                 Text(
-                    text = "내 모집글 보기",
+                    text = if (type == "Owner") "내 모집글 지원서" else "내 지원서",
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
@@ -123,9 +140,12 @@ fun MyApplicationsScreen(
                 // 모집글 목록 표시
                 filteredApplications.forEach { application ->
                     CardItem(
-                        onClick = { },
+                        onClick = {
+                            onViewApplyClick(application.applicationId)
+                            println("포포" + application)
+                        },
                         type = "지원서",
-                        application = application.value,
+                        application = application,
                     )
                 }
             }

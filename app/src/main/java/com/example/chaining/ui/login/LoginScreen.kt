@@ -20,12 +20,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.BuildConfig
+import com.example.chaining.R
 import com.example.chaining.domain.model.User
 import com.example.chaining.viewmodel.UserViewModel
-import com.example.chaining.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.Firebase
@@ -63,15 +63,17 @@ fun LoginScreen(
                                 if (firebaseUser != null) {
                                     val uid = firebaseUser.uid
 
-                                    // 신규 유저 DB 등록
-                                    userViewModel.addUser(
-                                        User(
-                                            id = uid,
-                                            nickname = firebaseUser.displayName ?: ""
-                                        )
-                                    )
-                                    // 로그인 성공 처리
-                                    onLoginSuccess()
+                                    userViewModel.checkUserExists(uid) { exists ->
+                                        if (!exists) {
+                                            userViewModel.addUser(
+                                                User(
+                                                    id = uid,
+                                                    nickname = firebaseUser.displayName ?: ""
+                                                )
+                                            )
+                                        }
+                                        onLoginSuccess()
+                                    }
                                 }
                             } else {
                                 Toast.makeText(context, "로그인 실패", Toast.LENGTH_SHORT).show()

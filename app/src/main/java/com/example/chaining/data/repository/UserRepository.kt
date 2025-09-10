@@ -48,6 +48,11 @@ class UserRepository @Inject constructor(
         return uid
     }
 
+    suspend fun checkUserExists(uid: String): Boolean {
+        val snapshot = usersRef().child(uid).get().await()
+        return snapshot.exists()
+    }
+
     /** 1. Firebase → Room 동기화 후 Flow 제공 */
     /** Read (실시간 구독 - 내 계정, 변경사항이 있을 때마다 계속 가져오기) */
     fun observeMyUser(): Flow<User?> = callbackFlow {
