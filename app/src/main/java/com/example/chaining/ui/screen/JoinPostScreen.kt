@@ -209,6 +209,7 @@ fun JoinPostScreen(
                     val newApplication = Application(
                         applicationId = "",
                         postId = post.postId,
+                        owner = post.owner,
                         recruitPostTitle = post.title,
                         introduction = introduction,
                         applicant = UserSummary(

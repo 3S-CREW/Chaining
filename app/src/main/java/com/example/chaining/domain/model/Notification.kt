@@ -1,5 +1,7 @@
 package com.example.chaining.domain.model
 
+import com.google.firebase.database.PropertyName
+
 data class Notification(
     val id: String = "",            // 알림 ID
     val type: String = "",          // 알림 종류
@@ -8,6 +10,7 @@ data class Notification(
     val senderId: String? = null,   // 팔로우나 신청자 ID
     val status: String? = null,     // 지원서 승인/거절 상태
     val createdAt: Long = 0L,       // 타임 스탬프
+    @get:PropertyName("isRead")
     val isRead: Boolean = false,    // 읽음 여부
     val uid: String = ""
 )

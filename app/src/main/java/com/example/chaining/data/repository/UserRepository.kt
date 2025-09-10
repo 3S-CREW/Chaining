@@ -162,7 +162,8 @@ class UserRepository @Inject constructor(
                 type = "follow",
                 senderId = myInfo.id,
                 createdAt = System.currentTimeMillis(),
-                isRead = false
+                isRead = false,
+                uid = otherInfo.id
             )
             updates["/notifications/${otherInfo.id}/$newNotificationKey"] = notification
         }

@@ -61,7 +61,8 @@ class ApplicationRepository @Inject constructor(
             postId = application.postId,
             applicationId = applicationId,
             createdAt = System.currentTimeMillis(),
-            isRead = false
+            isRead = false,
+            uid = postOwnerId
         )
 
         updates["/notifications/$postOwnerId/$newNotificationKey"] = notification
@@ -157,7 +158,8 @@ class ApplicationRepository @Inject constructor(
             applicationId = application.applicationId,
             status = value,
             createdAt = System.currentTimeMillis(),
-            isRead = false
+            isRead = false,
+            uid = application.applicant.id
         )
         updates["/notifications/${application.applicant.id}/$newNotificationKey"] = notification
 
