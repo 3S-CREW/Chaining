@@ -26,12 +26,13 @@ class NotificationRepository @Inject constructor(
     private fun uidOrThrow(): String =
         auth.currentUser?.uid ?: error("로그인이 필요합니다.")
 
-    private fun notificationsRef(): DatabaseReference = rootRef.child("notifications")
+    private fun notificationsRef(uid: String): DatabaseReference =
+        rootRef.child("notifications").child(uid)
 
     /** 알림 목록을 실시간으로 가져오기 */
     fun observeNotifications(): Flow<List<Notification>> = callbackFlow {
         val uid = uidOrThrow()
-        val ref = notificationsRef()
+        val ref = notificationsRef(uid)
             .orderByChild("createdAt")
             .limitToLast(50)
 
