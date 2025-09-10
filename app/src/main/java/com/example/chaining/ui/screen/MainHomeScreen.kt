@@ -50,7 +50,8 @@ import com.example.chaining.R
 @Composable
 fun MainHomeScreen(
     onMyPageClick: () -> Unit,
-    onCommunityClick: () -> Unit
+    onCommunityClick: () -> Unit,
+    onNotificationClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -84,7 +85,13 @@ fun MainHomeScreen(
         },
         bottomBar = {
             // 하단 네비게이션 바 구현
-            AppBottomNavigation(selectedTab = "HOME", onCommunityClick = onCommunityClick)
+            AppBottomNavigation(selectedTab = "HOME", onTestClick = { menu ->
+                when (menu) {
+//                    "Home" ->
+                    "Community" -> onCommunityClick()
+                    "Notification" -> onNotificationClick()
+                }
+            })
         },
     ) { innerPadding ->
         // 중앙 콘텐츠 구현 (환영 메시지, 매칭 카드, 팔로우 목록 등)
@@ -139,7 +146,7 @@ fun MainHomeScreen(
 @Composable
 fun AppBottomNavigation(
     selectedTab: String,
-    onCommunityClick: () -> Unit
+    onTestClick: (String) -> Unit
 ) { // "selectedTab" 파라미터 추가
     Surface(
         modifier = Modifier
@@ -163,22 +170,22 @@ fun AppBottomNavigation(
                 if (selectedTab == "ALARM") R.drawable.selected_alarm else R.drawable.alarm
 
             CustomIconButton(
-                onClick = { /*TODO: 홈 화면으로 이동*/ },
+                onClick = { onTestClick("Home") },
                 iconRes = homeIcon,
                 description = "메인 홈"
             )
             CustomIconButton(
-                onClick = onCommunityClick,
+                onClick = { onTestClick("Community") },
                 iconRes = peopleIcon,
                 description = "매칭"
             )
             CustomIconButton(
-                onClick = { /*TODO: 검색 화면으로 이동*/ },
+                onClick = { onTestClick("Search") },
                 iconRes = searchIcon,
                 description = "검색"
             )
             CustomIconButton(
-                onClick = { /*TODO: 알림 화면으로 이동*/ },
+                onClick = { onTestClick("Notification") },
                 iconRes = alarmIcon,
                 description = "알림"
             )

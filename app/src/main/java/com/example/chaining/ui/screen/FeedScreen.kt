@@ -1,6 +1,5 @@
 package com.example.chaining.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,7 +39,7 @@ import com.example.chaining.viewmodel.FeedViewModel
 fun FeedScreen(
     onBackClick: () -> Unit = {},
     feedViewModel: FeedViewModel = hiltViewModel()
-){
+) {
     // ViewModel의 randomizedFeedItems 상태를 구독하여 UI에 자동 반영
     val feedItems by feedViewModel.randomizedFeedItems.collectAsState()
 
@@ -85,7 +84,7 @@ fun FeedScreen(
             }
         },
         bottomBar = {
-            AppBottomNavigation(selectedTab = "NONE", onCommunityClick = {})
+            AppBottomNavigation(selectedTab = "NONE", onTestClick = {})
         },
         containerColor = Color(0xFFF3F6FF)
     ) { innerPadding ->
@@ -93,7 +92,9 @@ fun FeedScreen(
         if (feedItems.isEmpty()) {
             // 데이터 로딩 중이거나 데이터가 없을 때
             Box(
-                modifier = Modifier.fillMaxSize().padding(innerPadding),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator() // 로딩 인디케이터
@@ -101,7 +102,9 @@ fun FeedScreen(
         } else {
             // LazyColumn을 사용하여 랜덤 3개의 피드를 표시
             LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(innerPadding),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -110,7 +113,8 @@ fun FeedScreen(
                     FeedItem(
                         region = item.address.split(" ").getOrNull(0) ?: "지역",
                         place = item.title,
-                        imageUrl = item.imageUrl ?: "https://your-placeholder-image-url.com/default.jpg",
+                        imageUrl = item.imageUrl
+                            ?: "https://your-placeholder-image-url.com/default.jpg",
                     )
                 }
             }

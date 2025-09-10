@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.ui.login.LoginScreen
+import com.example.chaining.ui.notification.NotificationScreen
 import com.example.chaining.ui.screen.AdminLoginScreen
 import com.example.chaining.ui.screen.ApplicationsScreen
 import com.example.chaining.ui.screen.ApplyScreen
@@ -85,7 +86,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(Screen.MainHome.route) {
             MainHomeScreen(
                 onMyPageClick = { navController.navigate("myPage") },
-                onCommunityClick = { navController.navigate("community") }
+                onCommunityClick = { navController.navigate("community") },
+                onNotificationClick = { navController.navigate(route = Screen.Notification.route) }
             )
         }
         composable(
@@ -260,6 +262,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     )
                 },
             )
+        }
+
+        composable(route = Screen.Notification.route) {
+            NotificationScreen()
         }
     }
 }
