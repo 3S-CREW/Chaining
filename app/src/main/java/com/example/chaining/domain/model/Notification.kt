@@ -9,5 +9,5 @@ data class Notification(
     val status: String? = null,     // 지원서 승인/거절 상태
     val createdAt: Long = 0L,       // 타임 스탬프
     val isRead: Boolean = false,    // 읽음 여부
-    val uid: String
+    val uid: String = ""
 )

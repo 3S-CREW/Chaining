@@ -1,5 +1,7 @@
 package com.example.chaining.data.repository
 
+import com.example.chaining.data.local.dao.NotificationDao
+import com.example.chaining.data.local.entity.NotificationEntity
 import com.example.chaining.domain.model.Notification
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -19,6 +21,7 @@ import javax.inject.Singleton
 class NotificationRepository @Inject constructor(
     private val auth: FirebaseAuth,
     private val rootRef: DatabaseReference,
+    private val notificationDao: NotificationDao
 ) {
     private fun uidOrThrow(): String =
         auth.currentUser?.uid ?: error("로그인이 필요합니다.")
@@ -29,18 +32,16 @@ class NotificationRepository @Inject constructor(
     fun observeNotifications(): Flow<List<Notification>> = callbackFlow {
         val uid = uidOrThrow()
         val ref = notificationsRef()
+            .orderByChild("createdAt")
+            .limitToLast(50)
 
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val notifications = snapshot.children.mapNotNull { data ->
                     data.getValue(Notification::class.java)?.copy(id = data.key ?: "")
-                }.sortedByDescending { it.createdAt }
-                trySend(notifications)
-                if (notifications != null) {
-                    val entity = notifications.toEntity()
-                    CoroutineScope(Dispatchers.IO).launch {
-                        notificationsDao.insertDao(entity)
-                    }
+                }
+                CoroutineScope(Dispatchers.IO).launch {
+                    notificationDao.insertDao(notifications.toEntity(uid))
                 }
             }
 
@@ -51,12 +52,11 @@ class NotificationRepository @Inject constructor(
 
         ref.addValueEventListener(listener)
 
-        val dbFlow = notificationsDao.getNotifications(uid)
-        val job = CoroutineScope(Dispatchers.IO).launch {
-            dbFlow.collect { entity ->
-                val notifications = entity?.toNotifications()
-                trySend(notifications).isSuccess
-            }
+        val job = launch {
+            notificationDao.getNotifications(uid)
+                .collect { entities ->
+                    trySend(entities.toNotifications()).isSuccess
+                }
         }
         awaitClose {
             ref.removeEventListener(listener)
@@ -64,4 +64,36 @@ class NotificationRepository @Inject constructor(
         }
     }
 
+    /** 3. Notification → NotificationEntity 변환 함수 */
+    private fun List<Notification>.toEntity(uid: String): List<NotificationEntity> {
+        return this.map {
+            NotificationEntity(
+                id = it.id,
+                type = it.type,
+                postId = it.postId,
+                applicationId = it.applicationId,
+                senderId = it.senderId,
+                status = it.status,
+                createdAt = it.createdAt,
+                isRead = it.isRead,
+                uid = uid
+            )
+        }
+    }
+
+    private fun List<NotificationEntity>.toNotifications(): List<Notification> {
+        return this.map {
+            Notification(
+                id = it.id,
+                type = it.type,
+                postId = it.postId,
+                applicationId = it.applicationId,
+                senderId = it.senderId,
+                status = it.status,
+                createdAt = it.createdAt,
+                isRead = it.isRead,
+                uid = it.uid
+            )
+        }
+    }
 }
