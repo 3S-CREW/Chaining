@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "notification_table")
-data class Notification(
+data class NotificationEntity(
     @PrimaryKey val id: String = "",            // 알림 ID
     val type: String = "",          // 알림 종류
     val postId: String? = null,     // 관련 모집글
