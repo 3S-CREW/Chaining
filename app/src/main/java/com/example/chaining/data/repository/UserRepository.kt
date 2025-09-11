@@ -13,7 +13,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -184,19 +183,18 @@ class UserRepository @Inject constructor(
     /** 테스트 결과 변경 */
     suspend fun updateTestResult(languagePref: LanguagePref) {
         val uid = uidOrThrow()
-        val snapshot = usersRef().child(uid).child("preferredLanguages").get().await()
-        val currentList =
-            snapshot.getValue(object : GenericTypeIndicator<List<LanguagePref>>() {}) ?: emptyList()
 
-        val newList = currentList.toMutableList().apply {
-            val index = indexOfFirst { it.language == languagePref.language }
-            if (index >= 0) this[index] = languagePref else add(languagePref)
+        usersRef().child(uid)
+            .child("preferredLanguages")
+            .child(languagePref.language)
+            .setValue(languagePref)
+            .await()
+
+        val currentEntity = userDao.getUser(uid).firstOrNull() ?: return
+        val updatedMap = currentEntity.preferredLanguages.toMutableMap().apply {
+            this[languagePref.language] = languagePref
         }
-
-        usersRef().child(uid).child("preferredLanguages").setValue(newList).await()
-
-        val current = userDao.getUser(uid).firstOrNull() ?: return
-        val updatedEntity = current.copy(preferredLanguages = newList)
+        val updatedEntity = currentEntity.copy(preferredLanguages = updatedMap)
         userDao.updateUser(updatedEntity)
     }
 
@@ -323,7 +321,7 @@ class UserRepository @Inject constructor(
             isPublic = updates["isPublic"] as? Boolean ?: isPublic,
             // 필요시 나머지 필드도 추가
             likedPosts = updates["likedPosts"] as? Map<String, Boolean> ?: likedPosts,
-            preferredLanguages = updates["preferredLanguages"] as? List<LanguagePref>
+            preferredLanguages = updates["preferredLanguages"] as? Map<String, LanguagePref>
                 ?: preferredLanguages,
             recruitPosts = updates["recruitPosts"] as? Map<String, RecruitPost> ?: recruitPosts,
             applications = updates["applications"] as? Map<String, Application> ?: applications,

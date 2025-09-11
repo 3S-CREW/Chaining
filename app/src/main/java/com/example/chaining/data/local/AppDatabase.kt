@@ -10,7 +10,7 @@ import com.example.chaining.data.local.entity.UserEntity
 
 @Database(
     entities = [UserEntity::class, NotificationEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

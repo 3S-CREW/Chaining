@@ -10,7 +10,7 @@ data class User(
     val country: String = "",                     // 출신국
     val residence: String = "",                   // 거주지
     val preferredDestinations: String = "",       // 선호 여행지
-    val preferredLanguages: List<LanguagePref> = emptyList(), // 선호 언어 + 수준
+    val preferredLanguages: Map<String, LanguagePref> = emptyMap(),
     @get:PropertyName("isPublic")
     val isPublic: Boolean = true,                 // 모집/지원 현황 공개 여부
     val recruitPosts: Map<String, RecruitPost> = emptyMap(), // 내가 모집한 글

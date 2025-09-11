@@ -10,11 +10,11 @@ import kotlinx.serialization.json.Json
 class Converters {
 
     @TypeConverter
-    fun fromLanguagePrefList(list: List<LanguagePref>): String = Json.encodeToString(list)
+    fun fromLanguagePrefMap(map: Map<String, LanguagePref>): String = Json.encodeToString(map)
 
     @TypeConverter
-    fun toLanguagePrefList(value: String): List<LanguagePref> =
-        if (value.isEmpty()) emptyList() else Json.decodeFromString(value)
+    fun toLanguagePrefMap(value: String): Map<String, LanguagePref> =
+        if (value.isEmpty()) emptyMap() else Json.decodeFromString(value)
 
     @TypeConverter
     fun fromApplicationMap(map: Map<String, Application>): String = Json.encodeToString(map)

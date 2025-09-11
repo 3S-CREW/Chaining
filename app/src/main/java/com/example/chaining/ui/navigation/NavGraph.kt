@@ -221,7 +221,11 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
                 QuizResultScreen(
                     quizViewModel = quizViewModel,
-                    onNavigateToMyPage = { navController.navigate(Screen.MyPage.route) }
+                    onNavigateToMyPage = {
+                        navController.navigate(Screen.MyPage.route) {
+                            popUpTo("quizResult") { inclusive = true }
+                        }
+                    }
                 )
             }
         }

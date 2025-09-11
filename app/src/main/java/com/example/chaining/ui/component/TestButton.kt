@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TestButton(
-    preferredLanguages: List<LanguagePref>,
+    preferredLanguages: Map<String, LanguagePref>,
     onTestClick: (String) -> Unit
 ) {
     val languageText = "언어 능력 테스트 및 결과 확인"
@@ -112,7 +112,7 @@ fun TestButton(
                         "영어" -> "ENGLISH"
                         else -> ""
                     }
-                    val pref = preferredLanguages.find { it.language == dataLanguage }
+                    val pref = preferredLanguages[dataLanguage]
                     LanguageTestItem(
                         language = language,
                         level = pref?.level,

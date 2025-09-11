@@ -108,15 +108,22 @@ class RecruitPostViewModel @Inject constructor(
             Log.d("FilterDebug", "3. 여행 스타일(${style}) 필터 후: ${filteredList.size} 개")
         }
         filter.travelLocation?.let { location ->
-            filteredList = filteredList.filter { it.preferredLocations.location.contains(location, ignoreCase = true) }
+            filteredList = filteredList.filter {
+                it.preferredLocations.location.contains(
+                    location,
+                    ignoreCase = true
+                )
+            }
             Log.d("FilterDebug", "4. 여행지(${location}) 필터 후: ${filteredList.size} 개")
         }
         filter.language?.let { lang ->
-            filteredList = filteredList.filter { p -> p.preferredLanguages.any { it.language == lang } }
+            filteredList =
+                filteredList.filter { p -> p.preferredLanguages.any { it.value.language == lang } }
             Log.d("FilterDebug", "5. 언어(${lang}) 필터 후: ${filteredList.size} 개")
         }
         filter.languageLevel?.let { level ->
-            filteredList = filteredList.filter { p -> p.preferredLanguages.any { it.level >= level } }
+            filteredList =
+                filteredList.filter { p -> p.preferredLanguages.any { it.value.level >= level } }
             Log.d("FilterDebug", "6. 언어 레벨(>=${level}) 필터 후: ${filteredList.size} 개")
         }
         Log.d("FilterDebug", "--- 필터링 종료, 최종 개수: ${filteredList.size} 개 ---")

@@ -1,7 +1,5 @@
 package com.example.chaining.ui.screen
 
-import android.net.wifi.hotspot2.pps.HomeSp
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -108,7 +106,8 @@ fun ViewPostScreen(
                     "Notification" -> onNotificationClick()
                     "Feed" -> onFeedClick()
                 }
-            })         },
+            })
+        },
         containerColor = Color(0xFFF3F6FF)
     ) { innerPadding ->
         Column(
@@ -177,13 +176,13 @@ fun ViewPostScreen(
                     setInfo(
                         icon = R.drawable.language,
                         title = "선호하는 언어",
-                        content = currentPost.preferredLanguages.joinToString { it.language }
+                        content = currentPost.preferredLanguages.values.joinToString { it.language }
                     )
 
                     setInfo(
                         icon = R.drawable.level,
                         title = "선호하는 언어 수준",
-                        content = currentPost.preferredLanguages.joinToString { it.level.toString() }
+                        content = currentPost.preferredLanguages.values.joinToString { it.level.toString() }
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))

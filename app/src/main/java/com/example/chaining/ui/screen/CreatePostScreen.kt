@@ -76,7 +76,7 @@ fun CreatePostScreen(
     var preferredLocation by remember { mutableStateOf<LocationPref>(LocationPref()) }
     var preferredLanguages by remember {
         mutableStateOf(
-            userState?.preferredLanguages ?: emptyList()
+            userState?.preferredLanguages ?: emptyMap()
         )
     }
     var hasCar by remember { mutableStateOf("") }
@@ -85,7 +85,6 @@ fun CreatePostScreen(
     var kakaoOpenChatUrl by remember { mutableStateOf("") }
 
     val languages = listOf("한국어", "영어", "중국어", "일본어")
-    var selectedLanguages by remember { mutableStateOf(mapOf<String, Int>()) }
     val buttonText = if (type == "생성") "작성 완료" else "수정 완료"
 
     LaunchedEffect(postState) {
@@ -206,23 +205,19 @@ fun CreatePostScreen(
 
             Text("선호 언어 선택 및 레벨", fontSize = 16.sp)
             languages.forEach { lang ->
+                val currentLevel = preferredLanguages[lang]?.level
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(vertical = 4.dp)
                 ) {
-                    // 언어 이름
                     Text(lang, modifier = Modifier.width(60.dp))
-
-                    // 레벨 토글
                     (1..10).forEach { level ->
-                        val selected = selectedLanguages[lang] == level
+                        val selected = currentLevel == level
                         Button(
                             onClick = {
-                                selectedLanguages = if (selected) {
-                                    selectedLanguages - lang
-                                } else {
-                                    selectedLanguages + (lang to level)
-                                }
+                                preferredLanguages =
+                                    if (selected) preferredLanguages - lang
+                                    else preferredLanguages + (lang to LanguagePref(lang, level))
                             },
                             modifier = Modifier
                                 .size(28.dp)
@@ -290,7 +285,7 @@ fun CreatePostScreen(
                     if (tourAt == null) missingFields.add("여행 시작일")
                     if (closeAt == null) missingFields.add("모집 마감일")
                     if (hasCar.isBlank()) missingFields.add("자차 여부")
-                    if (selectedLanguages.isEmpty()) missingFields.add("선호 언어")
+                    if (preferredLanguages.isEmpty()) missingFields.add("선호 언어")
                     if (kakaoOpenChatUrl.isBlank()) missingFields.add("카카오톡 오픈채팅 링크")
 
                     if (missingFields.isNotEmpty()) {
@@ -307,9 +302,7 @@ fun CreatePostScreen(
                             tourAt = tourAt!!,
                             closeAt = closeAt!!,
                             hasCar = hasCar,
-                            preferredLanguages = selectedLanguages.map { (lang, level) ->
-                                LanguagePref(lang, level)
-                            },
+                            preferredLanguages = preferredLanguages,
                             kakaoOpenChatUrl = kakaoOpenChatUrl,
                             createdAt = System.currentTimeMillis(),
                             owner = UserSummary(
