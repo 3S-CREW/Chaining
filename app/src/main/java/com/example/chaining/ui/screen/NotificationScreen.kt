@@ -23,6 +23,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.domain.model.Notification
+import com.example.chaining.ui.component.CardItem
 import com.example.chaining.ui.component.FollowNotificationItem
+import com.example.chaining.viewmodel.ApplicationViewModel
 import com.example.chaining.viewmodel.NotificationViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -137,7 +140,10 @@ fun NotificationScreen(
 }
 
 @Composable
-fun NotificationItem(notification: Notification) {
+fun NotificationItem(
+    notification: Notification,
+    applicationViewModel: ApplicationViewModel = hiltViewModel()
+) {
     val formattedDate = remember(notification.createdAt) {
         val date = Date(notification.createdAt)
         SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault()).format(date)
@@ -152,7 +158,27 @@ fun NotificationItem(notification: Notification) {
             )
         }
 
+        "application" -> {
+            // Application 데이터를 StateFlow로 구독
+            val application by applicationViewModel.application.collectAsState()
+
+            // notification.applicationId로 데이터 로드
+            LaunchedEffect(notification.applicationId) {
+                notification.applicationId?.let { applicationViewModel.fetchApplication(it) }
+            }
+
+            CardItem(
+                onClick = { /* 카드 클릭 시 처리 */ },
+                type = "지원서",
+                application = application, // Notification -> Application 매핑 필요
+                remainingTime = "2일 남음", // 실제 남은 시간 계산 로직 적용 가능
+                onLeftButtonClick = { /* 수락 클릭 */ },
+                onRightButtonClick = { /* 거절 클릭 */ }
+            )
+        }
+
         else -> {
+            // 기타 알림 처리
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -167,37 +193,19 @@ fun NotificationItem(notification: Notification) {
                 elevation = CardDefaults.cardElevation(2.dp)
             ) {
                 Column(modifier = Modifier.padding(14.dp)) {
-                    // 알림 제목
                     Text(
-                        text = when (notification.type) {
-                            "application" -> "지원서 알림"
-                            else -> "기타 알림"
-                        },
+                        text = "알림",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSurface
                     )
-
                     Spacer(modifier = Modifier.height(4.dp))
-
-                    // 알림 상세 내용
                     Text(
-                        text = when (notification.type) {
-                            "application" -> when (notification.status) {
-                                "APPROVED" -> "회원님의 모집글에 지원서가 승인되었습니다."
-                                "REJECTED" -> "회원님의 모집글에 지원서가 거절되었습니다."
-                                else -> "새로운 지원서가 접수되었습니다."
-                            }
-
-                            else -> "알림을 확인하세요."
-                        },
+                        text = "알림을 확인하세요.",
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-
                     Spacer(modifier = Modifier.height(6.dp))
-
-                    // 하단 정보 (작성자 / 날짜)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
