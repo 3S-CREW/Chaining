@@ -59,7 +59,12 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
         composable(Screen.AdminLogin.route) {
             AdminLoginScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onAdminLoginSuccess = {
+                    navController.navigate("home") {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
+                }
             )
         }
         composable(Screen.Home.route) {
