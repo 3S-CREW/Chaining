@@ -1,5 +1,7 @@
 package com.example.chaining.ui.screen
 
+import android.net.wifi.hotspot2.pps.HomeSp
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -50,6 +52,10 @@ fun ViewPostScreen(
     onJoinPostClick: (post: RecruitPost) -> Unit = {},
     onEditClick: (postId: String) -> Unit = {},
     onApplicationListClick: (postId: String) -> Unit = {},
+    onMainHomeClick: () -> Unit,
+    onCommunityClick: () -> Unit,
+    onFeedClick: () -> Unit,
+    onNotificationClick: () -> Unit
 ) {
     val userState by userViewModel.user.collectAsState()
     val post by postViewModel.post.collectAsState()
@@ -95,8 +101,14 @@ fun ViewPostScreen(
             }
         },
         bottomBar = {
-            AppBottomNavigation(selectedTab = "PEOPLE", onTestClick = {})
-        },
+            AppBottomNavigation(selectedTab = "Community", onTestClick = { menu ->
+                when (menu) {
+                    "Home" -> onMainHomeClick()
+                    "Community" -> onCommunityClick()
+                    "Notification" -> onNotificationClick()
+                    "Feed" -> onFeedClick()
+                }
+            })         },
         containerColor = Color(0xFFF3F6FF)
     ) { innerPadding ->
         Column(

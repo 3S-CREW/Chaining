@@ -70,10 +70,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(Screen.Home.route) {
             HomeScreen(
                 onTableClick = { navController.navigate("area") },
-                onMainHomeClick = { navController.navigate("mainHome") },
-                onJoinPostClick = { navController.navigate("joinPost") },
-                onMyApplyClick = { navController.navigate("myApply") },
-                onFeedClick = { navController.navigate("feed") }
+                onMainHomeClick = { navController.navigate("mainHome") }
             )
         }
         composable(Screen.Area.route) {
@@ -90,8 +87,11 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
         composable(Screen.MainHome.route) {
             MainHomeScreen(
+                onBackClick = { navController.navigate("mainHome")},
+                onMainHomeClick = { navController.navigate("mainHome") },
                 onMyPageClick = { navController.navigate("myPage") },
                 onCommunityClick = { navController.navigate("community") },
+                onFeedClick = { navController.navigate("feed") },
                 onNotificationClick = { navController.navigate(route = Screen.Notification.route) }
             )
         }
@@ -114,7 +114,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
         composable(Screen.Community.route) {
             CommunityScreen(
-                onBackClick = { navController.popBackStack() },
+                onBackClick = { navController.navigate("mainHome") },
                 onViewPostClick = { postId ->
                     navController.navigate(Screen.ViewPost.createRoute(postId))
                 },
@@ -150,7 +150,11 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                             postId = postId
                         )
                     )
-                }
+                },
+                onMainHomeClick = { navController.navigate("mainHome") },
+                onCommunityClick = { navController.navigate("community") },
+                onFeedClick = { navController.navigate("feed")},
+                onNotificationClick = { navController.navigate(route = Screen.Notification.route) }
             )
         }
 
@@ -238,7 +242,12 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
         composable("feed") {
             FeedScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.navigate("mainHome") },
+                onMainHomeClick = { navController.navigate("mainHome") },
+                onCommunityClick = { navController.navigate("community") },
+                onFeedClick = { navController.navigate("feed")},
+                onNotificationClick = { navController.navigate(route = Screen.Notification.route) }
+
             )
         }
 

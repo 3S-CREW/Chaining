@@ -113,7 +113,7 @@ fun TestButton(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                val supportedLanguages = listOf("한국어", "영어", "일본어", "중국어")
+                val supportedLanguages = listOf("한국어", "영어") //, "일본어", "중국어")
 
                 supportedLanguages.forEach { language ->
                     val pref = preferredLanguages.find { it.language == language }

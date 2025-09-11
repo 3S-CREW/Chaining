@@ -1,5 +1,6 @@
 package com.example.chaining.ui.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -51,11 +52,17 @@ import com.example.chaining.viewmodel.NotificationViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainHomeScreen(
+    onBackClick: () -> Unit,
+    onMainHomeClick: () -> Unit,
     notificationViewModel: NotificationViewModel = hiltViewModel(),
     onMyPageClick: () -> Unit,
     onCommunityClick: () -> Unit,
+    onFeedClick: () -> Unit,
     onNotificationClick: () -> Unit
 ) {
+    BackHandler(enabled = true) {
+        onBackClick()
+    }
     val notifications by notificationViewModel.notifications.collectAsState()
     val isLoading by notificationViewModel.isLoading.collectAsState()
 
@@ -103,11 +110,12 @@ fun MainHomeScreen(
         },
         bottomBar = {
             // 하단 네비게이션 바 구현
-            AppBottomNavigation(selectedTab = "HOME", onTestClick = { menu ->
+            AppBottomNavigation(selectedTab = "Home", onTestClick = { menu ->
                 when (menu) {
-//                    "Home" ->
+                    "Home" -> onMainHomeClick()
                     "Community" -> onCommunityClick()
                     "Notification" -> onNotificationClick()
+                    "Feed" -> onFeedClick()
                 }
             })
         },
@@ -193,13 +201,13 @@ fun AppBottomNavigation(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // if문을 사용해 선택된 탭에 따라 다른 아이콘을 표시
-            val homeIcon = if (selectedTab == "HOME") R.drawable.selected_home else R.drawable.home
+            val homeIcon = if (selectedTab == "Home") R.drawable.selected_home else R.drawable.home
             val peopleIcon =
-                if (selectedTab == "PEOPLE") R.drawable.selected_people else R.drawable.people
+                if (selectedTab == "Community") R.drawable.selected_people else R.drawable.people
             val searchIcon =
-                if (selectedTab == "SEARCH") R.drawable.selected_search else R.drawable.search
+                if (selectedTab == "Feed") R.drawable.selected_search else R.drawable.search
             val alarmIcon =
-                if (selectedTab == "ALARM") R.drawable.selected_alarm else R.drawable.alarm
+                if (selectedTab == "Notification") R.drawable.selected_alarm else R.drawable.alarm
 
             CustomIconButton(
                 onClick = { onTestClick("Home") },
@@ -214,7 +222,7 @@ fun AppBottomNavigation(
             CustomIconButton(
                 onClick = { onTestClick("Search") },
                 iconRes = searchIcon,
-                description = "검색"
+                description = "피드"
             )
             CustomIconButton(
                 onClick = { onTestClick("Notification") },

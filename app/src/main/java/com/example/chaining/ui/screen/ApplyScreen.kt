@@ -123,9 +123,6 @@ fun ApplyScreen(
                 Spacer(modifier = Modifier.width(48.dp))
             }
         },
-        bottomBar = {
-            AppBottomNavigation(selectedTab = "NONE", onTestClick = {})
-        },
         // 전체 기본 배경은 흰색으로 둡니다.
         containerColor = Color.White
     ) { innerPadding ->
