@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.chaining.R
+import com.example.chaining.ui.component.FollowNotificationItem
 
 // OptIn annotation for using experimental Material 3 APIs
 @OptIn(ExperimentalMaterial3Api::class)
@@ -129,12 +130,12 @@ fun MainHomeScreen(
                     .padding(top = 24.dp)
                     .padding(horizontal = 32.dp)
             )
-            FollowerListItem(
+            FollowNotificationItem(
                 name = "강호동",
                 timestamp = "23분 전",
                 imageUrl = "https://spnimage.edaily.co.kr/images/photo/files/NP/S/2015/03/PS15032500193.jpg"
             )
-            FollowerListItem(
+            FollowNotificationItem(
                 name = "차무식",
                 timestamp = "1시간 전",
                 imageUrl = "https://newsimg-hams.hankookilbo.com/2023/03/24/4531dada-e9cf-4775-951c-902e3558ca41.jpg"
@@ -402,42 +403,6 @@ fun MatchingRequestCard() {
                     }
                 }
 
-            }
-        }
-    }
-}
-
-@Composable
-fun FollowerListItem(name: String, timestamp: String, imageUrl: String) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp)
-            .padding(horizontal = 24.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        )
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            ProfileImageWithStatus(model = imageUrl, onMyPageClick = {}, isOnline = true)
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column {
-                Text(
-                    text = "${name}님께서 팔로우를 하셨습니다.",
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
-                )
-                Text(
-                    text = timestamp,
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
             }
         }
     }
