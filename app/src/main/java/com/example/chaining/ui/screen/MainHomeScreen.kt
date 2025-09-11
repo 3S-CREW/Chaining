@@ -19,16 +19,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -42,16 +40,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.chaining.R
+import com.example.chaining.domain.model.Notification
+import com.example.chaining.ui.notification.NotificationItem
+import com.example.chaining.viewmodel.NotificationViewModel
 
 // OptIn annotation for using experimental Material 3 APIs
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainHomeScreen(
+    notificationViewModel: NotificationViewModel = hiltViewModel(),
     onMyPageClick: () -> Unit,
-    onCommunityClick: () -> Unit
+    onCommunityClick: () -> Unit,
+    onNotificationClick: () -> Unit
 ) {
+    val notifications by notificationViewModel.notifications.collectAsState()
+    val isLoading by notificationViewModel.isLoading.collectAsState()
+
+    // 최근 지원서 알림 필터링
+    val recentApplication: Notification? = notifications
+        .filter { it.type == "application" }
+        .sortedByDescending { it.createdAt }
+        .firstOrNull()
+
+    // 최근 팔로우 알림 필터링
+    val recentFollows = notifications
+        .filter { it.type == "follow" }
+        .sortedByDescending { it.createdAt }
+        .take(3)
+
     Scaffold(
         topBar = {
             // 상단 앱 바 구현
@@ -84,7 +103,13 @@ fun MainHomeScreen(
         },
         bottomBar = {
             // 하단 네비게이션 바 구현
-            AppBottomNavigation(selectedTab = "HOME", onCommunityClick = onCommunityClick)
+            AppBottomNavigation(selectedTab = "HOME", onTestClick = { menu ->
+                when (menu) {
+//                    "Home" ->
+                    "Community" -> onCommunityClick()
+                    "Notification" -> onNotificationClick()
+                }
+            })
         },
     ) { innerPadding ->
         // 중앙 콘텐츠 구현 (환영 메시지, 매칭 카드, 팔로우 목록 등)
@@ -111,8 +136,28 @@ fun MainHomeScreen(
                     .padding(top = 24.dp)
                     .padding(horizontal = 32.dp)
             )
-            MatchingRequestCard()
 
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else if (recentApplication == null) {
+                Text(
+                    text = "최근 지원서가 없습니다.",
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    modifier = Modifier
+                        .padding(horizontal = 32.dp, vertical = 16.dp)
+                )
+            } else {
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                ) {
+                    NotificationItem(notification = recentApplication)
+                }
+
+            }
             Text(
                 text = "최근 팔로우 목록",
                 fontSize = 14.sp,
@@ -122,16 +167,10 @@ fun MainHomeScreen(
                     .padding(top = 24.dp)
                     .padding(horizontal = 32.dp)
             )
-            FollowerListItem(
-                name = "강호동",
-                timestamp = "23분 전",
-                imageUrl = "https://spnimage.edaily.co.kr/images/photo/files/NP/S/2015/03/PS15032500193.jpg"
-            )
-            FollowerListItem(
-                name = "차무식",
-                timestamp = "1시간 전",
-                imageUrl = "https://newsimg-hams.hankookilbo.com/2023/03/24/4531dada-e9cf-4775-951c-902e3558ca41.jpg"
-            )
+
+            recentFollows.forEach { notification ->
+                NotificationItem(notification = notification)
+            }
         }
     }
 }
@@ -139,7 +178,7 @@ fun MainHomeScreen(
 @Composable
 fun AppBottomNavigation(
     selectedTab: String,
-    onCommunityClick: () -> Unit
+    onTestClick: (String) -> Unit
 ) { // "selectedTab" 파라미터 추가
     Surface(
         modifier = Modifier
@@ -163,22 +202,22 @@ fun AppBottomNavigation(
                 if (selectedTab == "ALARM") R.drawable.selected_alarm else R.drawable.alarm
 
             CustomIconButton(
-                onClick = { /*TODO: 홈 화면으로 이동*/ },
+                onClick = { onTestClick("Home") },
                 iconRes = homeIcon,
                 description = "메인 홈"
             )
             CustomIconButton(
-                onClick = onCommunityClick,
+                onClick = { onTestClick("Community") },
                 iconRes = peopleIcon,
                 description = "매칭"
             )
             CustomIconButton(
-                onClick = { /*TODO: 검색 화면으로 이동*/ },
+                onClick = { onTestClick("Search") },
                 iconRes = searchIcon,
                 description = "검색"
             )
             CustomIconButton(
-                onClick = { /*TODO: 알림 화면으로 이동*/ },
+                onClick = { onTestClick("Notification") },
                 iconRes = alarmIcon,
                 description = "알림"
             )
@@ -228,7 +267,7 @@ private fun CustomIconButton(
 
 @Composable
 fun ProfileImageWithStatus(
-    model: Any,
+    model: Any? = null,
     isOnline: Boolean,
     modifier: Modifier = Modifier,
     onMyPageClick: () -> Unit
@@ -244,6 +283,8 @@ fun ProfileImageWithStatus(
             model = model,
             contentDescription = "프로필 사진",
             contentScale = ContentScale.Crop,
+            placeholder = painterResource(R.drawable.test_profile),
+            error = painterResource(R.drawable.test_profile),
             modifier = Modifier
                 .matchParentSize() // 부모(Box) 크기에 맞춤
                 .clip(RoundedCornerShape(15.dp)) // 이미지를 원형으로 자름
@@ -262,176 +303,140 @@ fun ProfileImageWithStatus(
     }
 }
 
-@Composable
-fun MatchingRequestCard() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp)
-            .padding(horizontal = 28.dp), // 소제목과의 간격
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF4285F4) // 파란색 배경
-        )
-    ) {
-        Column(
-            // 카드 내부 콘텐츠들을 위한 여백
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = "제주도 하이킹 함께 하실 분!",
-                color = Color.White,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically // 아이콘과 텍스트를 세로 중앙 정렬
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.clock),
-                    contentDescription = "남은 시간",
-                    tint = Color.White,
-                    modifier = Modifier.size(20.dp) // 아이콘 크기 조절
-                )
-
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Text(
-                    text = "수락/거절까지 12시간 30분 남음",
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White
-                )
-            ) {
-                Column(
-                    modifier = Modifier.padding(12.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        // 프로필 사진
-                        AsyncImage(
-                            model = "https://newsimg-hams.hankookilbo.com/2023/03/24/4531dada-e9cf-4775-951c-902e3558ca41.jpg",
-                            contentDescription = "신청자 프로필 사진",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(48.dp)
-                                .clip(RoundedCornerShape(15.dp))
-                        )
-
-                        // 사진과 이름 사이 간격
-                        Spacer(modifier = Modifier.width(12.dp))
-
-                        // 이름과 태그
-                        Column(
-                            modifier = Modifier.weight(1f) // 남는 공간을 모두 차지
-                        ) {
-                            Text(
-                                text = "차무식",
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Black
-                            )
-                            Text(
-                                text = "필리핀",
-                                fontSize = 12.sp,
-                                color = Color.Gray
-                            )
-                        }
-
-                        // 지원서 보기 텍스트
-                        Text(
-                            text = "지원서 보기 >",
-                            fontSize = 12.sp,
-                            color = Color.Gray
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        // 수락 버튼
-                        Button(
-                            onClick = { /*TODO*/ },
-                            modifier = Modifier.weight(2f), // 남은 공간의 절반 차지
-                            shape = RoundedCornerShape(20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF4285F4), // 더 진한 파란색
-                                contentColor = Color.White
-                            )
-                        ) {
-                            Text("수락")
-                        }
-
-                        // 거절 버튼
-                        Button(
-                            onClick = { /*TODO*/ },
-                            modifier = Modifier.weight(1f), // 남은 공간의 절반 차지
-                            shape = RoundedCornerShape(20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFEBEFFA),
-                                contentColor = Color.Gray
-                            )
-                        ) {
-                            Text("거절")
-                        }
-                    }
-                }
-
-            }
-        }
-    }
-}
-
-@Composable
-fun FollowerListItem(name: String, timestamp: String, imageUrl: String) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp)
-            .padding(horizontal = 24.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        )
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            ProfileImageWithStatus(model = imageUrl, onMyPageClick = {}, isOnline = true)
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column {
-                Text(
-                    text = "${name}님께서 팔로우를 하셨습니다.",
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
-                )
-                Text(
-                    text = timestamp,
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
-            }
-        }
-    }
-}
+//@Composable
+//fun MatchingRequestCard() {
+//    Card(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(top = 8.dp)
+//            .padding(horizontal = 28.dp), // 소제목과의 간격
+//        shape = RoundedCornerShape(16.dp),
+//        colors = CardDefaults.cardColors(
+//            containerColor = Color(0xFF4285F4) // 파란색 배경
+//        )
+//    ) {
+//        Column(
+//            // 카드 내부 콘텐츠들을 위한 여백
+//            modifier = Modifier.padding(16.dp)
+//        ) {
+//            Text(
+//                text = "제주도 하이킹 함께 하실 분!",
+//                color = Color.White,
+//                fontSize = 12.sp,
+//                fontWeight = FontWeight.Bold
+//            )
+//
+//            Spacer(modifier = Modifier.height(8.dp))
+//
+//            Row(
+//                verticalAlignment = Alignment.CenterVertically // 아이콘과 텍스트를 세로 중앙 정렬
+//            ) {
+//                Icon(
+//                    painter = painterResource(id = R.drawable.clock),
+//                    contentDescription = "남은 시간",
+//                    tint = Color.White,
+//                    modifier = Modifier.size(20.dp) // 아이콘 크기 조절
+//                )
+//
+//                Spacer(modifier = Modifier.width(10.dp))
+//
+//                Text(
+//                    text = "수락/거절까지 12시간 30분 남음",
+//                    color = Color.White,
+//                    fontSize = 18.sp,
+//                    fontWeight = FontWeight.Bold
+//                )
+//            }
+//
+//            Spacer(modifier = Modifier.height(16.dp))
+//
+//            Card(
+//                modifier = Modifier.fillMaxWidth(),
+//                shape = RoundedCornerShape(12.dp),
+//                colors = CardDefaults.cardColors(
+//                    containerColor = Color.White
+//                )
+//            ) {
+//                Column(
+//                    modifier = Modifier.padding(12.dp)
+//                ) {
+//                    Row(
+//                        modifier = Modifier.padding(12.dp),
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        // 프로필 사진
+//                        AsyncImage(
+//                            model = "https://newsimg-hams.hankookilbo.com/2023/03/24/4531dada-e9cf-4775-951c-902e3558ca41.jpg",
+//                            contentDescription = "신청자 프로필 사진",
+//                            contentScale = ContentScale.Crop,
+//                            modifier = Modifier
+//                                .size(48.dp)
+//                                .clip(RoundedCornerShape(15.dp))
+//                        )
+//
+//                        // 사진과 이름 사이 간격
+//                        Spacer(modifier = Modifier.width(12.dp))
+//
+//                        // 이름과 태그
+//                        Column(
+//                            modifier = Modifier.weight(1f) // 남는 공간을 모두 차지
+//                        ) {
+//                            Text(
+//                                text = "차무식",
+//                                fontWeight = FontWeight.Bold,
+//                                color = Color.Black
+//                            )
+//                            Text(
+//                                text = "필리핀",
+//                                fontSize = 12.sp,
+//                                color = Color.Gray
+//                            )
+//                        }
+//
+//                        // 지원서 보기 텍스트
+//                        Text(
+//                            text = "지원서 보기 >",
+//                            fontSize = 12.sp,
+//                            color = Color.Gray
+//                        )
+//                    }
+//
+//                    Spacer(modifier = Modifier.height(8.dp))
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        // 수락 버튼
+//                        Button(
+//                            onClick = { /*TODO*/ },
+//                            modifier = Modifier.weight(2f), // 남은 공간의 절반 차지
+//                            shape = RoundedCornerShape(20.dp),
+//                            colors = ButtonDefaults.buttonColors(
+//                                containerColor = Color(0xFF4285F4), // 더 진한 파란색
+//                                contentColor = Color.White
+//                            )
+//                        ) {
+//                            Text("수락")
+//                        }
+//
+//                        // 거절 버튼
+//                        Button(
+//                            onClick = { /*TODO*/ },
+//                            modifier = Modifier.weight(1f), // 남은 공간의 절반 차지
+//                            shape = RoundedCornerShape(20.dp),
+//                            colors = ButtonDefaults.buttonColors(
+//                                containerColor = Color(0xFFEBEFFA),
+//                                contentColor = Color.Gray
+//                            )
+//                        ) {
+//                            Text("거절")
+//                        }
+//                    }
+//                }
+//
+//            }
+//        }
+//    }
+//}

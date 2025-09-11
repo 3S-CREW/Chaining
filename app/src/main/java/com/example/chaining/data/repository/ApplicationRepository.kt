@@ -2,6 +2,7 @@ package com.example.chaining.data.repository
 
 
 import com.example.chaining.domain.model.Application
+import com.example.chaining.domain.model.Notification
 import com.example.chaining.domain.model.UserSummary
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -49,6 +50,22 @@ class ApplicationRepository @Inject constructor(
             // 3. users/{uid}/myApplications/{applicationId} = true
             "/users/$uid/applications/$applicationId" to newApplication
         )
+
+        val postOwnerId = application.owner.id // RecruitPost 작성자의 UID라고 가정
+        val newNotificationKey = rootRef.child("notifications")
+            .child(postOwnerId).push().key ?: error("알림 ID 생성 실패")
+        val notification = Notification(
+            id = newNotificationKey,
+            type = "application",
+            sender = application.applicant,
+            postId = application.postId,
+            applicationId = applicationId,
+            createdAt = System.currentTimeMillis(),
+            isRead = false,
+            uid = postOwnerId
+        )
+
+        updates["/notifications/$postOwnerId/$newNotificationKey"] = notification
 
         // 원자적 업데이트 수행
         rootRef.updateChildren(updates).await()
@@ -130,6 +147,21 @@ class ApplicationRepository @Inject constructor(
             // 3. users/{uid}/myApplications/{applicationId}
             "/users/${application.applicant.id}/applications/${application.applicationId}/status" to value
         )
+
+        val newNotificationKey = rootRef.child("notifications")
+            .child(application.applicant.id).push().key ?: error("알림 ID 생성 실패")
+        val notification = Notification(
+            id = newNotificationKey,
+            type = "status_update",
+            sender = application.owner,  // 모집글 작성자
+            postId = application.postId,
+            applicationId = application.applicationId,
+            status = value,
+            createdAt = System.currentTimeMillis(),
+            isRead = false,
+            uid = application.applicant.id
+        )
+        updates["/notifications/${application.applicant.id}/$newNotificationKey"] = notification
 
         // 원자적 업데이트 수행
         rootRef.updateChildren(updates).await()
