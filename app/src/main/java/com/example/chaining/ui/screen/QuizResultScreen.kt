@@ -4,10 +4,27 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,23 +33,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.viewmodel.QuizViewModel
+import com.example.chaining.viewmodel.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizResultScreen(
-    quizViewModel: QuizViewModel, // 공유되는 ViewModel
-    onNavigateToMyPage: () -> Unit
+    quizViewModel: QuizViewModel = hiltViewModel(), // 공유되는 ViewModel
+    onNavigateToMyPage: () -> Unit,
+    userViewModel: UserViewModel = hiltViewModel()
 ) {
+    val userState by userViewModel.user.collectAsState()
     val finalLevel by quizViewModel.finalLevel
     val totalScore by quizViewModel.totalScore
     val language by quizViewModel.currentLanguage
     val isKoreanQuiz = language == "KOREAN"
     val topBarTitle = if (isKoreanQuiz) "Quiz Result" else "퀴즈 결과"
-    val mainTitle = if (isKoreanQuiz) "Nickname's Korean Level" else "닉네임님의 영어 레벨"
+    val mainTitle =
+        if (isKoreanQuiz) "${userState?.nickname}'s Korean Level" else "${userState?.nickname}님의 영어 레벨"
     val scoreLabel = if (isKoreanQuiz) "Total Score" else "총점"
     val scoreUnit = if (isKoreanQuiz) "pts" else "점"
-    val descriptionText = if (isKoreanQuiz) "The quiz consists of 3 types from LV 1 to 5." else "LV 1~5, 3가지 유형으로 출제되었습니다."
+    val descriptionText =
+        if (isKoreanQuiz) "The quiz consists of 3 types from LV 1 to 5." else "LV 1~5, 3가지 유형으로 출제되었습니다."
     val confirmButtonText = if (isKoreanQuiz) "Confirm" else "확인"
 
     // 프로그레스 바 애니메이션을 위한 상태
@@ -59,7 +82,7 @@ fun QuizResultScreen(
                     .clip(RoundedCornerShape(bottomEnd = 20.dp))
                     .background(Color(0xFF4A526A)),
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 Text(
                     text = "$topBarTitle",
                     modifier = Modifier.weight(1f),
@@ -85,7 +108,12 @@ fun QuizResultScreen(
 
 
             // 레벨 표시
-            Text("LV. $finalLevel", fontSize = 40.sp, fontWeight = FontWeight.Bold, color = Color(0xFF4285F4))
+            Text(
+                "LV. $finalLevel",
+                fontSize = 40.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF4285F4)
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -119,7 +147,10 @@ fun QuizResultScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = onNavigateToMyPage,
+                onClick = {
+                    quizViewModel.saveTestResult()
+                    onNavigateToMyPage()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp)

@@ -1,7 +1,6 @@
 package com.example.chaining.ui.component
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,12 +28,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chaining.R
 import com.example.chaining.domain.model.LanguagePref
+import com.example.chaining.ui.screen.BorderColor
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,13 +44,7 @@ fun TestButton(
     preferredLanguages: List<LanguagePref>,
     onTestClick: (String) -> Unit
 ) {
-    val languageText = if (preferredLanguages.isNotEmpty()) {
-        preferredLanguages.joinToString(" · ") {
-            "${it.language} Lv.${it.level}"
-        }
-    } else {
-        "선호하는 언어 수준 (테스트 미응시)"
-    }
+    val languageText = "언어 능력 테스트 및 결과 확인"
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
@@ -57,14 +52,10 @@ fun TestButton(
 
     Button(
         onClick = { isSheetOpen = true },
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(width = 1.dp, color = BorderColor),
         modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
-            .border(
-                width = 1.dp,
-                color = Color(0xFF637387),
-                shape = RoundedCornerShape(12.dp)
-            ),
+            .fillMaxWidth(),
         contentPadding = PaddingValues(
             vertical = 14.dp,
             horizontal = 12.dp
@@ -113,10 +104,15 @@ fun TestButton(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                val supportedLanguages = listOf("한국어", "영어") //, "일본어", "중국어")
+                val supportedLanguages = listOf("한국어", "영어")
 
                 supportedLanguages.forEach { language ->
-                    val pref = preferredLanguages.find { it.language == language }
+                    val dataLanguage = when (language) {
+                        "한국어" -> "KOREAN"
+                        "영어" -> "ENGLISH"
+                        else -> ""
+                    }
+                    val pref = preferredLanguages.find { it.language == dataLanguage }
                     LanguageTestItem(
                         language = language,
                         level = pref?.level,
@@ -158,12 +154,13 @@ fun LanguageTestItem(
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            if (level != null && level > 0) {
+            if (level != null) {
                 LinearProgressIndicator(
-                    progress = level / 10f,
+                    progress = { level / 10f },
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(8.dp),
+                        .fillMaxWidth(0.9f)
+                        .height(8.dp)
+                        .clip(RoundedCornerShape(4.dp)),
                     color = Color(0xFF637387),
                     trackColor = Color(0xFFE0E0E0)
                 )
@@ -197,7 +194,7 @@ fun LanguageTestItem(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         ) {
             Text(
-                text = if (level != null && level > 0) "재응시" else "응시하기",
+                text = if (level != null) "재응시" else "응시하기",
                 color = Color.White,
                 fontSize = 14.sp
             )

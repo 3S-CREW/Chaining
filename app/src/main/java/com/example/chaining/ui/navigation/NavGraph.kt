@@ -90,7 +90,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     }
                 })
         }
-        
+
         composable(Screen.MainHome.route) {
             MainHomeScreen(
                 onBackClick = { navController.navigate("mainHome") },
@@ -221,7 +221,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
                 QuizResultScreen(
                     quizViewModel = quizViewModel,
-                    onNavigateToMyPage = { /* TODO: 마이페이지로 이동 */ }
+                    onNavigateToMyPage = { navController.navigate(Screen.MyPage.route) }
                 )
             }
         }
