@@ -57,42 +57,88 @@ class UserRepository @Inject constructor(
     /** 1. Firebase → Room 동기화 후 Flow 제공 */
     /** Read (실시간 구독 - 내 계정, 변경사항이 있을 때마다 계속 가져오기) */
     fun observeMyUser(): Flow<User?> = callbackFlow {
-        val uid = uidOrThrow()
-        val ref = usersRef().child(uid)
+        var valueEventListener: ValueEventListener? = null
+        var userRef: DatabaseReference? = null
 
-        val listener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val user = snapshot.getValue(User::class.java)?.copy(id = uid)
-                if (user != null) {
-                    // Firebase → Room DB에 저장
-                    val entity = user.toEntity()
-                    CoroutineScope(Dispatchers.IO).launch {
-                        userDao.insertUser(entity)
+        val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            valueEventListener?.let { userRef?.removeEventListener(it) }
+
+            val currentUser = firebaseAuth.currentUser
+            if (currentUser == null) {
+                trySend(null)
+            } else {
+                val uid = currentUser.uid
+                userRef = usersRef().child(uid)
+
+                valueEventListener = object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val user = snapshot.getValue(User::class.java)?.copy(id = uid)
+
+                        trySend(user)
+
+                        user?.let {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                userDao.insertUser(it.toEntity())
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        // 실제 에러가 발생하면 Flow를 닫음
+                        close(error.toException())
                     }
                 }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                close(error.toException())
+                // 새로 생성한 ValueEventListener를 등록
+                userRef?.addValueEventListener(valueEventListener!!)
             }
         }
 
-        ref.addValueEventListener(listener)
+        // AuthStateListener 등록
+        auth.addAuthStateListener(authStateListener)
 
-        // Room DB Flow 구독 → UI에 전달
-        val dbFlow = userDao.getUser(uid)
-        val job = CoroutineScope(Dispatchers.IO).launch {
-            dbFlow.collect { entity ->
-                val user = entity?.toUser() // UserEntity → User 변환
-                trySend(user).isSuccess
-            }
-        }
-
+        // 4. Flow의 관찰(collect)이 중단되면 모든 리스너를 제거
         awaitClose {
-            ref.removeEventListener(listener)
-            job.cancel()
+            valueEventListener?.let { userRef?.removeEventListener(it) }
+            auth.removeAuthStateListener(authStateListener)
         }
     }
+//    fun observeMyUser(): Flow<User?> = callbackFlow {
+//        val uid = uidOrThrow()
+//        val ref = usersRef().child(uid)
+//
+//        val listener = object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                val user = snapshot.getValue(User::class.java)?.copy(id = uid)
+//                if (user != null) {
+//                    // Firebase → Room DB에 저장
+//                    val entity = user.toEntity()
+//                    CoroutineScope(Dispatchers.IO).launch {
+//                        userDao.insertUser(entity)
+//                    }
+//                }
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                close(error.toException())
+//            }
+//        }
+//
+//        ref.addValueEventListener(listener)
+//
+//        // Room DB Flow 구독 → UI에 전달
+//        val dbFlow = userDao.getUser(uid)
+//        val job = CoroutineScope(Dispatchers.IO).launch {
+//            dbFlow.collect { entity ->
+//                val user = entity?.toUser() // UserEntity → User 변환
+//                trySend(user).isSuccess
+//            }
+//        }
+//
+//        awaitClose {
+//            ref.removeEventListener(listener)
+//            job.cancel()
+//        }
+//    }
 
     /** Update (관심글 추가 / 삭제) */
     suspend fun toggleLikedPost(uid: String, postId: String) {
