@@ -1,5 +1,6 @@
 package com.example.chaining.ui.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,6 +47,7 @@ import com.example.chaining.ui.component.SaveButton
 import com.example.chaining.ui.component.ownerProfile
 import com.example.chaining.viewmodel.ApplicationViewModel
 import com.example.chaining.viewmodel.UserViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun JoinPostScreen(
@@ -52,9 +56,17 @@ fun JoinPostScreen(
     userViewModel: UserViewModel = hiltViewModel(),
     post: RecruitPost
 ) {
+    val context = LocalContext.current
+
     val userState by userViewModel.user.collectAsState()
 
     var introduction by remember { mutableStateOf("") }
+
+    LaunchedEffect(key1 = true) {
+        applicationViewModel.toastEvent.collectLatest { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        }
+    }
 
     Scaffold(
         topBar = {

@@ -1,8 +1,8 @@
 package com.example.chaining.ui.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -37,13 +35,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
-import com.example.chaining.domain.model.LanguagePref
 import com.example.chaining.domain.model.LocationPref
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.domain.model.UserSummary
@@ -51,6 +49,7 @@ import com.example.chaining.ui.component.DatePickerFieldToModal
 import com.example.chaining.ui.component.SaveButton
 import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun CreatePostScreen(
@@ -61,12 +60,20 @@ fun CreatePostScreen(
     type: String // "생성" or "수정"
 
 ) {
+    val context = LocalContext.current
+
     val userState by userViewModel.user.collectAsState()
     val postState by postViewModel.post.collectAsState()
 
     LaunchedEffect(key1 = type, key2 = postId) {
         if (type == "수정" && postId != null) {
             postViewModel.fetchPost(postId)
+        }
+    }
+
+    LaunchedEffect(key1 = true) {
+        postViewModel.toastEvent.collectLatest { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -84,8 +91,16 @@ fun CreatePostScreen(
     var closeAt by remember { mutableStateOf<Long?>(null) }
     var kakaoOpenChatUrl by remember { mutableStateOf("") }
 
-    val languages = listOf("한국어", "영어", "중국어", "일본어")
     val buttonText = if (type == "생성") "작성 완료" else "수정 완료"
+
+    LaunchedEffect(userState) {
+        if (type == "생성") {
+            userState?.let { user ->
+                preferredDestinations = user.preferredDestinations
+                preferredLanguages = user.preferredLanguages
+            }
+        }
+    }
 
     LaunchedEffect(postState) {
         val currentPost = postState
@@ -201,37 +216,6 @@ fun CreatePostScreen(
                 selectedOption = hasCar,
                 onOptionSelected = { hasCar = it }
             )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text("선호 언어 선택 및 레벨", fontSize = 16.sp)
-            languages.forEach { lang ->
-                val currentLevel = preferredLanguages[lang]?.level
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 4.dp)
-                ) {
-                    Text(lang, modifier = Modifier.width(60.dp))
-                    (1..10).forEach { level ->
-                        val selected = currentLevel == level
-                        Button(
-                            onClick = {
-                                preferredLanguages =
-                                    if (selected) preferredLanguages - lang
-                                    else preferredLanguages + (lang to LanguagePref(lang, level))
-                            },
-                            modifier = Modifier
-                                .size(28.dp)
-                                .padding(1.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (selected) Color(0xFF4285F4) else Color.LightGray
-                            ),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text("$level", fontSize = 10.sp, color = Color.White)
-                        }
-                    }
-                }
-            }
 
             Spacer(modifier = Modifier.height(20.dp))
             // 오픈 채팅 링크 입력창

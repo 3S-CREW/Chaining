@@ -187,7 +187,7 @@ fun LanguageTestItem(
             onClick = onTestClick,
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (level != null && level > 0) Color(0xFF637387) else Color(
+                containerColor = if (level != null) Color(0xFF637387) else Color(
                     0xFF4CAF50
                 )
             ),

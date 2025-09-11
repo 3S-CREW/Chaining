@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.chaining.data.repository.ApplicationRepository
 import com.example.chaining.domain.model.Application
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,6 +25,9 @@ class ApplicationViewModel @Inject constructor(
     private val _statusUpdates = MutableStateFlow<List<Application>>(emptyList())
     val statusUpdates: StateFlow<List<Application>> = _statusUpdates
 
+    private val _toastEvent = MutableSharedFlow<String>()
+    val toastEvent = _toastEvent.asSharedFlow()
+
     init {
         // 기존 목록 조회
 //        fetchAllApplications()
@@ -37,15 +42,28 @@ class ApplicationViewModel @Inject constructor(
     }
 
     fun submitApplication(application: Application) = viewModelScope.launch {
-        val applicationId = repo.submitApplication(application)
+        val result = repo.submitApplication(application)
+        result.onSuccess { returnedApplicationId ->
+            val updatedList = _applications.value.toMutableList()
+            val newApplicationForUi = application.copy(
+                applicationId = returnedApplicationId,
+                createdAt = System.currentTimeMillis()
+            )
+            updatedList.add(newApplicationForUi)
+            _applications.value = updatedList
 
-        val updatedList = _applications.value.toMutableList()
-        val newApplication = application.copy(
-            applicationId = applicationId,
-            createdAt = System.currentTimeMillis()
-        )
-        updatedList.add(newApplication)
-        _applications.value = updatedList
+            _toastEvent.emit("지원서가 성공적으로 제출되었습니다.")
+
+        }.onFailure { exception ->
+            _toastEvent.emit(exception.message ?: "지원서 제출에 실패했습니다.")
+        }
+//        val updatedList = _applications.value.toMutableList()
+//        val newApplication = application.copy(
+//            applicationId = applicationId,
+//            createdAt = System.currentTimeMillis()
+//        )
+//        updatedList.add(newApplication)
+//        _applications.value = updatedList
     }
 
     fun fetchApplication(applicationId: String) = viewModelScope.launch {

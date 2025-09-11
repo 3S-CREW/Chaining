@@ -3,10 +3,10 @@ package com.example.chaining.data.repository
 
 import android.util.Log
 import com.example.chaining.domain.model.RecruitPost
-import com.example.chaining.domain.model.UserSummary
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseException
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.channels.awaitClose
@@ -27,29 +27,41 @@ class RecruitPostRepository @Inject constructor(
     private fun postsRef(): DatabaseReference = rootRef.child("posts")
 
     /** Create (신규 모집글 생성) */
-    suspend fun createPost(post: RecruitPost): String {
-        val uid = uidOrThrow()
+    suspend fun createPost(post: RecruitPost): Result<String> {
+        return try {
+            val uid = uidOrThrow()
 
-        val postRef = postsRef().push()
-        val postId = postRef.key ?: error("게시글 ID 생성 실패")
+            val postRef = postsRef().push()
+            val postId = postRef.key ?: error("게시글 ID 생성 실패")
 
-        val newPost = post.copy(
-            postId = postId,
-            createdAt = System.currentTimeMillis(),
-            owner = UserSummary(id = uid)
-        )
+            val finalOwner = post.owner.copy(id = uid)
 
-        val updates = hashMapOf<String, Any?>(
-            // 1. posts 노드에 모집글 저장
-            "/posts/$postId" to newPost,
+            val newPost = post.copy(
+                postId = postId,
+                createdAt = System.currentTimeMillis(),
+                owner = finalOwner
+            )
 
-            // 2. user의 recruitPosts 노드에 모집글 저장
-            "/users/$uid/recruitPosts/$postId" to newPost
-        )
+            val updates = hashMapOf<String, Any?>(
+                // 1. posts 노드에 모집글 저장
+                "/posts/$postId" to newPost,
 
-        rootRef.updateChildren(updates).await()
+                // 2. user의 recruitPosts 노드에 모집글 저장
+                "/users/$uid/recruitPosts/$postId" to newPost
+            )
 
-        return postId
+            rootRef.updateChildren(updates).await()
+
+            Result.success(postId)
+        } catch (e: DatabaseException) {
+            if (e.message?.contains("Permission denied", ignoreCase = true) == true) {
+                Result.failure(Exception("먼저 마이페이지에서 프로필 정보를 모두 입력하세요."))
+            } else {
+                Result.failure(Exception("데이터베이스 오류가 발생했습니다: ${e.message}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     /** Read (단건) */
