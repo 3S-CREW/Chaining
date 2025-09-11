@@ -1,5 +1,6 @@
 package com.example.chaining.ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -18,6 +19,7 @@ fun FeedItem(
     modifier: Modifier = Modifier,
     region: String,
     place: String,
+    address: String,
     imageUrl: String,
 ) {
     Card(
@@ -25,21 +27,10 @@ fun FeedItem(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFF4285F4) // 파란색 배경
-        )
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            // 지역명과 명소명
-            Text(
-                text = "${region}에 위치한 $place",
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-
+        Column{
             // 사진
             AsyncImage(
                 model = imageUrl,
@@ -47,10 +38,34 @@ fun FeedItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp) // 사진의 높이를 지정
-                    .clip(RoundedCornerShape(12.dp)),
+                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)),
                 contentScale = ContentScale.Crop // 이미지가 공간을 꽉 채우도록 설정
             )
+            // 2. 하단 텍스트 영역 (파란색 배경)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF4285F4))
+                    .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp))
+                    .padding(16.dp) // 텍스트와 배경 사이의 내부 여백
+            ) {
+                // 지역명과 명소명
+                Text(
+                    text = "${region}에 위치한 $place",
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
 
+                // 주소
+                Text(
+                    text = "주소: $address",
+                    color = Color.White.copy(alpha = 0.8f),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
         }
     }
 }

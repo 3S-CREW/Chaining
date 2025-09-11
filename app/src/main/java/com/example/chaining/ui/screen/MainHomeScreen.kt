@@ -220,7 +220,7 @@ fun AppBottomNavigation(
                 description = "매칭"
             )
             CustomIconButton(
-                onClick = { onTestClick("Search") },
+                onClick = { onTestClick("Feed") },
                 iconRes = searchIcon,
                 description = "피드"
             )
