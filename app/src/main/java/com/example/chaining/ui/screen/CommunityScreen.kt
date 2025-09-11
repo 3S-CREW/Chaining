@@ -1,6 +1,7 @@
 package com.example.chaining.ui.screen
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -101,7 +102,9 @@ fun CommunityScreen(
             )
         }
     }
-
+    BackHandler(enabled = true) {
+        onBackClick()
+    }
     Scaffold(
         topBar = {
             Row(

@@ -1,5 +1,6 @@
 package com.example.chaining.ui.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -49,9 +50,15 @@ import com.example.chaining.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainHomeScreen(
+    onBackClick: () -> Unit,
+    onMainHomeClick: () -> Unit,
     onMyPageClick: () -> Unit,
-    onCommunityClick: () -> Unit
+    onCommunityClick: () -> Unit,
+    onFeedClick: () -> Unit
 ) {
+    BackHandler(enabled = true) {
+        onBackClick()
+    }
     Scaffold(
         topBar = {
             // 상단 앱 바 구현
@@ -84,7 +91,10 @@ fun MainHomeScreen(
         },
         bottomBar = {
             // 하단 네비게이션 바 구현
-            AppBottomNavigation(selectedTab = "HOME", onCommunityClick = onCommunityClick)
+            AppBottomNavigation(selectedTab = "HOME",
+                onMainHomeClick = onMainHomeClick,
+                onCommunityClick = onCommunityClick,
+                onFeedClick = onFeedClick)
         },
     ) { innerPadding ->
         // 중앙 콘텐츠 구현 (환영 메시지, 매칭 카드, 팔로우 목록 등)
@@ -139,7 +149,9 @@ fun MainHomeScreen(
 @Composable
 fun AppBottomNavigation(
     selectedTab: String,
-    onCommunityClick: () -> Unit
+    onMainHomeClick: () -> Unit,
+    onCommunityClick: () -> Unit,
+    onFeedClick: () -> Unit
 ) { // "selectedTab" 파라미터 추가
     Surface(
         modifier = Modifier
@@ -163,7 +175,7 @@ fun AppBottomNavigation(
                 if (selectedTab == "ALARM") R.drawable.selected_alarm else R.drawable.alarm
 
             CustomIconButton(
-                onClick = { /*TODO: 홈 화면으로 이동*/ },
+                onClick = onMainHomeClick,
                 iconRes = homeIcon,
                 description = "메인 홈"
             )
@@ -173,9 +185,9 @@ fun AppBottomNavigation(
                 description = "매칭"
             )
             CustomIconButton(
-                onClick = { /*TODO: 검색 화면으로 이동*/ },
+                onClick = onFeedClick,
                 iconRes = searchIcon,
-                description = "검색"
+                description = "피드"
             )
             CustomIconButton(
                 onClick = { /*TODO: 알림 화면으로 이동*/ },

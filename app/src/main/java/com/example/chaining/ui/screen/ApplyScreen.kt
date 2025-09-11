@@ -57,6 +57,9 @@ import com.example.chaining.viewmodel.RecruitPostViewModel
 @Composable
 fun ApplyScreen(
     onBackClick: () -> Unit = {},
+    onMainHomeClick: () -> Unit,
+    onCommunityClick: () -> Unit,
+    onFeedClick: () -> Unit,
     type: String, // My, Owner
     applicationId: String,
     applicationViewModel: ApplicationViewModel = hiltViewModel(),
@@ -124,7 +127,10 @@ fun ApplyScreen(
             }
         },
         bottomBar = {
-            AppBottomNavigation(selectedTab = "NONE", onCommunityClick = {})
+            AppBottomNavigation(selectedTab = "NONE",
+                onMainHomeClick = onMainHomeClick,
+                onCommunityClick = onCommunityClick,
+                onFeedClick = onFeedClick)
         },
         // 전체 기본 배경은 흰색으로 둡니다.
         containerColor = Color.White

@@ -1,6 +1,7 @@
 package com.example.chaining.ui.screen
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,7 +39,10 @@ import com.example.chaining.viewmodel.FeedViewModel
 
 @Composable
 fun FeedScreen(
-    onBackClick: () -> Unit = {},
+    onBackClick: () -> Unit,
+    onMainHomeClick: () -> Unit,
+    onFeedClick: () -> Unit,
+    onCommunityClick: () -> Unit,
     feedViewModel: FeedViewModel = hiltViewModel()
 ){
     // ViewModel의 randomizedFeedItems 상태를 구독하여 UI에 자동 반영
@@ -47,6 +51,9 @@ fun FeedScreen(
     // 화면이 처음 로드될 때 API를 통해 관광 정보를 가져옵니다.
     LaunchedEffect(Unit) {
         feedViewModel.fetchTourItems() // 전국 데이터 로드
+    }
+    BackHandler(enabled = true) {
+        onBackClick()
     }
     Scaffold(
         //  topBar에 로그인 제목을 넣습니다.
@@ -85,7 +92,11 @@ fun FeedScreen(
             }
         },
         bottomBar = {
-            AppBottomNavigation(selectedTab = "NONE", onCommunityClick = {})
+            AppBottomNavigation(selectedTab = "NONE",
+                onMainHomeClick = onMainHomeClick,
+                onCommunityClick = onCommunityClick,
+                onFeedClick = onFeedClick
+            )
         },
         containerColor = Color(0xFFF3F6FF)
     ) { innerPadding ->
