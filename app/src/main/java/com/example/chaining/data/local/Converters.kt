@@ -43,4 +43,12 @@ class Converters {
     @TypeConverter
     fun toFollowMap(value: String): Map<String, UserSummary> =
         if (value.isEmpty()) emptyMap() else Json.decodeFromString(value)
+
+    @TypeConverter
+    fun fromUserSummary(value: UserSummary?): String =
+        value?.let { Json.encodeToString(it) } ?: ""
+
+    @TypeConverter
+    fun toUserSummary(value: String?): UserSummary? =
+        if (value.isNullOrEmpty()) null else Json.decodeFromString(value)
 }

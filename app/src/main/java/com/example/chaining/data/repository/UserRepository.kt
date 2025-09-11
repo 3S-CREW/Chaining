@@ -160,7 +160,7 @@ class UserRepository @Inject constructor(
             val notification = Notification(
                 id = newNotificationKey,
                 type = "follow",
-                senderId = myInfo.id,
+                sender = myInfo,
                 createdAt = System.currentTimeMillis(),
                 isRead = false,
                 uid = otherInfo.id

@@ -7,7 +7,7 @@ data class Notification(
     val type: String = "",          // 알림 종류
     val postId: String? = null,     // 관련 모집글
     val applicationId: String? = null, // 지원서일 경우 지원서 ID
-    val senderId: String? = null,   // 팔로우나 신청자 ID
+    val sender: UserSummary? = UserSummary(),   // 팔로우나 신청자
     val status: String? = null,     // 지원서 승인/거절 상태
     val createdAt: Long = 0L,       // 타임 스탬프
     @get:PropertyName("isRead")

@@ -57,7 +57,7 @@ class ApplicationRepository @Inject constructor(
         val notification = Notification(
             id = newNotificationKey,
             type = "application",
-            senderId = uid,
+            sender = application.applicant,
             postId = application.postId,
             applicationId = applicationId,
             createdAt = System.currentTimeMillis(),
@@ -153,7 +153,7 @@ class ApplicationRepository @Inject constructor(
         val notification = Notification(
             id = newNotificationKey,
             type = "status_update",
-            senderId = uidOrThrow(),  // 모집글 작성자
+            sender = application.owner,  // 모집글 작성자
             postId = application.postId,
             applicationId = application.applicationId,
             status = value,

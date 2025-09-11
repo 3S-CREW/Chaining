@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.domain.model.Notification
+import com.example.chaining.ui.component.FollowNotificationItem
 import com.example.chaining.viewmodel.NotificationViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -142,67 +143,78 @@ fun NotificationItem(notification: Notification) {
         SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault()).format(date)
     }
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (notification.isRead)
-                MaterialTheme.colorScheme.surface
-            else
-                MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
-        ),
-        elevation = CardDefaults.cardElevation(2.dp)
-    ) {
-        Column(modifier = Modifier.padding(14.dp)) {
-            // 알림 제목
-            Text(
-                text = when (notification.type) {
-                    "FOLLOW" -> "새 팔로우 알림"
-                    "APPLICATION" -> "지원서 알림"
-                    else -> "기타 알림"
-                },
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface
+    when (notification.type) {
+        "FOLLOW" -> {
+            FollowNotificationItem(
+                name = notification.sender?.id ?: "알 수 없음",
+                timestamp = formattedDate,
+                imageUrl = notification.sender?.profileImageUrl
+                    ?: "" // Notification 모델에 프로필 이미지 URL 있다고 가정
             )
+        }
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // 알림 상세 내용
-            Text(
-                text = when (notification.type) {
-                    "FOLLOW" -> "${notification.senderId ?: "알 수 없음"}님이 회원님을 팔로우하기 시작했습니다."
-                    "APPLICATION" -> when (notification.status) {
-                        "APPROVED" -> "회원님의 모집글에 지원서가 승인되었습니다."
-                        "REJECTED" -> "회원님의 모집글에 지원서가 거절되었습니다."
-                        else -> "새로운 지원서가 접수되었습니다."
-                    }
-
-                    else -> "알림을 확인하세요."
-                },
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            // 하단 정보 (작성자 / 날짜)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+        else -> {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (notification.isRead)
+                        MaterialTheme.colorScheme.surface
+                    else
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
+                ),
+                elevation = CardDefaults.cardElevation(2.dp)
             ) {
-                Text(
-                    text = "작성자: ${notification.senderId ?: "알 수 없음"}",
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = formattedDate,
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Column(modifier = Modifier.padding(14.dp)) {
+                    // 알림 제목
+                    Text(
+                        text = when (notification.type) {
+                            "APPLICATION" -> "지원서 알림"
+                            else -> "기타 알림"
+                        },
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // 알림 상세 내용
+                    Text(
+                        text = when (notification.type) {
+                            "APPLICATION" -> when (notification.status) {
+                                "APPROVED" -> "회원님의 모집글에 지원서가 승인되었습니다."
+                                "REJECTED" -> "회원님의 모집글에 지원서가 거절되었습니다."
+                                else -> "새로운 지원서가 접수되었습니다."
+                            }
+
+                            else -> "알림을 확인하세요."
+                        },
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    // 하단 정보 (작성자 / 날짜)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "작성자: ${notification.sender ?: "알 수 없음"}",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = formattedDate,
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             }
         }
     }
