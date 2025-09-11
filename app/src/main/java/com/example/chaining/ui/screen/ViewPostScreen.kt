@@ -49,12 +49,13 @@ fun ViewPostScreen(
     userViewModel: UserViewModel = hiltViewModel(),
     postViewModel: RecruitPostViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {},
-    onMainHomeClick: () -> Unit = {},
-    onCommunityClick: () -> Unit = {},
-    onFeedClick: () -> Unit = {},
     onJoinPostClick: (post: RecruitPost) -> Unit = {},
     onEditClick: (postId: String) -> Unit = {},
     onApplicationListClick: (postId: String) -> Unit = {},
+    onMainHomeClick: () -> Unit,
+    onCommunityClick: () -> Unit,
+    onFeedClick: () -> Unit,
+    onNotificationClick: () -> Unit
 ) {
     val userState by userViewModel.user.collectAsState()
     val post by postViewModel.post.collectAsState()
@@ -73,9 +74,7 @@ fun ViewPostScreen(
         }
         return
     }
-    BackHandler(enabled = true) {
-        onBackClick()
-    }
+
     Scaffold(
         topBar = {
             Row(
@@ -102,11 +101,14 @@ fun ViewPostScreen(
             }
         },
         bottomBar = {
-            AppBottomNavigation(selectedTab = "PEOPLE",
-                onMainHomeClick = onMainHomeClick,
-                onCommunityClick = onCommunityClick,
-                onFeedClick = onFeedClick)
-        },
+            AppBottomNavigation(selectedTab = "Community", onTestClick = { menu ->
+                when (menu) {
+                    "Home" -> onMainHomeClick()
+                    "Community" -> onCommunityClick()
+                    "Notification" -> onNotificationClick()
+                    "Feed" -> onFeedClick()
+                }
+            })         },
         containerColor = Color(0xFFF3F6FF)
     ) { innerPadding ->
         Column(

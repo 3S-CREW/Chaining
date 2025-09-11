@@ -5,6 +5,7 @@ import com.example.chaining.data.local.dao.UserDao
 import com.example.chaining.data.local.entity.UserEntity
 import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.LanguagePref
+import com.example.chaining.domain.model.Notification
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.domain.model.User
 import com.example.chaining.domain.model.UserSummary
@@ -152,6 +153,20 @@ class UserRepository @Inject constructor(
             // 팔로우 추가
             updates["/users/${myInfo.id}/following/${otherInfo.id}"] = otherInfo
             updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = myInfo
+
+
+            val newNotificationKey = rootRef.child("notifications")
+                .child(otherInfo.id).push().key ?: error("알림 ID 생성 실패")
+            val notification = Notification(
+                id = newNotificationKey,
+                type = "follow",
+                sender = myInfo,
+                createdAt = System.currentTimeMillis(),
+                isRead = false,
+                uid = otherInfo.id
+            )
+            println("피기" + notification)
+            updates["/notifications/${otherInfo.id}/$newNotificationKey"] = notification
         }
 
         // 원자적 업데이트 수행

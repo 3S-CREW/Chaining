@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.ui.login.LoginScreen
+import com.example.chaining.ui.notification.NotificationScreen
 import com.example.chaining.ui.screen.AdminLoginScreen
 import com.example.chaining.ui.screen.ApplicationsScreen
 import com.example.chaining.ui.screen.ApplyScreen
@@ -90,7 +91,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onMainHomeClick = { navController.navigate("mainHome") },
                 onMyPageClick = { navController.navigate("myPage") },
                 onCommunityClick = { navController.navigate("community") },
-                onFeedClick = { navController.navigate("feed") }
+                onFeedClick = { navController.navigate("feed") },
+                onNotificationClick = { navController.navigate(route = Screen.Notification.route) }
             )
         }
         composable(
@@ -151,7 +153,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 },
                 onMainHomeClick = { navController.navigate("mainHome") },
                 onCommunityClick = { navController.navigate("community") },
-                onFeedClick = { navController.navigate("feed")}
+                onFeedClick = { navController.navigate("feed")},
+                onNotificationClick = { navController.navigate(route = Screen.Notification.route) }
             )
         }
 
@@ -232,9 +235,6 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
             ApplyScreen(
                 onBackClick = { navController.popBackStack() },
-                onMainHomeClick = { navController.navigate("mainHome") },
-                onCommunityClick = { navController.navigate("community") },
-                onFeedClick = { navController.navigate("feed")},
                 type = type,
                 applicationId = applicationId
             )
@@ -245,7 +245,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onBackClick = { navController.navigate("mainHome") },
                 onMainHomeClick = { navController.navigate("mainHome") },
                 onCommunityClick = { navController.navigate("community") },
-                onFeedClick = { navController.navigate("feed")}
+                onFeedClick = { navController.navigate("feed")},
+                onNotificationClick = { navController.navigate(route = Screen.Notification.route) }
+
             )
         }
 
@@ -274,6 +276,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     )
                 },
             )
+        }
+
+        composable(route = Screen.Notification.route) {
+            NotificationScreen()
         }
     }
 }

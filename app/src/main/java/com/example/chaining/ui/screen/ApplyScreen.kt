@@ -57,9 +57,6 @@ import com.example.chaining.viewmodel.RecruitPostViewModel
 @Composable
 fun ApplyScreen(
     onBackClick: () -> Unit = {},
-    onMainHomeClick: () -> Unit,
-    onCommunityClick: () -> Unit,
-    onFeedClick: () -> Unit,
     type: String, // My, Owner
     applicationId: String,
     applicationViewModel: ApplicationViewModel = hiltViewModel(),
@@ -83,7 +80,7 @@ fun ApplyScreen(
             postViewModel.fetchPost(postId)
         }
     }
-    
+
     // post가 null이면 로딩 UI 표시
     if (application == null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -125,12 +122,6 @@ fun ApplyScreen(
                 // 제목을 완벽한 중앙에 맞추기 위한 빈 공간
                 Spacer(modifier = Modifier.width(48.dp))
             }
-        },
-        bottomBar = {
-            AppBottomNavigation(selectedTab = "NONE",
-                onMainHomeClick = onMainHomeClick,
-                onCommunityClick = onCommunityClick,
-                onFeedClick = onFeedClick)
         },
         // 전체 기본 배경은 흰색으로 둡니다.
         containerColor = Color.White
