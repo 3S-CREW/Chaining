@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.example.chaining.ui.screen.ProfileImageWithStatus
 
 @Composable
-fun FollowNotificationItem(name: String, timestamp: String, imageUrl: String) {
+fun FollowNotificationItem(name: String, timestamp: String, imageUrl: String?) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

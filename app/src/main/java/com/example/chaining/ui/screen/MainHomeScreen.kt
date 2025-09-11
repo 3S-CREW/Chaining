@@ -133,7 +133,7 @@ fun MainHomeScreen(
             FollowNotificationItem(
                 name = "강호동",
                 timestamp = "23분 전",
-                imageUrl = "https://spnimage.edaily.co.kr/images/photo/files/NP/S/2015/03/PS15032500193.jpg"
+                imageUrl = "https://firebasestorage.googleapis.com/v0/b/chaining-88dbd.firebasestorage.app/o/defaultImages%2Ftest_profile.png?alt=media&token=b36c48ed-43b2-4d31-b379-a61db7a9c185"
             )
             FollowNotificationItem(
                 name = "차무식",
@@ -236,7 +236,7 @@ private fun CustomIconButton(
 
 @Composable
 fun ProfileImageWithStatus(
-    model: Any,
+    model: Any? = null,
     isOnline: Boolean,
     modifier: Modifier = Modifier,
     onMyPageClick: () -> Unit
@@ -252,6 +252,8 @@ fun ProfileImageWithStatus(
             model = model,
             contentDescription = "프로필 사진",
             contentScale = ContentScale.Crop,
+            placeholder = painterResource(R.drawable.test_profile),
+            error = painterResource(R.drawable.test_profile),
             modifier = Modifier
                 .matchParentSize() // 부모(Box) 크기에 맞춤
                 .clip(RoundedCornerShape(15.dp)) // 이미지를 원형으로 자름

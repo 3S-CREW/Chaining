@@ -165,6 +165,7 @@ class UserRepository @Inject constructor(
                 isRead = false,
                 uid = otherInfo.id
             )
+            println("피기" + notification)
             updates["/notifications/${otherInfo.id}/$newNotificationKey"] = notification
         }
 

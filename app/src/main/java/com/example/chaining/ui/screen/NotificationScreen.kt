@@ -52,13 +52,13 @@ fun NotificationScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     var selectedTabIndex by remember { mutableStateOf(0) }
-    val tabTitles = listOf("전체", "팔로우", "지원서")
+    val tabTitles = listOf("팔로우", "지원서")
 
     // 알림 타입별 필터링
     val filteredNotifications = when (selectedTabIndex) {
-        1 -> notifications.filter { it.type == "FOLLOW" }
-        2 -> notifications.filter { it.type == "APPLICATION" }
-        else -> notifications
+        0 -> notifications.filter { it.type.equals("follow", ignoreCase = true) }
+        1 -> notifications.filter { it.type.equals("application", ignoreCase = true) }
+        else -> emptyList()
     }
 
     Scaffold(
@@ -144,12 +144,11 @@ fun NotificationItem(notification: Notification) {
     }
 
     when (notification.type) {
-        "FOLLOW" -> {
+        "follow" -> {
             FollowNotificationItem(
-                name = notification.sender?.id ?: "알 수 없음",
+                name = notification.sender?.nickname ?: "알 수 없음",
                 timestamp = formattedDate,
-                imageUrl = notification.sender?.profileImageUrl
-                    ?: "" // Notification 모델에 프로필 이미지 URL 있다고 가정
+                imageUrl = notification.sender?.profileImageUrl?.takeIf { it.isNotEmpty() } ?: ""
             )
         }
 
@@ -171,7 +170,7 @@ fun NotificationItem(notification: Notification) {
                     // 알림 제목
                     Text(
                         text = when (notification.type) {
-                            "APPLICATION" -> "지원서 알림"
+                            "application" -> "지원서 알림"
                             else -> "기타 알림"
                         },
                         fontWeight = FontWeight.Bold,
@@ -184,7 +183,7 @@ fun NotificationItem(notification: Notification) {
                     // 알림 상세 내용
                     Text(
                         text = when (notification.type) {
-                            "APPLICATION" -> when (notification.status) {
+                            "application" -> when (notification.status) {
                                 "APPROVED" -> "회원님의 모집글에 지원서가 승인되었습니다."
                                 "REJECTED" -> "회원님의 모집글에 지원서가 거절되었습니다."
                                 else -> "새로운 지원서가 접수되었습니다."
