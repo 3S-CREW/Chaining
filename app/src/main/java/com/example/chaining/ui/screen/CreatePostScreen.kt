@@ -270,7 +270,17 @@ fun CreatePostScreen(
                     if (closeAt == null) missingFields.add("모집 마감일")
                     if (hasCar.isBlank()) missingFields.add("자차 여부")
                     if (preferredLanguages.isEmpty()) missingFields.add("선호 언어")
-                    if (kakaoOpenChatUrl.isBlank()) missingFields.add("카카오톡 오픈채팅 링크")
+                    val kakaoUrl = kakaoOpenChatUrl.trim()
+                    if (kakaoUrl.isBlank()) {
+                        missingFields.add("카카오톡 오픈채팅 링크")
+                    } else if (!kakaoUrl.startsWith("https://open.kakao.com/o/")) {
+                        Toast.makeText(
+                            context,
+                            "오픈채팅 링크는 'https://open.kakao.com/o/' 형식이어야 합니다.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return@SaveButton
+                    }
 
                     if (missingFields.isNotEmpty()) {
                         // 어떤 항목이 비었는지 Toast 또는 Alert
