@@ -25,7 +25,7 @@ class AreaViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 // Repository에서 데이터 가져옴
-                _areaCodes.value = repository.fetchAreaCodes()
+                _areaCodes.value = repository.fetchAllMajorAreaCodes()
             } catch (e: Exception) {
                 Log.e("AreaViewModel", "지역 코드 로드 실패", e)
             }

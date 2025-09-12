@@ -47,6 +47,7 @@ import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.domain.model.UserSummary
 import com.example.chaining.ui.component.DatePickerFieldToModal
 import com.example.chaining.ui.component.SaveButton
+import com.example.chaining.viewmodel.AreaViewModel
 import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -57,11 +58,11 @@ fun CreatePostScreen(
     postViewModel: RecruitPostViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel(),
-    type: String // "생성" or "수정"
-
+    type: String, // "생성" or "수정"
+    areaViewModel: AreaViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-
+    val areaCodes by areaViewModel.areaCodes
     val userState by userViewModel.user.collectAsState()
     val postState by postViewModel.post.collectAsState()
 
@@ -181,17 +182,28 @@ fun CreatePostScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             // 여행지 스타일 드롭다운
+            val travelStyles = listOf("산", "바다", "도시", "액티비티", "휴양", "문화/예술")
             PreferenceSelector(
+                options = travelStyles,
+                placeholderText = "선호하는 여행 스타일 선택",
                 selectedOption = preferredDestinations,
                 onOptionSelected = { preferredDestinations = it }
             )
             Spacer(modifier = Modifier.height(16.dp))
 
 
-            // 여행지 지역 드롭다운
+            // 여행 지역 드롭다운
+            val areaNames = remember(areaCodes) {
+                areaCodes
+                    .map { it.lDongRegnNm }
+            }
             PreferenceSelector(
-                selectedOption = preferredLocation.location ?: "",
-                onOptionSelected = { preferredLocation = preferredLocation.copy(location = it) }
+                options = areaNames,
+                placeholderText = "선호하는 여행 지역 선택",
+                selectedOption = preferredLocation.location,
+                onOptionSelected = { selectedName ->
+                    preferredLocation = preferredLocation.copy(location = selectedName)
+                }
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -366,14 +378,12 @@ fun SingleDropdown(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreferenceSelector(
+    options: List<String>,
+    placeholderText: String,
     selectedOption: String,
     onOptionSelected: (String) -> Unit
 ) {
-    // 드롭다운 메뉴에 표시할 아이템 목록
-    val options = listOf("서울", "부산", "제주도", "강릉", "경주")
-    // 드롭다운 메뉴가 펼쳐졌는지 여부를 저장하는 상태
     var isExpanded by remember { mutableStateOf(false) }
-    val selectedOptionText = selectedOption
 
     ExposedDropdownMenuBox(
         expanded = isExpanded,
@@ -384,9 +394,9 @@ fun PreferenceSelector(
                 .fillMaxWidth()
                 .menuAnchor(),
             readOnly = true,
-            value = selectedOptionText,
+            value = selectedOption,
             onValueChange = {},
-            placeholder = { Text("선호하는 여행지 선택") },
+            placeholder = { Text(placeholderText) },
             leadingIcon = {
                 Icon(
                     painter = painterResource(id = R.drawable.favorite_spot),
