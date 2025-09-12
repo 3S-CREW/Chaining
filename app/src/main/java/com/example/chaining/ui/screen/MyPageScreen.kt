@@ -31,6 +31,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -406,30 +407,54 @@ fun ProfileSection(
     }
 
     if (showDialog) {
-        androidx.compose.material3.AlertDialog(
+        var tempNickname by remember(nickname) { mutableStateOf(nickname) }
+        var nicknameError by remember { mutableStateOf<String?>(null) }
+
+        LaunchedEffect(tempNickname) {
+            nicknameError = validateNickname(tempNickname)
+        }
+
+        AlertDialog(
             onDismissRequest = { showDialog = false },
             title = { Text("닉네임 변경", style = MaterialTheme.typography.titleLarge) },
             text = {
-                TextField(
-                    value = tempNickname,
-                    onValueChange = { tempNickname = it },
-                    label = { Text("새 닉네임", color = SecondaryTextColor) },
-                    singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = LightGrayBackground,
-                        unfocusedContainerColor = LightGrayBackground,
-                        focusedIndicatorColor = PrimaryBlue,
-                        unfocusedIndicatorColor = BorderColor
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Column {
+                    TextField(
+                        value = tempNickname,
+                        onValueChange = {
+                            tempNickname = it
+                        },
+                        label = { Text("새 닉네임", color = SecondaryTextColor) },
+                        singleLine = true,
+                        isError = nicknameError != null,
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = LightGrayBackground,
+                            unfocusedContainerColor = LightGrayBackground,
+                            focusedIndicatorColor = PrimaryBlue,
+                            unfocusedIndicatorColor = BorderColor,
+                            errorIndicatorColor = MaterialTheme.colorScheme.error
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    if (nicknameError != null) {
+                        Text(
+                            text = nicknameError!!,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                        )
+                    }
+                }
             },
             confirmButton = {
                 Button(
                     onClick = {
-                        onNicknameChanged(tempNickname)
-                        showDialog = false
+                        if (validateNickname(tempNickname) == null) {
+                            onNicknameChanged(tempNickname)
+                            showDialog = false
+                        }
                     },
+                    enabled = validateNickname(tempNickname) == null,
                     colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
                 ) {
                     Text("변경", color = White)
@@ -589,4 +614,32 @@ private fun getFileSize(context: Context, uri: Uri): Long {
     val size = if (sizeIndex >= 0) cursor?.getLong(sizeIndex) else 0L
     cursor?.close()
     return size ?: 0L
+}
+
+fun validateNickname(nickname: String): String? {
+    if (nickname.isBlank()) {
+        return "닉네임을 입력해주세요."
+    }
+
+    val pattern = Regex("^[a-zA-Z0-9가-힣]*$")
+    if (!pattern.matches(nickname)) {
+        return "닉네임은 한글, 영어, 숫자만 사용할 수 있습니다. (공백 제외)"
+    }
+
+    var weightedLength = 0
+    for (char in nickname) {
+        weightedLength += if (char in '가'..'힣') 2 else 1
+    }
+    if (weightedLength > 12) {
+        return "닉네임은 한글 6자 또는 영문/숫자 12자 이내로 제한됩니다."
+    }
+
+    return null
+}
+
+fun generateRandomNickname(): String {
+    val adjectives = listOf("행복한", "즐거운", "용감한", "신나는", "총명한", "빛나는")
+    val nouns = listOf("여행가", "탐험가", "모험가", "항해사", "개척자", "방랑자", "별빛")
+    // 공백 없이 두 단어를 조합
+    return "${adjectives.random()}${nouns.random()}"
 }
