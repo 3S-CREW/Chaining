@@ -16,7 +16,6 @@ import com.example.chaining.ui.notification.NotificationScreen
 import com.example.chaining.ui.screen.AdminLoginScreen
 import com.example.chaining.ui.screen.ApplicationsScreen
 import com.example.chaining.ui.screen.ApplyScreen
-import com.example.chaining.ui.screen.AreaScreen
 import com.example.chaining.ui.screen.CommunityScreen
 import com.example.chaining.ui.screen.CreatePostScreen
 import com.example.chaining.ui.screen.ENQuizScreen
@@ -69,13 +68,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
         composable(Screen.Home.route) {
             HomeScreen(
-                onTableClick = { navController.navigate("area") },
                 onMainHomeClick = { navController.navigate("mainHome") }
             )
         }
-        composable(Screen.Area.route) {
-            AreaScreen()
-        }
+
         composable(Screen.MyPage.route) {
             MyPageScreen(
                 onKRQuizClick = { navController.navigate("krQuiz") },
