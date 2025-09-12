@@ -43,16 +43,17 @@ class QuizViewModel @Inject constructor(
         currentQuestion.value?.takeIf { it.type == QuizType.SENTENCE_ORDER.name }
             ?.answer?.split(" ")?.shuffled() ?: emptyList()
     }
+    // ✅ '순서 맞추기' 유형을 위한 '한 번만 섞인' 단어 목록 (상태로 관리)
+    private val _shuffledWordChips = mutableStateOf<List<String>>(emptyList())
+    // ✅ '선택하고 남은 단어 칩'은 이제 _shuffledWordChips를 기준으로 계산
+    val remainingWordChips: State<List<String>> = derivedStateOf {
+        _shuffledWordChips.value - _userAnswerSentence.value.toSet()
+    }
 
     // 사용자가 구성한 정답 문장을 저장하는 State
     private val _userAnswerSentence = mutableStateOf<List<String>>(emptyList())
     val userAnswerSentence: State<List<String>> = _userAnswerSentence
 
-    // 선택하고 남은 단어 칩 목록 (shuffled)
-    val remainingWordChips = derivedStateOf {
-        val originalWords = currentQuestion.value?.answer?.split(" ")?.shuffled() ?: emptyList()
-        originalWords - _userAnswerSentence.value.toSet()
-    }
 
     // '객관식' 유형을 위한 사용자 선택 답안 저장 State
     private val _selectedOption = mutableStateOf<String?>(null)
@@ -116,6 +117,8 @@ class QuizViewModel @Inject constructor(
 
             // 퀴즈를 모두 불러온 후, 15문제를 선택하는 함수 호출
             selectQuizSet()
+            // ✅ 퀴즈 로드 후 첫 문제의 단어 칩을 미리 섞어둠
+            prepareSentenceOrderChips()
 
         } catch (e: Exception) {
             // 파일을 읽지 못했을 경우 예외 처리
@@ -140,6 +143,15 @@ class QuizViewModel @Inject constructor(
         }
 
         _quizSet.value = finalQuizList
+    }
+    // ✅ '문장 순서 맞추기' 단어 칩을 준비하는 함수 추가
+    private fun prepareSentenceOrderChips() {
+        val quiz = currentQuestion.value
+        if (quiz != null && quiz.type == QuizType.SENTENCE_ORDER.name) {
+            _shuffledWordChips.value = quiz.answer.split(" ").shuffled()
+        } else {
+            _shuffledWordChips.value = emptyList()
+        }
     }
 
     // 단어 칩을 클릭했을 때 호출될 함수
@@ -200,6 +212,8 @@ class QuizViewModel @Inject constructor(
         if (_currentQuestionIndex.value < (_quizSet.value.size - 1)) {
             _currentQuestionIndex.value++
             clearUserAnswer()
+            // ✅ 다음 문제로 넘어갈 때 새로운 문제의 단어 칩을 섞어서 준비
+            prepareSentenceOrderChips()
         } else {
             // 모든 퀴즈를 다 푼 경우
             calculateScore()
