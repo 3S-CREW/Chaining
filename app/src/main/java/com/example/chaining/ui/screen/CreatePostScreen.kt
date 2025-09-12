@@ -52,6 +52,9 @@ import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
 import kotlinx.coroutines.flow.collectLatest
 
+private const val MAX_TITLE_LENGTH = 20
+private const val MAX_CONTENT_LENGTH = 300
+
 @Composable
 fun CreatePostScreen(
     postId: String? = null,
@@ -164,9 +167,9 @@ fun CreatePostScreen(
 
             OutlinedTextField(
                 value = title,
-                onValueChange = { title = it },
+                onValueChange = { if (it.length <= MAX_TITLE_LENGTH) title = it },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("제목을 입력하세요. (50자 이내)") },
+                placeholder = { Text("제목을 입력하세요.") },
                 shape = RoundedCornerShape(16.dp),
                 singleLine = true,
                 colors = TextFieldDefaults.colors(
@@ -177,7 +180,14 @@ fun CreatePostScreen(
                     unfocusedPlaceholderColor = Color.Gray,
                     focusedIndicatorColor = Color.LightGray,
                     unfocusedIndicatorColor = Color.LightGray
-                )
+                ),
+                supportingText = {
+                    Text(
+                        text = "${title.length} / $MAX_TITLE_LENGTH",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                }
             )
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -253,12 +263,19 @@ fun CreatePostScreen(
             // 내용 입력창
             OutlinedTextField(
                 value = content,
-                onValueChange = { content = it },
+                onValueChange = { if (it.length <= MAX_CONTENT_LENGTH) content = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp), // 높이를 200dp로 지정
-                placeholder = { Text("내용을 입력하세요. (500자 이내)") },
+                    .height(200.dp),
+                placeholder = { Text("내용을 입력하세요.") },
                 shape = RoundedCornerShape(16.dp),
+                supportingText = {
+                    Text(
+                        text = "${content.length} / $MAX_CONTENT_LENGTH",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
