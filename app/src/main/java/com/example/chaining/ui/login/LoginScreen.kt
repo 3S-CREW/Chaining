@@ -7,10 +7,26 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -25,6 +41,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.BuildConfig
 import com.example.chaining.R
 import com.example.chaining.domain.model.User
+import com.example.chaining.ui.screen.generateRandomNickname
+import com.example.chaining.ui.screen.validateNickname
 import com.example.chaining.viewmodel.UserViewModel
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
@@ -65,10 +83,22 @@ fun LoginScreen(
 
                                     userViewModel.checkUserExists(uid) { exists ->
                                         if (!exists) {
+                                            val googleNickname = firebaseUser.displayName ?: ""
+
+                                            val isGoogleNicknameValid =
+                                                validateNickname(googleNickname) == null
+
+                                            val finalNickname = if (isGoogleNicknameValid) {
+                                                googleNickname
+                                            } else {
+                                                generateRandomNickname()
+                                            }
+
+                                            // 3. 최종 결정된 닉네임으로 사용자 추가
                                             userViewModel.addUser(
                                                 User(
                                                     id = uid,
-                                                    nickname = firebaseUser.displayName ?: ""
+                                                    nickname = finalNickname
                                                 )
                                             )
                                         }

@@ -2,31 +2,55 @@ package com.example.chaining.ui.component
 
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.data.model.FilterState
+import com.example.chaining.viewmodel.AreaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterOptionsSheet(
     currentFilterState: FilterState,
     onApplyFilters: (FilterState) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    areaViewModel: AreaViewModel = hiltViewModel()
 ) {
+    val areaEntities by areaViewModel.areaCodes.collectAsState()
     var selectedTravelStyle by remember { mutableStateOf(currentFilterState.travelStyle) }
     var selectedTravelLocation by remember { mutableStateOf(currentFilterState.travelLocation) }
     var selectedLanguage by remember { mutableStateOf(currentFilterState.language) }
@@ -41,10 +65,13 @@ fun FilterOptionsSheet(
     var expandedSortBy by remember { mutableStateOf(false) }
 
     // 드롭다운 옵션 목록
-    val travelStyles = listOf("서울", "부산", "제주도", "강릉", "경주")
-    val travelLocations = listOf("산", "계곡", "바다", "도심")
-    val languages = listOf("한국어", "영어", "중국어", "일본어")
-    val languageLevels = (1..10).toList() // 1부터 5까지
+    val travelStyles = listOf("산", "바다", "도시", "액티비티", "휴양", "문화/예술")
+    val travelLocations = remember(areaEntities) {
+        areaEntities
+            .map { it.regionName }
+    }
+    val languages = listOf("한국어", "영어")
+    val languageLevels = (1..10).toList()
     val sortByOptions = mapOf(
         "latest" to "최신순",
         "deadline" to "마감순",
@@ -161,7 +188,6 @@ fun FilterOptionsSheet(
     }
 }
 
-// ✅ 드롭다운을 위한 재사용 가능한 컴포저블
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterDropdown(
@@ -172,7 +198,13 @@ fun FilterDropdown(
     onExpandedChange: (Boolean) -> Unit,
     onValueChange: (String?) -> Unit
 ) {
-    Text(label, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = Color(0xFF4A526A), modifier = Modifier.fillMaxWidth())
+    Text(
+        label,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        color = Color(0xFF4A526A),
+        modifier = Modifier.fillMaxWidth()
+    )
     Spacer(modifier = Modifier.height(8.dp))
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -187,8 +219,7 @@ fun FilterDropdown(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .menuAnchor()
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp)),
+                .fillMaxWidth(),
             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color(0xFF7282B4),
                 unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f)

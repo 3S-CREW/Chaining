@@ -47,9 +47,13 @@ import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.domain.model.UserSummary
 import com.example.chaining.ui.component.DatePickerFieldToModal
 import com.example.chaining.ui.component.SaveButton
+import com.example.chaining.viewmodel.AreaViewModel
 import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
 import kotlinx.coroutines.flow.collectLatest
+
+private const val MAX_TITLE_LENGTH = 20
+private const val MAX_CONTENT_LENGTH = 300
 
 @Composable
 fun CreatePostScreen(
@@ -57,11 +61,11 @@ fun CreatePostScreen(
     postViewModel: RecruitPostViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel(),
-    type: String // "생성" or "수정"
-
+    type: String, // "생성" or "수정"
+    areaViewModel: AreaViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-
+    val areaEntities by areaViewModel.areaCodes.collectAsState()
     val userState by userViewModel.user.collectAsState()
     val postState by postViewModel.post.collectAsState()
 
@@ -163,9 +167,9 @@ fun CreatePostScreen(
 
             OutlinedTextField(
                 value = title,
-                onValueChange = { title = it },
+                onValueChange = { if (it.length <= MAX_TITLE_LENGTH) title = it },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("제목을 입력하세요. (50자 이내)") },
+                placeholder = { Text("제목을 입력하세요.") },
                 shape = RoundedCornerShape(16.dp),
                 singleLine = true,
                 colors = TextFieldDefaults.colors(
@@ -176,22 +180,40 @@ fun CreatePostScreen(
                     unfocusedPlaceholderColor = Color.Gray,
                     focusedIndicatorColor = Color.LightGray,
                     unfocusedIndicatorColor = Color.LightGray
-                )
+                ),
+                supportingText = {
+                    Text(
+                        text = "${title.length} / $MAX_TITLE_LENGTH",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                }
             )
             Spacer(modifier = Modifier.height(20.dp))
 
             // 여행지 스타일 드롭다운
+            val travelStyles = listOf("산", "바다", "도시", "액티비티", "휴양", "문화/예술")
             PreferenceSelector(
+                options = travelStyles,
+                placeholderText = "선호하는 여행 스타일 선택",
                 selectedOption = preferredDestinations,
                 onOptionSelected = { preferredDestinations = it }
             )
             Spacer(modifier = Modifier.height(16.dp))
 
 
-            // 여행지 지역 드롭다운
+            // 여행 지역 드롭다운
+            val areaNames = remember(areaEntities) {
+                areaEntities
+                    .map { it.regionName }
+            }
             PreferenceSelector(
-                selectedOption = preferredLocation.location ?: "",
-                onOptionSelected = { preferredLocation = preferredLocation.copy(location = it) }
+                options = areaNames,
+                placeholderText = "선호하는 여행 지역 선택",
+                selectedOption = preferredLocation.location,
+                onOptionSelected = { selectedName ->
+                    preferredLocation = preferredLocation.copy(location = selectedName)
+                }
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -241,12 +263,19 @@ fun CreatePostScreen(
             // 내용 입력창
             OutlinedTextField(
                 value = content,
-                onValueChange = { content = it },
+                onValueChange = { if (it.length <= MAX_CONTENT_LENGTH) content = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp), // 높이를 200dp로 지정
-                placeholder = { Text("내용을 입력하세요. (500자 이내)") },
+                    .height(200.dp),
+                placeholder = { Text("내용을 입력하세요.") },
                 shape = RoundedCornerShape(16.dp),
+                supportingText = {
+                    Text(
+                        text = "${content.length} / $MAX_CONTENT_LENGTH",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -270,7 +299,17 @@ fun CreatePostScreen(
                     if (closeAt == null) missingFields.add("모집 마감일")
                     if (hasCar.isBlank()) missingFields.add("자차 여부")
                     if (preferredLanguages.isEmpty()) missingFields.add("선호 언어")
-                    if (kakaoOpenChatUrl.isBlank()) missingFields.add("카카오톡 오픈채팅 링크")
+                    val kakaoUrl = kakaoOpenChatUrl.trim()
+                    if (kakaoUrl.isBlank()) {
+                        missingFields.add("카카오톡 오픈채팅 링크")
+                    } else if (!kakaoUrl.startsWith("https://open.kakao.com/o/")) {
+                        Toast.makeText(
+                            context,
+                            "오픈채팅 링크는 'https://open.kakao.com/o/' 형식이어야 합니다.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return@SaveButton
+                    }
 
                     if (missingFields.isNotEmpty()) {
                         // 어떤 항목이 비었는지 Toast 또는 Alert
@@ -356,14 +395,12 @@ fun SingleDropdown(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreferenceSelector(
+    options: List<String>,
+    placeholderText: String,
     selectedOption: String,
     onOptionSelected: (String) -> Unit
 ) {
-    // 드롭다운 메뉴에 표시할 아이템 목록
-    val options = listOf("서울", "부산", "제주도", "강릉", "경주")
-    // 드롭다운 메뉴가 펼쳐졌는지 여부를 저장하는 상태
     var isExpanded by remember { mutableStateOf(false) }
-    val selectedOptionText = selectedOption
 
     ExposedDropdownMenuBox(
         expanded = isExpanded,
@@ -374,9 +411,9 @@ fun PreferenceSelector(
                 .fillMaxWidth()
                 .menuAnchor(),
             readOnly = true,
-            value = selectedOptionText,
+            value = selectedOption,
             onValueChange = {},
-            placeholder = { Text("선호하는 여행지 선택") },
+            placeholder = { Text(placeholderText) },
             leadingIcon = {
                 Icon(
                     painter = painterResource(id = R.drawable.favorite_spot),

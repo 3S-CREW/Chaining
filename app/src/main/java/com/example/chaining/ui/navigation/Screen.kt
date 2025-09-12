@@ -8,7 +8,6 @@ sealed class Screen(val route: String) {
     object Login : Screen("login")
     object AdminLogin : Screen("adminLogin")
     object Home : Screen("home")
-    object Area : Screen("area")
     object MyPage : Screen("myPage")
     object MainHome : Screen("mainHome")
     object CreatePost : Screen("createPost?type={type}&postId={postId}") {

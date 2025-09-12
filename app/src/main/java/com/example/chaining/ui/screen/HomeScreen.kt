@@ -17,7 +17,6 @@ import com.google.firebase.auth.auth
 
 @Composable
 fun HomeScreen(
-    onTableClick: () -> Unit,
     onMainHomeClick: () -> Unit
 ) {
     val user = Firebase.auth.currentUser
@@ -34,16 +33,6 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onMainHomeClick) {
             Text("메인 홈")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onTableClick) {
-            Text("테이블 보기")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { Firebase.auth.signOut() }) {
-            Text("로그아웃")
         }
     }
 }

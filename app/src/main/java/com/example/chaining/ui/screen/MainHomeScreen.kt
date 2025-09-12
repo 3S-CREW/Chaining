@@ -47,6 +47,7 @@ import com.example.chaining.R
 import com.example.chaining.domain.model.Notification
 import com.example.chaining.ui.notification.NotificationItem
 import com.example.chaining.viewmodel.NotificationViewModel
+import com.example.chaining.viewmodel.UserViewModel
 
 // OptIn annotation for using experimental Material 3 APIs
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,21 +59,22 @@ fun MainHomeScreen(
     onMyPageClick: () -> Unit,
     onCommunityClick: () -> Unit,
     onFeedClick: () -> Unit,
-    onNotificationClick: () -> Unit
+    onNotificationClick: () -> Unit,
+    userViewModel: UserViewModel = hiltViewModel()
+
 ) {
+    val userState by userViewModel.user.collectAsState()
     BackHandler(enabled = true) {
         onBackClick()
     }
     val notifications by notificationViewModel.notifications.collectAsState()
     val isLoading by notificationViewModel.isLoading.collectAsState()
 
-    // 최근 지원서 알림 필터링
     val recentApplication: Notification? = notifications
         .filter { it.type == "application" }
         .sortedByDescending { it.createdAt }
         .firstOrNull()
 
-    // 최근 팔로우 알림 필터링
     val recentFollows = notifications
         .filter { it.type == "follow" }
         .sortedByDescending { it.createdAt }
@@ -80,36 +82,32 @@ fun MainHomeScreen(
 
     Scaffold(
         topBar = {
-            // 상단 앱 바 구현
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp)
-                    .background(Color(0xFFF3F6FF)) // 배경색 지정
+                    .background(Color(0xFFF3F6FF))
                     .padding(top = 4.dp)
                     .padding(horizontal = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Spacer(modifier = Modifier.width(40.dp))
-                // 제목 (앱 이름)
                 Text(
                     text = "Chaining",
-                    modifier = Modifier.weight(1f), // 남는 공간을 모두 차지
+                    modifier = Modifier.weight(1f),
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
-                    textAlign = TextAlign.Center // 텍스트를 할당된 공간 중앙에 정렬
+                    textAlign = TextAlign.Center
                 )
 
-                // 프로필 사진 (추후 마이페이지 버튼)
                 ProfileImageWithStatus(
-                    model = "https://newsimg-hams.hankookilbo.com/2023/03/24/4531dada-e9cf-4775-951c-902e3558ca41.jpg",
+                    model = userState?.profileImageUrl,
                     isOnline = true,
                     onMyPageClick = onMyPageClick
                 )
             }
         },
         bottomBar = {
-            // 하단 네비게이션 바 구현
             AppBottomNavigation(selectedTab = "Home", onTestClick = { menu ->
                 when (menu) {
                     "Home" -> onMainHomeClick()
@@ -128,7 +126,7 @@ fun MainHomeScreen(
                 .background(Color(0xFFF3F6FF))
         ) {
             Text(
-                "오팔만님 반갑습니다.", // TODO: 실제 사용자 닉네임으로 변경
+                text = "${userState?.nickname}님 반갑습니다.",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -186,8 +184,9 @@ fun MainHomeScreen(
 @Composable
 fun AppBottomNavigation(
     selectedTab: String,
-    onTestClick: (String) -> Unit
+    onTestClick: (String) -> Unit,
 ) { // "selectedTab" 파라미터 추가
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -284,12 +283,13 @@ fun ProfileImageWithStatus(
     Box(
         modifier = modifier
             .size(40.dp)
-            .clickable { onMyPageClick() }
+            .clickable {
+                onMyPageClick()
+            }
     ) {
-        // 프로필 이미지
         AsyncImage(
             model = model,
-            contentDescription = "프로필 사진",
+            contentDescription = "마이페이지로 이동",
             contentScale = ContentScale.Crop,
             placeholder = painterResource(R.drawable.test_profile),
             error = painterResource(R.drawable.test_profile),
@@ -310,141 +310,3 @@ fun ProfileImageWithStatus(
         }
     }
 }
-
-//@Composable
-//fun MatchingRequestCard() {
-//    Card(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(top = 8.dp)
-//            .padding(horizontal = 28.dp), // 소제목과의 간격
-//        shape = RoundedCornerShape(16.dp),
-//        colors = CardDefaults.cardColors(
-//            containerColor = Color(0xFF4285F4) // 파란색 배경
-//        )
-//    ) {
-//        Column(
-//            // 카드 내부 콘텐츠들을 위한 여백
-//            modifier = Modifier.padding(16.dp)
-//        ) {
-//            Text(
-//                text = "제주도 하이킹 함께 하실 분!",
-//                color = Color.White,
-//                fontSize = 12.sp,
-//                fontWeight = FontWeight.Bold
-//            )
-//
-//            Spacer(modifier = Modifier.height(8.dp))
-//
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically // 아이콘과 텍스트를 세로 중앙 정렬
-//            ) {
-//                Icon(
-//                    painter = painterResource(id = R.drawable.clock),
-//                    contentDescription = "남은 시간",
-//                    tint = Color.White,
-//                    modifier = Modifier.size(20.dp) // 아이콘 크기 조절
-//                )
-//
-//                Spacer(modifier = Modifier.width(10.dp))
-//
-//                Text(
-//                    text = "수락/거절까지 12시간 30분 남음",
-//                    color = Color.White,
-//                    fontSize = 18.sp,
-//                    fontWeight = FontWeight.Bold
-//                )
-//            }
-//
-//            Spacer(modifier = Modifier.height(16.dp))
-//
-//            Card(
-//                modifier = Modifier.fillMaxWidth(),
-//                shape = RoundedCornerShape(12.dp),
-//                colors = CardDefaults.cardColors(
-//                    containerColor = Color.White
-//                )
-//            ) {
-//                Column(
-//                    modifier = Modifier.padding(12.dp)
-//                ) {
-//                    Row(
-//                        modifier = Modifier.padding(12.dp),
-//                        verticalAlignment = Alignment.CenterVertically
-//                    ) {
-//                        // 프로필 사진
-//                        AsyncImage(
-//                            model = "https://newsimg-hams.hankookilbo.com/2023/03/24/4531dada-e9cf-4775-951c-902e3558ca41.jpg",
-//                            contentDescription = "신청자 프로필 사진",
-//                            contentScale = ContentScale.Crop,
-//                            modifier = Modifier
-//                                .size(48.dp)
-//                                .clip(RoundedCornerShape(15.dp))
-//                        )
-//
-//                        // 사진과 이름 사이 간격
-//                        Spacer(modifier = Modifier.width(12.dp))
-//
-//                        // 이름과 태그
-//                        Column(
-//                            modifier = Modifier.weight(1f) // 남는 공간을 모두 차지
-//                        ) {
-//                            Text(
-//                                text = "차무식",
-//                                fontWeight = FontWeight.Bold,
-//                                color = Color.Black
-//                            )
-//                            Text(
-//                                text = "필리핀",
-//                                fontSize = 12.sp,
-//                                color = Color.Gray
-//                            )
-//                        }
-//
-//                        // 지원서 보기 텍스트
-//                        Text(
-//                            text = "지원서 보기 >",
-//                            fontSize = 12.sp,
-//                            color = Color.Gray
-//                        )
-//                    }
-//
-//                    Spacer(modifier = Modifier.height(8.dp))
-//
-//                    Row(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-//                        verticalAlignment = Alignment.CenterVertically
-//                    ) {
-//                        // 수락 버튼
-//                        Button(
-//                            onClick = { /*TODO*/ },
-//                            modifier = Modifier.weight(2f), // 남은 공간의 절반 차지
-//                            shape = RoundedCornerShape(20.dp),
-//                            colors = ButtonDefaults.buttonColors(
-//                                containerColor = Color(0xFF4285F4), // 더 진한 파란색
-//                                contentColor = Color.White
-//                            )
-//                        ) {
-//                            Text("수락")
-//                        }
-//
-//                        // 거절 버튼
-//                        Button(
-//                            onClick = { /*TODO*/ },
-//                            modifier = Modifier.weight(1f), // 남은 공간의 절반 차지
-//                            shape = RoundedCornerShape(20.dp),
-//                            colors = ButtonDefaults.buttonColors(
-//                                containerColor = Color(0xFFEBEFFA),
-//                                contentColor = Color.Gray
-//                            )
-//                        ) {
-//                            Text("거절")
-//                        }
-//                    }
-//                }
-//
-//            }
-//        }
-//    }
-//}

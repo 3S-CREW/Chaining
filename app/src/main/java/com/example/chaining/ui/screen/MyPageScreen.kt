@@ -31,6 +31,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -65,6 +66,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.chaining.R
 import com.example.chaining.ui.component.TestButton
+import com.example.chaining.viewmodel.AreaViewModel
 import com.example.chaining.viewmodel.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
@@ -84,8 +86,10 @@ fun MyPageScreen(
     onENQuizClick: () -> Unit,
     onMyPostsClick: () -> Unit,
     onMyApplicationsClick: () -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    areaViewModel: AreaViewModel = hiltViewModel()
 ) {
+    val areaEntities by areaViewModel.areaCodes.collectAsState()
     val userState by userViewModel.user.collectAsState()
     val context = LocalContext.current
     var nickname by remember { mutableStateOf("") }
@@ -172,37 +176,30 @@ fun MyPageScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     DropDownField(
-                        items = listOf("출신 국가 선택", "한국", "미국", "일본", "중국", "영국", "독일", "프랑스"),
-                        selectedItem = if (country == "") "출신 국가 선택" else country,
+                        items = listOf("한국", "미국", "일본", "중국", "영국", "독일", "프랑스"),
+                        selectedItem = country,
                         leadingIconRes = R.drawable.airport,
                         placeholder = "출신 국가 선택",
                         onItemSelected = { country = it }
                     )
                     Spacer(modifier = Modifier.height(12.dp))
+                    val areaNames = remember(areaEntities) {
+                        areaEntities
+                            .map { it.regionName }
+                    }
                     DropDownField(
-                        items = listOf(
-                            "현재 거주지 선택",
-                            "서울",
-                            "부산",
-                            "제주",
-                            "뉴욕",
-                            "런던",
-                            "파리",
-                            "베를린",
-                            "도쿄",
-                            "상하이"
-                        ),
-                        selectedItem = if (residence == "") "현재 거주지 선택" else residence,
+                        items = areaNames,
+                        selectedItem = residence,
                         leadingIconRes = R.drawable.country,
                         placeholder = "현재 거주지 선택",
                         onItemSelected = { residence = it }
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     DropDownField(
-                        items = listOf("선호 여행지 선택", "파리", "도쿄", "뉴욕", "런던", "로마", "바르셀로나", "방콕"),
-                        selectedItem = if (preferredDestinations == "") "선호 여행지 선택" else preferredDestinations,
+                        items = listOf("산", "바다", "도시", "액티비티", "휴양", "문화/예술"),
+                        selectedItem = preferredDestinations,
                         leadingIconRes = R.drawable.forest_path,
-                        placeholder = "선호 여행지 선택",
+                        placeholder = "선호 여행지 스타일 선택",
                         onItemSelected = { preferredDestinations = it }
                     )
                 }
@@ -270,15 +267,26 @@ fun MyPageScreen(
         // --- 하단 고정 영역 ---
         Button(
             onClick = {
-                userState?.let { currentUser ->
-                    val updatedUser = currentUser.copy(
-                        nickname = nickname,
-                        country = country,
-                        residence = residence,
-                        preferredDestinations = preferredDestinations
-                    )
-                    userViewModel.updateMyUser(updatedUser)
-                    Toast.makeText(context, "프로필이 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                val unselectedFields = mutableListOf<String>()
+                if (country.isEmpty()) unselectedFields.add("출신 국가")
+                if (residence.isEmpty()) unselectedFields.add("현재 거주지")
+                if (preferredDestinations.isEmpty()) unselectedFields.add("선호 여행지 스타일")
+
+
+                if (unselectedFields.isNotEmpty()) {
+                    val message = "${unselectedFields.joinToString(", ")} 항목을 선택해주세요."
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                } else {
+                    userState?.let { currentUser ->
+                        val updatedUser = currentUser.copy(
+                            nickname = nickname,
+                            country = country,
+                            residence = residence,
+                            preferredDestinations = preferredDestinations
+                        )
+                        userViewModel.updateMyUser(updatedUser)
+                        Toast.makeText(context, "프로필이 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                    }
                 }
             },
             modifier = Modifier
@@ -399,30 +407,54 @@ fun ProfileSection(
     }
 
     if (showDialog) {
-        androidx.compose.material3.AlertDialog(
+        var tempNickname by remember(nickname) { mutableStateOf(nickname) }
+        var nicknameError by remember { mutableStateOf<String?>(null) }
+
+        LaunchedEffect(tempNickname) {
+            nicknameError = validateNickname(tempNickname)
+        }
+
+        AlertDialog(
             onDismissRequest = { showDialog = false },
             title = { Text("닉네임 변경", style = MaterialTheme.typography.titleLarge) },
             text = {
-                TextField(
-                    value = tempNickname,
-                    onValueChange = { tempNickname = it },
-                    label = { Text("새 닉네임", color = SecondaryTextColor) },
-                    singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = LightGrayBackground,
-                        unfocusedContainerColor = LightGrayBackground,
-                        focusedIndicatorColor = PrimaryBlue,
-                        unfocusedIndicatorColor = BorderColor
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Column {
+                    TextField(
+                        value = tempNickname,
+                        onValueChange = {
+                            tempNickname = it
+                        },
+                        label = { Text("새 닉네임", color = SecondaryTextColor) },
+                        singleLine = true,
+                        isError = nicknameError != null,
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = LightGrayBackground,
+                            unfocusedContainerColor = LightGrayBackground,
+                            focusedIndicatorColor = PrimaryBlue,
+                            unfocusedIndicatorColor = BorderColor,
+                            errorIndicatorColor = MaterialTheme.colorScheme.error
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    if (nicknameError != null) {
+                        Text(
+                            text = nicknameError!!,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                        )
+                    }
+                }
             },
             confirmButton = {
                 Button(
                     onClick = {
-                        onNicknameChanged(tempNickname)
-                        showDialog = false
+                        if (validateNickname(tempNickname) == null) {
+                            onNicknameChanged(tempNickname)
+                            showDialog = false
+                        }
                     },
+                    enabled = validateNickname(tempNickname) == null,
                     colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
                 ) {
                     Text("변경", color = White)
@@ -474,7 +506,7 @@ fun DropDownField(
                 )
         ) {
             Crossfade(
-                targetState = selectedItem,
+                targetState = if (selectedItem.isEmpty()) placeholder else selectedItem,
                 animationSpec = tween(300),
                 label = "dropdownCrossfade"
             ) { animatedItem ->
@@ -539,6 +571,20 @@ fun DropDownField(
                         .background(White, RoundedCornerShape(8.dp))
                         .border(1.dp, BorderColor, RoundedCornerShape(8.dp))
                 ) {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = placeholder,
+                                color = Color.Gray,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        },
+                        onClick = {
+                            expanded = false
+                            onItemSelected("")
+                        }
+                    )
+
                     items.forEach { c ->
                         DropdownMenuItem(
                             text = {
@@ -568,4 +614,32 @@ private fun getFileSize(context: Context, uri: Uri): Long {
     val size = if (sizeIndex >= 0) cursor?.getLong(sizeIndex) else 0L
     cursor?.close()
     return size ?: 0L
+}
+
+fun validateNickname(nickname: String): String? {
+    if (nickname.isBlank()) {
+        return "닉네임을 입력해주세요."
+    }
+
+    val pattern = Regex("^[a-zA-Z0-9가-힣]*$")
+    if (!pattern.matches(nickname)) {
+        return "닉네임은 한글, 영어, 숫자만 사용할 수 있습니다. (공백 제외)"
+    }
+
+    var weightedLength = 0
+    for (char in nickname) {
+        weightedLength += if (char in '가'..'힣') 2 else 1
+    }
+    if (weightedLength > 12) {
+        return "닉네임은 한글 6자 또는 영문/숫자 12자 이내로 제한됩니다."
+    }
+
+    return null
+}
+
+fun generateRandomNickname(): String {
+    val adjectives = listOf("행복한", "즐거운", "용감한", "신나는", "총명한", "빛나는")
+    val nouns = listOf("여행가", "탐험가", "모험가", "항해사", "개척자", "방랑자", "별빛")
+    // 공백 없이 두 단어를 조합
+    return "${adjectives.random()}${nouns.random()}"
 }

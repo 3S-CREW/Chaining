@@ -49,6 +49,8 @@ import com.example.chaining.viewmodel.ApplicationViewModel
 import com.example.chaining.viewmodel.UserViewModel
 import kotlinx.coroutines.flow.collectLatest
 
+private const val MAX_CONTENT_LENGTH = 300
+
 @Composable
 fun JoinPostScreen(
     applicationViewModel: ApplicationViewModel = hiltViewModel(),
@@ -154,18 +156,25 @@ fun JoinPostScreen(
 
                 OutlinedTextField(
                     value = introduction,
-                    onValueChange = { introduction = it },
+                    onValueChange = { if (it.length <= MAX_CONTENT_LENGTH) introduction = it },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp),
                     placeholder = {
                         Text(
-                            "내용을 입력하세요. (300자 이내)",
+                            "내용을 입력하세요.",
                             fontSize = 13.sp,
                             color = Color.Gray
                         )
                     },
                     shape = RoundedCornerShape(16.dp),
+                    supportingText = {
+                        Text(
+                            text = "${introduction.length} / $MAX_CONTENT_LENGTH",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.End
+                        )
+                    },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White,
