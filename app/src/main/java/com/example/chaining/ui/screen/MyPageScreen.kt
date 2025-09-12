@@ -65,6 +65,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.chaining.R
 import com.example.chaining.ui.component.TestButton
+import com.example.chaining.viewmodel.AreaViewModel
 import com.example.chaining.viewmodel.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
@@ -84,8 +85,10 @@ fun MyPageScreen(
     onENQuizClick: () -> Unit,
     onMyPostsClick: () -> Unit,
     onMyApplicationsClick: () -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    areaViewModel: AreaViewModel = hiltViewModel()
 ) {
+    val areaEntities by areaViewModel.areaCodes.collectAsState()
     val userState by userViewModel.user.collectAsState()
     val context = LocalContext.current
     var nickname by remember { mutableStateOf("") }
@@ -179,19 +182,12 @@ fun MyPageScreen(
                         onItemSelected = { country = it }
                     )
                     Spacer(modifier = Modifier.height(12.dp))
+                    val areaNames = remember(areaEntities) {
+                        areaEntities
+                            .map { it.regionName }
+                    }
                     DropDownField(
-                        items = listOf(
-                            "현재 거주지 선택",
-                            "서울",
-                            "부산",
-                            "제주",
-                            "뉴욕",
-                            "런던",
-                            "파리",
-                            "베를린",
-                            "도쿄",
-                            "상하이"
-                        ),
+                        items = areaNames,
                         selectedItem = if (residence == "") "현재 거주지 선택" else residence,
                         leadingIconRes = R.drawable.country,
                         placeholder = "현재 거주지 선택",
@@ -199,10 +195,10 @@ fun MyPageScreen(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     DropDownField(
-                        items = listOf("선호 여행지 선택", "파리", "도쿄", "뉴욕", "런던", "로마", "바르셀로나", "방콕"),
+                        items = listOf("산", "바다", "도시", "액티비티", "휴양", "문화/예술"),
                         selectedItem = if (preferredDestinations == "") "선호 여행지 선택" else preferredDestinations,
                         leadingIconRes = R.drawable.forest_path,
-                        placeholder = "선호 여행지 선택",
+                        placeholder = "선호 여행 스타일 선택",
                         onItemSelected = { preferredDestinations = it }
                     )
                 }

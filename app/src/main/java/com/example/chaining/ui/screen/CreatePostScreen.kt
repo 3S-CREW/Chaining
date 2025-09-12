@@ -195,7 +195,7 @@ fun CreatePostScreen(
             // 여행 지역 드롭다운
             val areaNames = remember(areaEntities) {
                 areaEntities
-                    .map { it.regionName } // 2. AreaEntity의 regionName 필드 사용
+                    .map { it.regionName }
             }
             PreferenceSelector(
                 options = areaNames,
