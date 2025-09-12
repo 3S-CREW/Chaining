@@ -54,24 +54,30 @@ fun CardItem(
         else -> ""
     }
 
+//    val profile = when (type) {
+//        "모집글" -> recruitPost?.owner ?: UserSummary()
+//        "지원서" -> application?.applicant ?: UserSummary()
+//        else -> UserSummary()
+//    }
+
     val leftButtonText = if (type == "모집글") "신청" else "수락"
     val rightButtonText = if (type == "모집글") "관심" else "거절"
 
     val rightText = if (type == "모집글") "모집글 보기 >" else "지원서 보기 >"
 
     val profile = if (type == "모집글") {
-        recruitPost?.owner ?: UserSummary(
-            id = "unknown",
-            nickname = "알 수 없음",
-            profileImageUrl = "",
-            country = ""
+        UserSummary(
+            id = recruitPost?.owner?.id ?: "",
+            nickname = recruitPost?.owner?.nickname ?: "알 수 없음",
+            profileImageUrl = recruitPost?.owner?.profileImageUrl ?: "",
+            country = recruitPost?.owner?.country ?: "알 수 없음"
         )
     } else {
         UserSummary(
-            id = "1234",
-            nickname = "차무식",
-            profileImageUrl = "https://newsimg-hams.hankookilbo.com/2023/03/24/4531dada-e9cf-4775-951c-902e3558ca41.jpg",
-            country = "필리핀"
+            id = application?.applicant?.id ?: "",
+            nickname = application?.applicant?.nickname ?: "알 수 없음",
+            profileImageUrl = application?.applicant?.profileImageUrl ?: "",
+            country = application?.applicant?.country ?: "알 수 없음"
         )
     }
 
