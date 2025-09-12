@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,7 +22,7 @@ import com.example.chaining.viewmodel.AreaViewModel
 
 @Composable
 fun AreaScreen(viewModel: AreaViewModel = hiltViewModel()) {
-    val areaCodes by viewModel.areaCodes
+    val areaEntities by viewModel.areaCodes.collectAsState()
 
     Column(modifier = Modifier.padding(16.dp)) {
         // 테이블 헤더
@@ -41,17 +42,17 @@ fun AreaScreen(viewModel: AreaViewModel = hiltViewModel()) {
 
         // 테이블 내용
         LazyColumn {
-            items(areaCodes) { area ->
+            items(areaEntities) { area ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(0.5.dp, Color.Gray)
                         .padding(8.dp)
                 ) {
-                    TableCell(area.rnum.toString(), Modifier.weight(0.5f))
-                    TableCell(area.lDongRegnNm, Modifier.weight(1f))
-                    TableCell(area.lDongSignguNm, Modifier.weight(1f))
-                    TableCell(area.lDongSignguCd.toString(), Modifier.weight(1f))
+                    TableCell(area.rowNum.toString(), Modifier.weight(0.5f))
+                    TableCell(area.regionName, Modifier.weight(1f))
+                    TableCell(area.subRegionName, Modifier.weight(1f))
+                    TableCell(area.subRegionCode, Modifier.weight(1f))
                 }
             }
         }

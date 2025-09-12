@@ -62,7 +62,7 @@ fun CreatePostScreen(
     areaViewModel: AreaViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val areaCodes by areaViewModel.areaCodes
+    val areaEntities by areaViewModel.areaCodes.collectAsState()
     val userState by userViewModel.user.collectAsState()
     val postState by postViewModel.post.collectAsState()
 
@@ -193,9 +193,9 @@ fun CreatePostScreen(
 
 
             // 여행 지역 드롭다운
-            val areaNames = remember(areaCodes) {
-                areaCodes
-                    .map { it.lDongRegnNm }
+            val areaNames = remember(areaEntities) {
+                areaEntities
+                    .map { it.regionName } // 2. AreaEntity의 regionName 필드 사용
             }
             PreferenceSelector(
                 options = areaNames,
