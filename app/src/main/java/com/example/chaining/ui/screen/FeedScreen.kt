@@ -77,7 +77,7 @@ fun FeedScreen(
                 }
                 Text(
                     text = "피드",
-                    fontSize = 15.sp,
+                    fontSize = 20.sp,
                     color = Color.White,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center
@@ -129,6 +129,7 @@ fun FeedScreen(
                     FeedItem(
                         region = item.address.split(" ").getOrNull(0) ?: "지역",
                         place = item.title,
+                        address = item.address,
                         imageUrl = item.imageUrl
                             ?: "https://your-placeholder-image-url.com/default.jpg",
                     )
