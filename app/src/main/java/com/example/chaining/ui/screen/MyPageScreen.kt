@@ -175,8 +175,8 @@ fun MyPageScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     DropDownField(
-                        items = listOf("출신 국가 선택", "한국", "미국", "일본", "중국", "영국", "독일", "프랑스"),
-                        selectedItem = if (country == "") "출신 국가 선택" else country,
+                        items = listOf("한국", "미국", "일본", "중국", "영국", "독일", "프랑스"),
+                        selectedItem = country,
                         leadingIconRes = R.drawable.airport,
                         placeholder = "출신 국가 선택",
                         onItemSelected = { country = it }
@@ -188,7 +188,7 @@ fun MyPageScreen(
                     }
                     DropDownField(
                         items = areaNames,
-                        selectedItem = if (residence == "") "현재 거주지 선택" else residence,
+                        selectedItem = residence,
                         leadingIconRes = R.drawable.country,
                         placeholder = "현재 거주지 선택",
                         onItemSelected = { residence = it }
@@ -196,9 +196,9 @@ fun MyPageScreen(
                     Spacer(modifier = Modifier.height(12.dp))
                     DropDownField(
                         items = listOf("산", "바다", "도시", "액티비티", "휴양", "문화/예술"),
-                        selectedItem = if (preferredDestinations == "") "선호 여행지 선택" else preferredDestinations,
+                        selectedItem = preferredDestinations,
                         leadingIconRes = R.drawable.forest_path,
-                        placeholder = "선호 여행 스타일 선택",
+                        placeholder = "선호 여행지 스타일 선택",
                         onItemSelected = { preferredDestinations = it }
                     )
                 }
@@ -266,15 +266,26 @@ fun MyPageScreen(
         // --- 하단 고정 영역 ---
         Button(
             onClick = {
-                userState?.let { currentUser ->
-                    val updatedUser = currentUser.copy(
-                        nickname = nickname,
-                        country = country,
-                        residence = residence,
-                        preferredDestinations = preferredDestinations
-                    )
-                    userViewModel.updateMyUser(updatedUser)
-                    Toast.makeText(context, "프로필이 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                val unselectedFields = mutableListOf<String>()
+                if (country.isEmpty()) unselectedFields.add("출신 국가")
+                if (residence.isEmpty()) unselectedFields.add("현재 거주지")
+                if (preferredDestinations.isEmpty()) unselectedFields.add("선호 여행지 스타일")
+
+
+                if (unselectedFields.isNotEmpty()) {
+                    val message = "${unselectedFields.joinToString(", ")} 항목을 선택해주세요."
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                } else {
+                    userState?.let { currentUser ->
+                        val updatedUser = currentUser.copy(
+                            nickname = nickname,
+                            country = country,
+                            residence = residence,
+                            preferredDestinations = preferredDestinations
+                        )
+                        userViewModel.updateMyUser(updatedUser)
+                        Toast.makeText(context, "프로필이 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                    }
                 }
             },
             modifier = Modifier
@@ -470,7 +481,7 @@ fun DropDownField(
                 )
         ) {
             Crossfade(
-                targetState = selectedItem,
+                targetState = if (selectedItem.isEmpty()) placeholder else selectedItem,
                 animationSpec = tween(300),
                 label = "dropdownCrossfade"
             ) { animatedItem ->
@@ -535,6 +546,20 @@ fun DropDownField(
                         .background(White, RoundedCornerShape(8.dp))
                         .border(1.dp, BorderColor, RoundedCornerShape(8.dp))
                 ) {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = placeholder,
+                                color = Color.Gray,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        },
+                        onClick = {
+                            expanded = false
+                            onItemSelected("")
+                        }
+                    )
+
                     items.forEach { c ->
                         DropdownMenuItem(
                             text = {
