@@ -12,6 +12,7 @@ import com.example.chaining.domain.model.UserSummary
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseException
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
@@ -202,48 +203,58 @@ class UserRepository @Inject constructor(
     suspend fun toggleFollow(
         myInfo: UserSummary,
         otherInfo: UserSummary
-    ) {
-        val followedRef = usersRef().child(myInfo.id).child("following").child(otherInfo.id)
-        val snapshot = followedRef.get().await()
-        val isCurrentlyFollowed = snapshot.exists()
+    ): Result<Unit> {
+        return try {
+            val followedRef = usersRef().child(myInfo.id).child("following").child(otherInfo.id)
+            val snapshot = followedRef.get().await()
+            val isCurrentlyFollowed = snapshot.exists()
 
-        val updates = hashMapOf<String, Any?>()
+            val updates = hashMapOf<String, Any?>()
 
-        if (isCurrentlyFollowed) {
-            // 팔로우 해제
-            updates["/users/${myInfo.id}/following/${otherInfo.id}"] = null
-            updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = null
-        } else {
-            // 팔로우 추가
-            updates["/users/${myInfo.id}/following/${otherInfo.id}"] = otherInfo
-            updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = myInfo
+            if (isCurrentlyFollowed) {
+                // 팔로우 해제
+                updates["/users/${myInfo.id}/following/${otherInfo.id}"] = null
+                updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = null
+            } else {
+                // 팔로우 추가
+                updates["/users/${myInfo.id}/following/${otherInfo.id}"] = otherInfo
+                updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = myInfo
 
 
-            val newNotificationKey = rootRef.child("notifications")
-                .child(otherInfo.id).push().key ?: error("알림 ID 생성 실패")
-            val notification = Notification(
-                id = newNotificationKey,
-                type = "follow",
-                sender = myInfo,
-                createdAt = System.currentTimeMillis(),
-                isRead = false,
-                uid = otherInfo.id
+                val newNotificationKey = rootRef.child("notifications")
+                    .child(otherInfo.id).push().key ?: error("알림 ID 생성 실패")
+                val notification = Notification(
+                    id = newNotificationKey,
+                    type = "follow",
+                    sender = myInfo,
+                    createdAt = System.currentTimeMillis(),
+                    isRead = false,
+                    uid = otherInfo.id
+                )
+
+                updates["/notifications/${otherInfo.id}/$newNotificationKey"] = notification
+            }
+
+            // 원자적 업데이트 수행
+            rootRef.updateChildren(updates).await()
+
+            // Room DB에도 반영 (copyWith 사용)
+            val current = userDao.getUser(myInfo.id).firstOrNull() ?: return Result.failure(
+                Exception("로컬 DB에 사용자 정보가 없어 팔로우 상태를 업데이트할 수 없습니다.")
             )
-            println("피기" + notification)
-            updates["/notifications/${otherInfo.id}/$newNotificationKey"] = notification
+            val newFollowing = current.following.toMutableMap()
+            if (isCurrentlyFollowed) newFollowing.remove(otherInfo.id) else newFollowing[otherInfo.id] =
+                otherInfo
+
+            val updatedEntity = current.copyWith(mapOf("following" to newFollowing))
+            userDao.updateUser(updatedEntity)
+
+            Result.success(Unit)
+        } catch (e: DatabaseException) {
+            Result.failure(Exception("데이터베이스 오류가 발생했습니다."))
+        } catch (e: Exception) {
+            Result.failure(e)
         }
-
-        // 원자적 업데이트 수행
-        rootRef.updateChildren(updates).await()
-
-        // Room DB에도 반영 (copyWith 사용)
-        val current = userDao.getUser(myInfo.id).firstOrNull() ?: return
-        val newFollowing = current.following.toMutableMap()
-        if (isCurrentlyFollowed) newFollowing.remove(otherInfo.id) else newFollowing[otherInfo.id] =
-            otherInfo
-
-        val updatedEntity = current.copyWith(mapOf("following" to newFollowing))
-        userDao.updateUser(updatedEntity)
     }
 
     /** 전체 User 객체 저장 */
