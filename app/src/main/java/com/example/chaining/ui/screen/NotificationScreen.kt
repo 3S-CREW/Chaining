@@ -21,6 +21,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,12 +35,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.domain.model.Notification
 import com.example.chaining.ui.component.CardItem
 import com.example.chaining.ui.component.FollowNotificationItem
+import com.example.chaining.ui.screen.LightGrayBackground
+import com.example.chaining.ui.screen.PrimaryBlue
 import com.example.chaining.viewmodel.ApplicationViewModel
 import com.example.chaining.viewmodel.NotificationViewModel
 import java.text.SimpleDateFormat
@@ -65,30 +70,43 @@ fun NotificationScreen(
     }
 
     Scaffold(
+        containerColor = LightGrayBackground,
         topBar = {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
+                    .background(LightGrayBackground)
             ) {
                 Text(
                     text = "알림",
-                    fontSize = 22.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    textAlign = TextAlign.Center
+
                 )
 
                 TabRow(
                     selectedTabIndex = selectedTabIndex,
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.fillMaxWidth()
+                    containerColor = LightGrayBackground,
+                    contentColor = PrimaryBlue,
+                    modifier = Modifier.fillMaxWidth(),
+                    indicator = { tabPositions ->
+                        TabRowDefaults.Indicator(
+                            Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
+                            color = PrimaryBlue
+                        )
+                    }
                 ) {
                     tabTitles.forEachIndexed { index, title ->
                         Tab(
                             selected = selectedTabIndex == index,
                             onClick = { selectedTabIndex = index },
-                            text = { Text(title, fontSize = 14.sp) }
+                            text = { Text(title, fontSize = 14.sp) },
+                            selectedContentColor = PrimaryBlue,
+                            unselectedContentColor = Color.Gray
                         )
                     }
                 }
@@ -99,6 +117,7 @@ fun NotificationScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .background(LightGrayBackground)
         ) {
             when {
                 isLoading -> {
