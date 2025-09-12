@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -282,7 +283,9 @@ fun MultipleChoiceAnswerArea(
             val isSelected = option == selectedOption
             OutlinedButton(
                 onClick = { onOptionSelected(option) },
-                modifier = Modifier.fillMaxWidth().height(65.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .defaultMinSize(minHeight = 65.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = if (isSelected) Color(0xFF4285F4).copy(alpha = 0.1f) else Color.White,
@@ -293,7 +296,9 @@ fun MultipleChoiceAnswerArea(
                     color = if (isSelected) Color(0xFF4285F4) else Color.LightGray
                 )
             ) {
-                Text(text = option)
+                Text(text = option,
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
