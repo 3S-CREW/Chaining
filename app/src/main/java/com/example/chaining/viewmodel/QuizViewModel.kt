@@ -6,15 +6,21 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chaining.data.repository.UserRepository
 import com.example.chaining.domain.model.QuizItem // 이전에 만든 QuizItem 데이터 클래스 import
 import com.example.chaining.domain.model.QuizType
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class QuizViewModel : ViewModel() {
+@HiltViewModel
+class QuizViewModel @Inject constructor(
+    private val userRepository: UserRepository
+) : ViewModel() {
 
     // 전체 퀴즈 목록 (비공개)
     private var allQuizzes: List<QuizItem> = emptyList()
@@ -70,6 +76,7 @@ class QuizViewModel : ViewModel() {
             else -> false
         }
     }
+
     // 퀴즈가 종료되었는지 여부를 저장
     private val _isQuizFinished = mutableStateOf(false)
     val isQuizFinished: State<Boolean> = _isQuizFinished
@@ -80,6 +87,7 @@ class QuizViewModel : ViewModel() {
 
     private val _currentLanguage = mutableStateOf("ENGLISH")
     val currentLanguage: State<String> = _currentLanguage
+
     // 채점 결과를 저장할 상태 변수 추가
     private val _totalScore = mutableStateOf(0)
     val totalScore: State<Int> = _totalScore
@@ -125,7 +133,8 @@ class QuizViewModel : ViewModel() {
             // 3가지 유형(SO, MC, FB)에 대해 반복
             QuizType.values().forEach { type ->
                 // 해당 레벨과 유형에 맞는 문제들을 필터링
-                val filteredQuizzes = allQuizzes.filter { it.level == level && it.type == type.name }
+                val filteredQuizzes =
+                    allQuizzes.filter { it.level == level && it.type == type.name }
                 // 필터링된 문제들 중 하나를 랜덤으로 선택 (문제가 있을 경우에만)
                 filteredQuizzes.randomOrNull()?.let {
                     finalQuizList.add(it)
@@ -251,6 +260,22 @@ class QuizViewModel : ViewModel() {
             in 41..44 -> 9
             45 -> 10
             else -> 0
+        }
+    }
+
+    fun saveTestResult() {
+        val languagePref = com.example.chaining.domain.model.LanguagePref(
+            language = _currentLanguage.value,
+            level = _finalLevel.value
+        )
+
+        viewModelScope.launch {
+            try {
+                userRepository.updateTestResult(languagePref)
+                println("퀴즈 결과 저장 성공: $languagePref")
+            } catch (e: Exception) {
+                println("퀴즈 결과 저장 실패: ${e.message}")
+            }
         }
     }
 

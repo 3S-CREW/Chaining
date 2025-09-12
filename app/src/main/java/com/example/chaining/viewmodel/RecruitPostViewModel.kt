@@ -9,9 +9,11 @@ import com.example.chaining.data.repository.RecruitPostRepository
 import com.example.chaining.domain.model.RecruitPost
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
@@ -25,6 +27,9 @@ class RecruitPostViewModel @Inject constructor(
 ) : ViewModel() {
     private val _post = MutableStateFlow<RecruitPost?>(null)
     val post: StateFlow<RecruitPost?> = _post
+
+    private val _toastEvent = MutableSharedFlow<String>()
+    val toastEvent = _toastEvent.asSharedFlow()
 
     // ✅ 1. 원본 게시글 전체 목록 (비공개)
     private val _allPosts = MutableStateFlow<List<RecruitPost>>(emptyList())
@@ -70,9 +75,15 @@ class RecruitPostViewModel @Inject constructor(
 
     /** Create - 모집글 등록 */
     fun createPost(post: RecruitPost) = viewModelScope.launch {
-        Log.d("PostPost", post.toString())
-        repo.createPost(post)
-        fetchAllPosts(force = true)
+        val result = repo.createPost(post)
+        result.onSuccess { postId ->
+            Log.d("RecruitPostViewModel", "Post created successfully with id: $postId")
+            fetchAllPosts(force = true)
+            _toastEvent.emit("게시글이 등록되었습니다.")
+        }.onFailure { exception ->
+            Log.e("RecruitPostViewModel", "Failed to create post", exception)
+            _toastEvent.emit(exception.message ?: "알 수 없는 오류가 발생했습니다.")
+        }
     }
 //            || currentTime - lastFetchTime >= fetchInterval
 
@@ -108,15 +119,22 @@ class RecruitPostViewModel @Inject constructor(
             Log.d("FilterDebug", "3. 여행 스타일(${style}) 필터 후: ${filteredList.size} 개")
         }
         filter.travelLocation?.let { location ->
-            filteredList = filteredList.filter { it.preferredLocations.location.contains(location, ignoreCase = true) }
+            filteredList = filteredList.filter {
+                it.preferredLocations.location.contains(
+                    location,
+                    ignoreCase = true
+                )
+            }
             Log.d("FilterDebug", "4. 여행지(${location}) 필터 후: ${filteredList.size} 개")
         }
         filter.language?.let { lang ->
-            filteredList = filteredList.filter { p -> p.preferredLanguages.any { it.language == lang } }
+            filteredList =
+                filteredList.filter { p -> p.preferredLanguages.any { it.value.language == lang } }
             Log.d("FilterDebug", "5. 언어(${lang}) 필터 후: ${filteredList.size} 개")
         }
         filter.languageLevel?.let { level ->
-            filteredList = filteredList.filter { p -> p.preferredLanguages.any { it.level >= level } }
+            filteredList =
+                filteredList.filter { p -> p.preferredLanguages.any { it.value.level >= level } }
             Log.d("FilterDebug", "6. 언어 레벨(>=${level}) 필터 후: ${filteredList.size} 개")
         }
         Log.d("FilterDebug", "--- 필터링 종료, 최종 개수: ${filteredList.size} 개 ---")

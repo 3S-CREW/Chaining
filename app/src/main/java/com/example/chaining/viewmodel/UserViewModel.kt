@@ -8,8 +8,10 @@ import com.example.chaining.domain.model.User
 import com.example.chaining.domain.model.UserSummary
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,6 +24,9 @@ class UserViewModel @Inject constructor(
     // 내 User 정보 (null일 수도 있음)
     private val _user = MutableStateFlow<User?>(null)
     val user: StateFlow<User?> = _user
+
+    private val _toastEvent = MutableSharedFlow<String>()
+    val toastEvent = _toastEvent.asSharedFlow()
 
     init {
         // 앱 시작 시 내 계정 실시간 구독
@@ -71,7 +76,11 @@ class UserViewModel @Inject constructor(
     }
 
     fun toggleFollow(user: UserSummary, other: UserSummary) = viewModelScope.launch {
-        repo.toggleFollow(user, other)
+        val result = repo.toggleFollow(user, other)
+
+        result.onFailure { exception ->
+            _toastEvent.emit(exception.message ?: "작업에 실패했습니다.")
+        }
     }
 
     /** Delete - Soft Delete */

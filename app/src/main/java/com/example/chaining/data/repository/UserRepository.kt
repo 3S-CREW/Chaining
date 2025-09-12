@@ -12,6 +12,7 @@ import com.example.chaining.domain.model.UserSummary
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseException
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
@@ -57,42 +58,88 @@ class UserRepository @Inject constructor(
     /** 1. Firebase → Room 동기화 후 Flow 제공 */
     /** Read (실시간 구독 - 내 계정, 변경사항이 있을 때마다 계속 가져오기) */
     fun observeMyUser(): Flow<User?> = callbackFlow {
-        val uid = uidOrThrow()
-        val ref = usersRef().child(uid)
+        var valueEventListener: ValueEventListener? = null
+        var userRef: DatabaseReference? = null
 
-        val listener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val user = snapshot.getValue(User::class.java)?.copy(id = uid)
-                if (user != null) {
-                    // Firebase → Room DB에 저장
-                    val entity = user.toEntity()
-                    CoroutineScope(Dispatchers.IO).launch {
-                        userDao.insertUser(entity)
+        val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            valueEventListener?.let { userRef?.removeEventListener(it) }
+
+            val currentUser = firebaseAuth.currentUser
+            if (currentUser == null) {
+                trySend(null)
+            } else {
+                val uid = currentUser.uid
+                userRef = usersRef().child(uid)
+
+                valueEventListener = object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val user = snapshot.getValue(User::class.java)?.copy(id = uid)
+
+                        trySend(user)
+
+                        user?.let {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                userDao.insertUser(it.toEntity())
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        // 실제 에러가 발생하면 Flow를 닫음
+                        close(error.toException())
                     }
                 }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                close(error.toException())
+                // 새로 생성한 ValueEventListener를 등록
+                userRef?.addValueEventListener(valueEventListener!!)
             }
         }
 
-        ref.addValueEventListener(listener)
+        // AuthStateListener 등록
+        auth.addAuthStateListener(authStateListener)
 
-        // Room DB Flow 구독 → UI에 전달
-        val dbFlow = userDao.getUser(uid)
-        val job = CoroutineScope(Dispatchers.IO).launch {
-            dbFlow.collect { entity ->
-                val user = entity?.toUser() // UserEntity → User 변환
-                trySend(user).isSuccess
-            }
-        }
-
+        // 4. Flow의 관찰(collect)이 중단되면 모든 리스너를 제거
         awaitClose {
-            ref.removeEventListener(listener)
-            job.cancel()
+            valueEventListener?.let { userRef?.removeEventListener(it) }
+            auth.removeAuthStateListener(authStateListener)
         }
     }
+//    fun observeMyUser(): Flow<User?> = callbackFlow {
+//        val uid = uidOrThrow()
+//        val ref = usersRef().child(uid)
+//
+//        val listener = object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                val user = snapshot.getValue(User::class.java)?.copy(id = uid)
+//                if (user != null) {
+//                    // Firebase → Room DB에 저장
+//                    val entity = user.toEntity()
+//                    CoroutineScope(Dispatchers.IO).launch {
+//                        userDao.insertUser(entity)
+//                    }
+//                }
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                close(error.toException())
+//            }
+//        }
+//
+//        ref.addValueEventListener(listener)
+//
+//        // Room DB Flow 구독 → UI에 전달
+//        val dbFlow = userDao.getUser(uid)
+//        val job = CoroutineScope(Dispatchers.IO).launch {
+//            dbFlow.collect { entity ->
+//                val user = entity?.toUser() // UserEntity → User 변환
+//                trySend(user).isSuccess
+//            }
+//        }
+//
+//        awaitClose {
+//            ref.removeEventListener(listener)
+//            job.cancel()
+//        }
+//    }
 
     /** Update (관심글 추가 / 삭제) */
     suspend fun toggleLikedPost(uid: String, postId: String) {
@@ -134,52 +181,80 @@ class UserRepository @Inject constructor(
         userDao.updateUser(updatedEntity)
     }
 
+    /** 테스트 결과 변경 */
+    suspend fun updateTestResult(languagePref: LanguagePref) {
+        val uid = uidOrThrow()
+
+        usersRef().child(uid)
+            .child("preferredLanguages")
+            .child(languagePref.language)
+            .setValue(languagePref)
+            .await()
+
+        val currentEntity = userDao.getUser(uid).firstOrNull() ?: return
+        val updatedMap = currentEntity.preferredLanguages.toMutableMap().apply {
+            this[languagePref.language] = languagePref
+        }
+        val updatedEntity = currentEntity.copy(preferredLanguages = updatedMap)
+        userDao.updateUser(updatedEntity)
+    }
+
     /** Update (팔로우 추가 / 삭제) */
     suspend fun toggleFollow(
         myInfo: UserSummary,
         otherInfo: UserSummary
-    ) {
-        val followedRef = usersRef().child(myInfo.id).child("following").child(otherInfo.id)
-        val snapshot = followedRef.get().await()
-        val isCurrentlyFollowed = snapshot.exists()
+    ): Result<Unit> {
+        return try {
+            val followedRef = usersRef().child(myInfo.id).child("following").child(otherInfo.id)
+            val snapshot = followedRef.get().await()
+            val isCurrentlyFollowed = snapshot.exists()
 
-        val updates = hashMapOf<String, Any?>()
+            val updates = hashMapOf<String, Any?>()
 
-        if (isCurrentlyFollowed) {
-            // 팔로우 해제
-            updates["/users/${myInfo.id}/following/${otherInfo.id}"] = null
-            updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = null
-        } else {
-            // 팔로우 추가
-            updates["/users/${myInfo.id}/following/${otherInfo.id}"] = otherInfo
-            updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = myInfo
+            if (isCurrentlyFollowed) {
+                // 팔로우 해제
+                updates["/users/${myInfo.id}/following/${otherInfo.id}"] = null
+                updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = null
+            } else {
+                // 팔로우 추가
+                updates["/users/${myInfo.id}/following/${otherInfo.id}"] = otherInfo
+                updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = myInfo
 
 
-            val newNotificationKey = rootRef.child("notifications")
-                .child(otherInfo.id).push().key ?: error("알림 ID 생성 실패")
-            val notification = Notification(
-                id = newNotificationKey,
-                type = "follow",
-                sender = myInfo,
-                createdAt = System.currentTimeMillis(),
-                isRead = false,
-                uid = otherInfo.id
+                val newNotificationKey = rootRef.child("notifications")
+                    .child(otherInfo.id).push().key ?: error("알림 ID 생성 실패")
+                val notification = Notification(
+                    id = newNotificationKey,
+                    type = "follow",
+                    sender = myInfo,
+                    createdAt = System.currentTimeMillis(),
+                    isRead = false,
+                    uid = otherInfo.id
+                )
+
+                updates["/notifications/${otherInfo.id}/$newNotificationKey"] = notification
+            }
+
+            // 원자적 업데이트 수행
+            rootRef.updateChildren(updates).await()
+
+            // Room DB에도 반영 (copyWith 사용)
+            val current = userDao.getUser(myInfo.id).firstOrNull() ?: return Result.failure(
+                Exception("로컬 DB에 사용자 정보가 없어 팔로우 상태를 업데이트할 수 없습니다.")
             )
-            println("피기" + notification)
-            updates["/notifications/${otherInfo.id}/$newNotificationKey"] = notification
+            val newFollowing = current.following.toMutableMap()
+            if (isCurrentlyFollowed) newFollowing.remove(otherInfo.id) else newFollowing[otherInfo.id] =
+                otherInfo
+
+            val updatedEntity = current.copyWith(mapOf("following" to newFollowing))
+            userDao.updateUser(updatedEntity)
+
+            Result.success(Unit)
+        } catch (e: DatabaseException) {
+            Result.failure(Exception("데이터베이스 오류가 발생했습니다."))
+        } catch (e: Exception) {
+            Result.failure(e)
         }
-
-        // 원자적 업데이트 수행
-        rootRef.updateChildren(updates).await()
-
-        // Room DB에도 반영 (copyWith 사용)
-        val current = userDao.getUser(myInfo.id).firstOrNull() ?: return
-        val newFollowing = current.following.toMutableMap()
-        if (isCurrentlyFollowed) newFollowing.remove(otherInfo.id) else newFollowing[otherInfo.id] =
-            otherInfo
-
-        val updatedEntity = current.copyWith(mapOf("following" to newFollowing))
-        userDao.updateUser(updatedEntity)
     }
 
     /** 전체 User 객체 저장 */
@@ -257,7 +332,7 @@ class UserRepository @Inject constructor(
             isPublic = updates["isPublic"] as? Boolean ?: isPublic,
             // 필요시 나머지 필드도 추가
             likedPosts = updates["likedPosts"] as? Map<String, Boolean> ?: likedPosts,
-            preferredLanguages = updates["preferredLanguages"] as? List<LanguagePref>
+            preferredLanguages = updates["preferredLanguages"] as? Map<String, LanguagePref>
                 ?: preferredLanguages,
             recruitPosts = updates["recruitPosts"] as? Map<String, RecruitPost> ?: recruitPosts,
             applications = updates["applications"] as? Map<String, Application> ?: applications,

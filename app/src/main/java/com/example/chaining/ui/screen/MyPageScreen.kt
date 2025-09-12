@@ -27,16 +27,20 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -52,11 +56,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.chaining.R
@@ -66,6 +70,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
+val PrimaryBlue = Color(0xFF3387E5)
+val SecondaryTextColor = Color(0xFF637387)
+val LightGrayBackground = Color(0xFFF3F6FF)
+val BorderColor = Color(0xFFE0E0E0)
+val White = Color(0xFFFEFEFE)
+val Black = Color.Black
+
 @Composable
 fun MyPageScreen(
     userViewModel: UserViewModel = hiltViewModel(),
@@ -73,9 +84,10 @@ fun MyPageScreen(
     onENQuizClick: () -> Unit,
     onMyPostsClick: () -> Unit,
     onMyApplicationsClick: () -> Unit,
+    onLogout: () -> Unit
 ) {
     val userState by userViewModel.user.collectAsState()
-
+    val context = LocalContext.current
     var nickname by remember { mutableStateOf("") }
     var country by remember { mutableStateOf(userState?.country ?: "") }
     var residence by remember { mutableStateOf(userState?.residence ?: "") }
@@ -86,68 +98,178 @@ fun MyPageScreen(
     }
 
     LaunchedEffect(userState) {
-        nickname = userState?.nickname ?: ""
-        country = userState?.country ?: ""
-        residence = userState?.residence ?: ""
-        preferredDestinations = userState?.preferredDestinations ?: ""
+        userState?.let {
+            nickname = it.nickname
+            country = it.country
+            residence = it.residence
+            preferredDestinations = it.preferredDestinations
+        }
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .background(LightGrayBackground)
     ) {
-        ProfileSection(
-            nickname = nickname,
-            onNicknameChanged = { nickname = it },
-            profileImageUrl = userState?.profileImageUrl,
-            userViewModel = userViewModel
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        Text(
-            text = "기본 정보",
-            fontWeight = FontWeight.SemiBold,
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        DropDownField(
-            items = listOf("한국", "미국", "일본"),
-            selectedItem = country,
-            leadingIconRes = R.drawable.airport,
-            placeholder = "출신 국가 선택",
-            onItemSelected = { country = it }
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        DropDownField(
-            items = listOf("서울", "부산", "제주"),
-            selectedItem = residence,
-            leadingIconRes = R.drawable.country,
-            placeholder = "현재 거주지 선택",
-            onItemSelected = { residence = it }
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        DropDownField(
-            items = listOf("파리", "도쿄", "뉴욕"),
-            selectedItem = preferredDestinations,
-            leadingIconRes = R.drawable.forest_path,
-            placeholder = "선호 여행지 선택",
-            onItemSelected = { preferredDestinations = it }
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        userState?.preferredLanguages?.let {
-            TestButton(
-                preferredLanguages = it,
-                onTestClick = { language ->
-                    when (language) {
-                        "한국어" -> onKRQuizClick()
-                        "영어" -> onENQuizClick()
-                    }
-                }
-            )
+        // --- 상단 고정 영역 ---
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Button(
+                onClick = {
+                    FirebaseAuth.getInstance().signOut()
+                    onLogout()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = PrimaryBlue,
+                    contentColor = White
+                ),
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Text("로그아웃", style = MaterialTheme.typography.labelLarge)
+            }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-        ActionButtons(
-            onSave = {
+        // --- 중앙 스크롤 영역 ---
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp)
+        ) {
+            Spacer(modifier = Modifier.height(24.dp))
+
+            ProfileSection(
+                nickname = nickname,
+                onNicknameChanged = { newNickname ->
+                    nickname = newNickname
+                    userState?.let { currentUser ->
+                        userViewModel.updateMyUser(currentUser.copy(nickname = newNickname))
+                    }
+                },
+                profileImageUrl = userState?.profileImageUrl,
+                userViewModel = userViewModel
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                text = "기본 정보",
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                color = Black,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                colors = CardDefaults.cardColors(containerColor = White)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    DropDownField(
+                        items = listOf("출신 국가 선택", "한국", "미국", "일본", "중국", "영국", "독일", "프랑스"),
+                        selectedItem = if (country == "") "출신 국가 선택" else country,
+                        leadingIconRes = R.drawable.airport,
+                        placeholder = "출신 국가 선택",
+                        onItemSelected = { country = it }
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    DropDownField(
+                        items = listOf(
+                            "현재 거주지 선택",
+                            "서울",
+                            "부산",
+                            "제주",
+                            "뉴욕",
+                            "런던",
+                            "파리",
+                            "베를린",
+                            "도쿄",
+                            "상하이"
+                        ),
+                        selectedItem = if (residence == "") "현재 거주지 선택" else residence,
+                        leadingIconRes = R.drawable.country,
+                        placeholder = "현재 거주지 선택",
+                        onItemSelected = { residence = it }
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    DropDownField(
+                        items = listOf("선호 여행지 선택", "파리", "도쿄", "뉴욕", "런던", "로마", "바르셀로나", "방콕"),
+                        selectedItem = if (preferredDestinations == "") "선호 여행지 선택" else preferredDestinations,
+                        leadingIconRes = R.drawable.forest_path,
+                        placeholder = "선호 여행지 선택",
+                        onItemSelected = { preferredDestinations = it }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            userState?.preferredLanguages?.let {
+                Text(
+                    text = "언어 능력 테스트",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = Black,
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
+                TestButton(
+                    preferredLanguages = it,
+                    onTestClick = { language ->
+                        when (language) {
+                            "한국어" -> onKRQuizClick()
+                            "영어" -> onENQuizClick()
+                        }
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // 모집 현황, 지원 현황 버튼
+            Button(
+                onClick = { onMyPostsClick() },
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(vertical = 14.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = White,
+                    contentColor = SecondaryTextColor
+                ),
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(width = 1.dp, color = BorderColor)
+            ) {
+                Text(
+                    text = "모집 현황",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold)
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Button(
+                onClick = { onMyApplicationsClick() },
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(vertical = 14.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = White,
+                    contentColor = SecondaryTextColor
+                ),
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(width = 1.dp, color = BorderColor)
+            ) {
+                Text(
+                    text = "지원 현황",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold)
+                )
+            }
+            Spacer(modifier = Modifier.height(24.dp)) // 스크롤 영역 하단 여백
+        }
+
+        // --- 하단 고정 영역 ---
+        Button(
+            onClick = {
                 userState?.let { currentUser ->
                     val updatedUser = currentUser.copy(
                         nickname = nickname,
@@ -156,15 +278,24 @@ fun MyPageScreen(
                         preferredDestinations = preferredDestinations
                     )
                     userViewModel.updateMyUser(updatedUser)
+                    Toast.makeText(context, "프로필이 저장되었습니다.", Toast.LENGTH_SHORT).show()
                 }
             },
-            onClick = { type ->
-                when (type) {
-                    "모집 현황" -> onMyPostsClick()
-                    "지원 현황" -> onMyApplicationsClick()
-                }
-            }
-        )
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            contentPadding = PaddingValues(vertical = 16.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = PrimaryBlue,
+                contentColor = White
+            ),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text(
+                "프로필 저장",
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+            )
+        }
     }
 }
 
@@ -189,7 +320,10 @@ fun ProfileSection(
                 return@let
             }
 
-            val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return@let
+            val uid = FirebaseAuth.getInstance().currentUser?.uid ?: run {
+                Toast.makeText(context, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                return@let
+            }
             val storageRef = Firebase.storage.reference.child("profileImages/$uid.jpg")
 
             storageRef.putFile(uri)
@@ -199,82 +333,87 @@ fun ProfileSection(
                         Toast.makeText(context, "프로필 이미지가 변경되었습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
-                .addOnFailureListener {
-                    Toast.makeText(context, "이미지 업로드 실패", Toast.LENGTH_SHORT).show()
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "이미지 업로드 실패: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }
 
-    Row(
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Box(modifier = Modifier.clickable { galleryLauncher.launch("image/*") }) {
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        model = profileImageUrl.takeIf { !it.isNullOrEmpty() }
-                            ?: R.drawable.test_profile
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.change),
-                    contentDescription = "프로필 변경",
-                    tint = Color.Unspecified,
-                    modifier = Modifier
-
-                        .align(Alignment.BottomEnd)
-                        .offset(x = (-8).dp, y = (-8).dp)
-                        .size(20.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.clickable {
-                    showDialog = true
-                }
-            ) {
-                Text(
-                    text = nickname.ifEmpty { "닉네임 없음" },
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.pen_squared),
-                    contentDescription = "닉네임 수정",
-                    tint = Color.Unspecified,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "팔로워 203 · 팔로우 106",
-                color = Color.Gray,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold
+        Box(modifier = Modifier.clickable { galleryLauncher.launch("image/*") }) {
+            Image(
+                painter = rememberAsyncImagePainter(
+                    model = profileImageUrl.takeIf { !it.isNullOrEmpty() }
+                        ?: R.drawable.test_profile
+                ),
+                contentDescription = "프로필 이미지",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, PrimaryBlue, CircleShape)
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.change),
+                contentDescription = "프로필 변경",
+                tint = Color.Unspecified,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .offset(x = (-8).dp, y = (-8).dp)
+                    .size(20.dp)
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.clickable {
+                tempNickname = nickname
+                showDialog = true
+            }
+        ) {
+            Text(
+                text = nickname.ifEmpty { "닉네임 없음" },
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                color = Black
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.pen_squared),
+                contentDescription = "닉네임 수정",
+                tint = SecondaryTextColor,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "팔로워 203 · 팔로우 106",
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+            color = Color.Gray,
+        )
     }
 
     if (showDialog) {
         androidx.compose.material3.AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("닉네임 변경") },
+            title = { Text("닉네임 변경", style = MaterialTheme.typography.titleLarge) },
             text = {
                 TextField(
                     value = tempNickname,
                     onValueChange = { tempNickname = it },
-                    placeholder = { Text("닉네임 입력") },
+                    label = { Text("새 닉네임", color = SecondaryTextColor) },
                     singleLine = true,
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = LightGrayBackground,
+                        unfocusedContainerColor = LightGrayBackground,
+                        focusedIndicatorColor = PrimaryBlue,
+                        unfocusedIndicatorColor = BorderColor
+                    ),
                     modifier = Modifier.fillMaxWidth()
                 )
             },
@@ -283,13 +422,20 @@ fun ProfileSection(
                     onClick = {
                         onNicknameChanged(tempNickname)
                         showDialog = false
-                    }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
                 ) {
-                    Text("변경")
+                    Text("변경", color = White)
                 }
             },
             dismissButton = {
-                Button(onClick = { showDialog = false }) {
+                Button(
+                    onClick = { showDialog = false },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = LightGrayBackground,
+                        contentColor = Black
+                    )
+                ) {
                     Text("취소")
                 }
             }
@@ -301,85 +447,84 @@ fun ProfileSection(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DropDownField(
-    items: List<String>,                   // 드롭다운 항목
-    selectedItem: String,                  // 선택된 값
-    leadingIconRes: Int,                   // 아이콘 리소스
-    placeholder: String,                   // Placeholder 텍스트
+    items: List<String>,
+    selectedItem: String,
+    leadingIconRes: Int,
+    placeholder: String,
     onItemSelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
-        animationSpec = tween(durationMillis = 300)
+        animationSpec = tween(durationMillis = 300), label = "dropdownArrowRotation"
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
-
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded },
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White)
+                .clip(RoundedCornerShape(12.dp))
+                .background(LightGrayBackground)
                 .border(
                     width = 1.dp,
-                    color = Color(0xFF637387),
+                    color = BorderColor,
                     shape = RoundedCornerShape(12.dp)
                 )
         ) {
             Crossfade(
                 targetState = selectedItem,
                 animationSpec = tween(300),
-                label = "countryCrossfade"
+                label = "dropdownCrossfade"
             ) { animatedItem ->
                 TextField(
                     value = animatedItem,
                     onValueChange = { },
                     readOnly = true,
-                    textStyle = LocalTextStyle.current.copy(
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF637387)
+                    textStyle = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Medium,
+                        color = SecondaryTextColor
                     ),
                     label = {
                         Text(
                             placeholder,
-                            fontSize = 10.sp,
-                            color = Color(0xD9637387),
-                            fontWeight = FontWeight.Medium,
+                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Normal),
+                            color = Color.Gray,
                         )
                     },
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = leadingIconRes),
                             contentDescription = null,
-                            tint = Color.Unspecified,
+                            tint = SecondaryTextColor,
                             modifier = Modifier
-                                .height(24.dp)
-                                .width(24.dp)
+                                .size(24.dp)
                         )
                     },
                     trailingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.triangle_arrow),
                             contentDescription = null,
-                            tint = Color.Unspecified,
+                            tint = SecondaryTextColor,
                             modifier = Modifier
-                                .height(20.dp)
-                                .width(20.dp)
+                                .size(20.dp)
                                 .rotate(rotation)
                         )
                     },
                     colors = TextFieldDefaults.colors(
-                        focusedTextColor = Color(0xFF637387),
-                        unfocusedTextColor = Color(0xFF637387),
-                        disabledTextColor = Color(0xFF637387),
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        disabledContainerColor = Color.White,
-                        cursorColor = Color(0xFF637387),
+                        focusedTextColor = Black,
+                        unfocusedTextColor = Black,
+                        disabledTextColor = Black,
+                        focusedContainerColor = LightGrayBackground,
+                        unfocusedContainerColor = LightGrayBackground,
+                        disabledContainerColor = LightGrayBackground,
+                        cursorColor = PrimaryBlue,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
+                        disabledIndicatorColor = Color.Transparent,
+                        focusedLabelColor = PrimaryBlue,
+                        unfocusedLabelColor = Color.Gray
                     ),
                     modifier = Modifier
                         .menuAnchor()
@@ -391,15 +536,17 @@ fun DropDownField(
                     onDismissRequest = { expanded = false },
                     modifier = Modifier
                         .exposedDropdownSize()
-                        .background(Color.White)
+                        .background(White, RoundedCornerShape(8.dp))
+                        .border(1.dp, BorderColor, RoundedCornerShape(8.dp))
                 ) {
                     items.forEach { c ->
                         DropdownMenuItem(
                             text = {
                                 Text(
                                     text = c,
-                                    color = Color(0xFF637387),
-                                    fontWeight = if (c == selectedItem) FontWeight.Bold else FontWeight.Normal
+                                    color = Black,
+                                    fontWeight = if (c == selectedItem) FontWeight.Bold else FontWeight.Normal,
+                                    style = MaterialTheme.typography.bodyMedium
                                 )
                             },
                             onClick = {
@@ -410,73 +557,6 @@ fun DropDownField(
                     }
                 }
             }
-
-        }
-    }
-}
-
-@Composable
-fun ActionButtons(
-    onSave: () -> Unit,
-    onClick: (String) -> Unit
-) {
-    Column {
-        Button(
-            onClick = { onClick("모집 현황") },
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(vertical = 14.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-            shape = RoundedCornerShape(14.dp),
-            border = BorderStroke(
-                width = 1.dp,
-                color = Color(0xFF637387)
-            )
-        ) {
-            Text(
-                text = "모집 현황",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF637387)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(
-            onClick = { onClick("지원 현황") },
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(vertical = 14.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-            shape = RoundedCornerShape(12.dp),
-            border = BorderStroke(
-                width = 1.dp,
-                color = Color(0xFF637387)
-            )
-        ) {
-            Text(
-                text = "지원 현황",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF637387)
-            )
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Button(
-            onClick = onSave,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            contentPadding = PaddingValues(vertical = 14.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3387E5)),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Text(
-                "프로필 저장",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            )
         }
     }
 }

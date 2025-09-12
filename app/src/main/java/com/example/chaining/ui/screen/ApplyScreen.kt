@@ -5,6 +5,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -50,19 +51,24 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.chaining.R
+import com.example.chaining.domain.model.UserSummary
 import com.example.chaining.viewmodel.ApplicationViewModel
 import com.example.chaining.viewmodel.RecruitPostViewModel
+import com.example.chaining.viewmodel.UserViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApplyScreen(
     onBackClick: () -> Unit = {},
+    userViewModel: UserViewModel = hiltViewModel(),
     type: String, // My, Owner
     applicationId: String,
     applicationViewModel: ApplicationViewModel = hiltViewModel(),
     postViewModel: RecruitPostViewModel = hiltViewModel(),
     onNavigateHome: () -> Unit? = {}
 ) {
+    val userState by userViewModel.user.collectAsState()
     val application by applicationViewModel.application.collectAsState()
     val post by postViewModel.post.collectAsState()
     val context = LocalContext.current
@@ -78,6 +84,12 @@ fun ApplyScreen(
         // application이 null이 아니고, 그 안의 postId도 null이 아닐 때만 실행
         application?.postId?.let { postId ->
             postViewModel.fetchPost(postId)
+        }
+    }
+
+    LaunchedEffect(key1 = true) {
+        userViewModel.toastEvent.collectLatest { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -430,7 +442,25 @@ fun ApplyScreen(
                         painter = painterResource(id = R.drawable.follow),
                         contentDescription = "친구 추가",
                         tint = Color.White,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier
+                            .size(16.dp)
+                            .clickable {
+                                val currentUser = userState
+                                val currentApplication = application
+
+                                if (currentUser != null && currentApplication != null) {
+                                    val myInfo = UserSummary(
+                                        id = currentUser.id,
+                                        nickname = currentUser.nickname,
+                                        profileImageUrl = currentUser.profileImageUrl,
+                                        country = currentUser.country
+                                    )
+                                    userViewModel.toggleFollow(
+                                        myInfo,
+                                        currentApplication.applicant
+                                    )
+                                }
+                            }
                     )
                 }
             }

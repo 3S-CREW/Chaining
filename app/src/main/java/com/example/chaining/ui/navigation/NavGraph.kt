@@ -83,11 +83,17 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onMyPostsClick = { navController.navigate(route = Screen.MyPosts.route) },
                 onMyApplicationsClick = {
                     navController.navigate(Screen.Applications.createRoute(type = "My"))
+                },
+                onLogout = {
+                    navController.navigate("login") {
+                        popUpTo(0) { inclusive = true }
+                    }
                 })
         }
+
         composable(Screen.MainHome.route) {
             MainHomeScreen(
-                onBackClick = { navController.navigate("mainHome")},
+                onBackClick = { navController.navigate("mainHome") },
                 onMainHomeClick = { navController.navigate("mainHome") },
                 onMyPageClick = { navController.navigate("myPage") },
                 onCommunityClick = { navController.navigate("community") },
@@ -153,7 +159,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 },
                 onMainHomeClick = { navController.navigate("mainHome") },
                 onCommunityClick = { navController.navigate("community") },
-                onFeedClick = { navController.navigate("feed")},
+                onFeedClick = { navController.navigate("feed") },
                 onNotificationClick = { navController.navigate(route = Screen.Notification.route) }
             )
         }
@@ -215,7 +221,13 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
                 QuizResultScreen(
                     quizViewModel = quizViewModel,
-                    onNavigateToMyPage = { /* TODO: 마이페이지로 이동 */ }
+                    onNavigateToMyPage = {
+                        navController.navigate(Screen.MyPage.route) {
+                            launchSingleTop = true
+                            restoreState = true
+                            popUpTo("quiz_flow") { inclusive = true }
+                        }
+                    }
                 )
             }
         }
@@ -245,7 +257,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onBackClick = { navController.navigate("mainHome") },
                 onMainHomeClick = { navController.navigate("mainHome") },
                 onCommunityClick = { navController.navigate("community") },
-                onFeedClick = { navController.navigate("feed")},
+                onFeedClick = { navController.navigate("feed") },
                 onNotificationClick = { navController.navigate(route = Screen.Notification.route) }
 
             )

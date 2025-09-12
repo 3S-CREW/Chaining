@@ -15,7 +15,7 @@ data class UserEntity(
     val country: String = "",                     // 출신국
     val residence: String = "",                   // 거주지
     val preferredDestinations: String = "",       // 선호 여행지
-    val preferredLanguages: List<LanguagePref> = emptyList(), // 선호 언어 + 수준
+    val preferredLanguages: Map<String, LanguagePref> = emptyMap(),
     val isPublic: Boolean = true,                 // 모집/지원 현황 공개 여부
     val recruitPosts: Map<String, RecruitPost> = emptyMap(), // 내가 모집한 글 (Post ID만 저장)
     val applications: Map<String, Application> = emptyMap(), // 내가 지원한 글 (Application ID만 저장)

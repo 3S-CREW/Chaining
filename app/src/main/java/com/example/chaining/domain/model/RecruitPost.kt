@@ -11,7 +11,7 @@ data class RecruitPost(
     val tourAt: Long = 0L,                                    // 여행 일자
     val hasCar: String = "",                                  // 자차 여부
     val closeAt: Long = 0L,                                   // 모집 마감일
-    val preferredLanguages: List<LanguagePref> = emptyList(), // 선호하는 언어 정보
+    val preferredLanguages: Map<String, LanguagePref> = emptyMap(), // 선호하는 언어 정보
     val content: String = "",                                 // 모집글 내용
     val createdAt: Long = 0L,                                 // 작성 시각
     val kakaoOpenChatUrl: String = "",                        // 카톡 오픈채팅 링크
