@@ -1,22 +1,35 @@
 package com.example.chaining.ui.component
 
+import android.content.Context
+import com.example.chaining.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-fun formatRemainingTime(remainingMillis: Long): String {
-    if (remainingMillis <= 0) return "마감됨"
-
-    val totalMinutes = remainingMillis / 1000 / 60
-    val days = totalMinutes / (60 * 24)
-    val hours = (totalMinutes % (60 * 24)) / 60
-    val minutes = totalMinutes % 60
-
-    return buildString {
-        if (days > 0) append("${days}일 ")
-        if (hours > 0) append("${hours}시간 ")
-        append("${minutes}분")
+fun formatRemainingTime(context: Context, remainingMillis: Long): String {
+    if (remainingMillis <= 0) {
+        return context.getString(R.string.time_closed)
     }
+    val totalMinutes = remainingMillis / 1000 / 60
+    val days = (totalMinutes / (60 * 24)).toInt()
+    val hours = ((totalMinutes % (60 * 24)) / 60).toInt()
+    val minutes = (totalMinutes % 60).toInt()
+
+    val resources = context.resources
+    val parts = mutableListOf<String>()
+
+    if (days > 0) {
+        parts.add(resources.getQuantityString(R.plurals.time_unit_days, days, days))
+    }
+    if (hours > 0) {
+        parts.add(resources.getQuantityString(R.plurals.time_unit_hours, hours, hours))
+    }
+    if (minutes > 0 || parts.isEmpty()) {
+        parts.add(resources.getQuantityString(R.plurals.time_unit_minutes, minutes, minutes))
+    }
+
+    return parts.joinToString(" ")
+
 }
 
 fun formatDate(timestamp: Long): String {

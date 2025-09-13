@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -122,9 +123,9 @@ fun ApplyScreen(
 
                 Text(
                     text = if (type == "Owner") {
-                        "지원서 보기"
+                        stringResource(id = R.string.view_application)
                     } else {
-                        "내 지원서 보기"
+                        stringResource(id = R.string.apply_mine)
                     },
                     fontSize = 20.sp,
                     color = Color.White,
@@ -189,14 +190,16 @@ fun ApplyScreen(
                 ) {
                     Text(
                         text =
-                        application?.applicant?.nickname ?: "알 수 없음",
+                        application?.applicant?.nickname
+                            ?: stringResource(id = R.string.community_unknown),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF4A526A)
                     )
                     Text(
                         text =
-                        application?.applicant?.country ?: "알 수 없음",
+                        application?.applicant?.country
+                            ?: stringResource(id = R.string.community_unknown),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF7282B4),
@@ -220,7 +223,7 @@ fun ApplyScreen(
 //                                    )?.level ?: "알 수 없음"
 //                                } / 10"
 //                            },
-                            text = "알 수 없음",
+                            text = stringResource(id = R.string.community_unknown),
                             color = Color(0xFF4A526A)
                         )
                         Spacer(modifier = Modifier.height(4.dp))
@@ -234,7 +237,7 @@ fun ApplyScreen(
 //                                    )?.level ?: "알 수 없음"
 //                                } / 10"
 //                            },
-                            text = "알 수 없음",
+                            text = stringResource(id = R.string.community_unknown),
                             color = Color(0xFF4A526A)
                         )
                     }
@@ -254,7 +257,8 @@ fun ApplyScreen(
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text =
-                            application?.introduction ?: "알 수 없음",
+                            application?.introduction
+                                ?: stringResource(id = R.string.community_unknown),
                             color = Color(0xFF4A526A)
                         )
                     }

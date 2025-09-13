@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,6 +50,7 @@ fun MyPostsScreen(
     onViewPostClick: (postId: String) -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val userState by userViewModel.user.collectAsState()
 
     val myPosts = userState?.recruitPosts.orEmpty()
@@ -111,7 +113,7 @@ fun MyPostsScreen(
                     modifier = Modifier.weight(1f),
                     iconRes = R.drawable.post,
                     text = if (showOnlyOpenPosts) stringResource(id = R.string.mypost_all_post)
-                        else stringResource(id = R.string.mypost_filter_open),
+                    else stringResource(id = R.string.mypost_filter_open),
                     onClick = {
                         showOnlyOpenPosts = !showOnlyOpenPosts
                     }
@@ -134,7 +136,10 @@ fun MyPostsScreen(
                         onClick = { onViewPostClick(post.value.postId) },
                         type = "모집글",
                         recruitPost = post.value,
-                        remainingTime = formatRemainingTime(post.value.closeAt - System.currentTimeMillis()),
+                        remainingTime = formatRemainingTime(
+                            context,
+                            post.value.closeAt - System.currentTimeMillis()
+                        ),
                     )
                 }
             }

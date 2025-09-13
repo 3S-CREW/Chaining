@@ -65,6 +65,22 @@
     <string name="sort_by_latest">Latest</string>
     <string name="sort_by_deadline">Deadline</string>
     <string name="sort_by_interest">Interest</string>
+    <string name="post_writer">writer</string>
+    <string name="choose">Choose</string>
+    <string name="time_closed">Closed</string>
+    <plurals name="time_unit_days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <plurals name="time_unit_hours">
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+    <plurals name="time_unit_minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <string name="view_application">View Application></string>
 
     <string name="post_write_title">Write a Post</string>
     <string name="post_write_enter_title">Enter a title.</string>

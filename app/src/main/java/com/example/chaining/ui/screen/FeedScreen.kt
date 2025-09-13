@@ -1,6 +1,5 @@
 package com.example.chaining.ui.screen
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -102,7 +101,7 @@ fun FeedScreen(
                     "Feed" -> onFeedClick()
                 }
             })
-                    },
+        },
         containerColor = Color(0xFFF3F6FF)
     ) { innerPadding ->
         // feedItems의 상태에 따라 다른 UI 표시
@@ -127,6 +126,7 @@ fun FeedScreen(
             ) {
                 items(feedItems) { item ->
                     // Log.d("FeedScreen", "Title: ${item.title}, Image URL: ${item.imageUrl}")
+                    println("호식이" + feedItems)
                     FeedItem(
                         region = item.address.split(" ").getOrNull(0) ?: "지역",
                         place = item.title,
