@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
@@ -34,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,6 +44,7 @@ import com.example.chaining.R
 import com.example.chaining.domain.model.Notification
 import com.example.chaining.ui.component.CardItem
 import com.example.chaining.ui.component.FollowNotificationItem
+import com.example.chaining.ui.component.formatRemainingTime
 import com.example.chaining.ui.screen.LightGrayBackground
 import com.example.chaining.ui.screen.PrimaryBlue
 import com.example.chaining.viewmodel.ApplicationViewModel
@@ -61,7 +62,10 @@ fun NotificationScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     var selectedTabIndex by remember { mutableStateOf(0) }
-    val tabTitles = listOf(stringResource(id = R.string.alarm_follow), stringResource(id = R.string.alarm_apply))
+    val tabTitles = listOf(
+        stringResource(id = R.string.alarm_follow),
+        stringResource(id = R.string.alarm_apply)
+    )
 
     // 알림 타입별 필터링
     val filteredNotifications = when (selectedTabIndex) {
@@ -164,6 +168,7 @@ fun NotificationItem(
     notification: Notification,
     applicationViewModel: ApplicationViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val formattedDate = remember(notification.createdAt) {
         val date = Date(notification.createdAt)
         SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault()).format(date)
@@ -172,7 +177,8 @@ fun NotificationItem(
     when (notification.type) {
         "follow" -> {
             FollowNotificationItem(
-                name = notification.sender?.nickname ?: "알 수 없음",
+                name = notification.sender?.nickname
+                    ?: stringResource(id = R.string.community_unknown),
                 timestamp = formattedDate,
                 imageUrl = notification.sender?.profileImageUrl?.takeIf { it.isNotEmpty() } ?: ""
             )
@@ -191,7 +197,10 @@ fun NotificationItem(
                 onClick = { /* 카드 클릭 시 처리 */ },
                 type = "지원서",
                 application = application, // Notification -> Application 매핑 필요
-                remainingTime = "2일 남음", // 실제 남은 시간 계산 로직 적용 가능
+                remainingTime = formatRemainingTime(
+                    context,
+                    notification.closeAt?.minus(System.currentTimeMillis()) ?: 0L
+                ),
                 onLeftButtonClick = { /* 수락 클릭 */ },
                 onRightButtonClick = { /* 거절 클릭 */ }
             )
@@ -231,7 +240,11 @@ fun NotificationItem(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "작성자: ${notification.sender ?: "알 수 없음"}",
+                            text = "${stringResource(id = R.string.post_writer)}: ${
+                                notification.sender ?: stringResource(
+                                    id = R.string.community_unknown
+                                )
+                            }",
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

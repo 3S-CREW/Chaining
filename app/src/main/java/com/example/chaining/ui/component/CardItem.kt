@@ -63,24 +63,34 @@ fun CardItem(
 //        else -> UserSummary()
 //    }
 
-    val leftButtonText = if (type == "모집글") stringResource(id = R.string.community_apply_button) else stringResource(id = R.string.application_yes)
-    val rightButtonText = if (type == "모집글") stringResource(id = R.string.community_interest_button) else stringResource(id = R.string.application_no)
+    val leftButtonText =
+        if (type == "모집글") stringResource(id = R.string.community_apply_button) else stringResource(
+            id = R.string.application_yes
+        )
+    val rightButtonText =
+        if (type == "모집글") stringResource(id = R.string.community_interest_button) else stringResource(
+            id = R.string.application_no
+        )
 
-    val rightText = if (type == "모집글") stringResource(id = R.string.community_see_post) else "지원서 보기 >"
+    val rightText =
+        if (type == "모집글") stringResource(id = R.string.community_see_post) else stringResource(id = R.string.view_application)
 
     val profile = if (type == "모집글") {
         UserSummary(
             id = recruitPost?.owner?.id ?: "",
-            nickname = recruitPost?.owner?.nickname ?: stringResource(id = R.string.community_unknown),
+            nickname = recruitPost?.owner?.nickname
+                ?: stringResource(id = R.string.community_unknown),
             profileImageUrl = recruitPost?.owner?.profileImageUrl ?: "",
             country = recruitPost?.owner?.country ?: stringResource(id = R.string.community_unknown)
         )
     } else {
         UserSummary(
             id = application?.applicant?.id ?: "",
-            nickname = application?.applicant?.nickname ?: stringResource(id = R.string.community_unknown),
+            nickname = application?.applicant?.nickname
+                ?: stringResource(id = R.string.community_unknown),
             profileImageUrl = application?.applicant?.profileImageUrl ?: "",
-            country = application?.applicant?.country ?: stringResource(id = R.string.community_unknown)
+            country = application?.applicant?.country
+                ?: stringResource(id = R.string.community_unknown)
         )
     }
 

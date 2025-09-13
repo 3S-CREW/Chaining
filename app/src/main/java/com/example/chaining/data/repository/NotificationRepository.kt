@@ -77,7 +77,8 @@ class NotificationRepository @Inject constructor(
                 status = it.status,
                 createdAt = it.createdAt,
                 isRead = it.isRead,
-                uid = uid
+                uid = uid,
+                closeAt = it.closeAt
             )
         }
     }
@@ -93,7 +94,8 @@ class NotificationRepository @Inject constructor(
                 status = it.status,
                 createdAt = it.createdAt,
                 isRead = it.isRead,
-                uid = it.uid
+                uid = it.uid,
+                closeAt = it.closeAt
             )
         }
     }

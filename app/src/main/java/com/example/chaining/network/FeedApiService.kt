@@ -15,7 +15,7 @@ interface FeedApiService {
         @Query("MobileApp") mobileApp: String = "Chaining", // 앱 이름
         @Query("_type") type: String = "json",       // 응답 타입 (JSON)
         @Query("arrange") arrange: String = "O",     // 정렬 기준 (A=제목순, C=수정일순, D=생성일순)
-        @Query("contentTypeId") contentTypeId: Int = 12, // 관광지 타입 (12=관광지)
+        @Query("contentTypeId") contentTypeId: Int? = 12, // 관광지 타입 (12=관광지)
         @Query("areaCode") areaCode: Int? = null     // 지역 코드 (생략 시 전국)
         // @Query("sigunguCode") sigunguCode: Int? = null, // 시군구 코드 (선택적)
         // @Query("cat1") cat1: String? = null, // 대분류 (선택적)

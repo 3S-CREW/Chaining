@@ -33,7 +33,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.chaining.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -127,7 +129,7 @@ fun DatePickerModal(
                     onDateSelected(datePickerState.selectedDateMillis)
                     onDismiss()
                 }) {
-                Text("선택", color = Color(0xFF4285F4))
+                Text(text = stringResource(id = R.string.choose), color = Color(0xFF4285F4))
             }
         },
         dismissButton = {

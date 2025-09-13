@@ -67,18 +67,22 @@ fun FilterOptionsSheet(
     var expandedSortBy by remember { mutableStateOf(false) }
 
     // 드롭다운 옵션 목록
-    val travelStyles = listOf(stringResource(id = R.string.travel_style_mountain),
+    val travelStyles = listOf(
+        stringResource(id = R.string.travel_style_mountain),
         stringResource(id = R.string.travel_style_sea),
         stringResource(id = R.string.travel_style_city),
         stringResource(id = R.string.travel_style_activity),
         stringResource(id = R.string.travel_style_rest),
-        stringResource(id = R.string.travel_style_culture))
+        stringResource(id = R.string.travel_style_culture)
+    )
     val travelLocations = remember(areaEntities) {
         areaEntities
             .map { it.regionName }
     }
-    val languages = listOf(stringResource(id = R.string.language_korean),
-        stringResource(id = R.string.language_english))
+    val languages = listOf(
+        stringResource(id = R.string.language_korean),
+        stringResource(id = R.string.language_english)
+    )
     val languageLevels = (1..10).toList()
     val sortByOptions = mapOf(
         "latest" to stringResource(id = R.string.sort_by_latest),
@@ -191,7 +195,12 @@ fun FilterOptionsSheet(
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4A526A)),
             contentPadding = PaddingValues(12.dp)
         ) {
-            Text(stringResource(id = R.string.filter_apply_button), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(
+                stringResource(id = R.string.filter_apply_button),
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
@@ -238,7 +247,7 @@ fun FilterDropdown(
             onDismissRequest = { onExpandedChange(false) }
         ) {
             DropdownMenuItem(
-                text = { Text("선택 안 함") },
+                text = { Text(text = stringResource(id = R.string.filter_option_none)) },
                 onClick = {
                     onValueChange(null)
                     onExpandedChange(false)

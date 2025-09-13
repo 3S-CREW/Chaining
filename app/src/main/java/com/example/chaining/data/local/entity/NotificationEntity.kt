@@ -13,6 +13,7 @@ data class NotificationEntity(
     val sender: UserSummary? = UserSummary(),   // 팔로우나 신청자 ID
     val status: String? = null,     // 지원서 승인/거절 상태
     val createdAt: Long = 0L,       // 타임 스탬프
+    val closeAt: Long? = 0L,
     val isRead: Boolean = false,    // 읽음 여부
     val uid: String
 )
