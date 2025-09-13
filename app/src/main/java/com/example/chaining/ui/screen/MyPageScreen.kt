@@ -60,6 +60,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -134,7 +135,7 @@ fun MyPageScreen(
                 shape = RoundedCornerShape(8.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
             ) {
-                Text("로그아웃", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(id = R.string.mypage_logout), style = MaterialTheme.typography.labelLarge)
             }
         }
 
@@ -162,7 +163,7 @@ fun MyPageScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
-                text = "기본 정보",
+                text = stringResource(id = R.string.mypage_info),
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 color = Black,
                 modifier = Modifier.padding(bottom = 12.dp)
@@ -176,10 +177,17 @@ fun MyPageScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     DropDownField(
-                        items = listOf("한국", "미국", "일본", "중국", "영국", "독일", "프랑스"),
+                        items = listOf(stringResource(id = R.string.mypage_kr),
+                            stringResource(id = R.string.mypage_us),
+                            stringResource(id = R.string.mypage_jp),
+                            stringResource(id = R.string.mypage_cn),
+                            stringResource(id = R.string.mypage_uk),
+                            stringResource(id = R.string.mypage_gm),
+                            stringResource(id = R.string.mypage_fr)
+                        ),
                         selectedItem = country,
                         leadingIconRes = R.drawable.airport,
-                        placeholder = "출신 국가 선택",
+                        placeholder = stringResource(id = R.string.mypage_country),
                         onItemSelected = { country = it }
                     )
                     Spacer(modifier = Modifier.height(12.dp))
@@ -191,15 +199,21 @@ fun MyPageScreen(
                         items = areaNames,
                         selectedItem = residence,
                         leadingIconRes = R.drawable.country,
-                        placeholder = "현재 거주지 선택",
+                        placeholder = stringResource(id = R.string.mypage_location),
                         onItemSelected = { residence = it }
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     DropDownField(
-                        items = listOf("산", "바다", "도시", "액티비티", "휴양", "문화/예술"),
+                        items = listOf(stringResource(id = R.string.travel_style_mountain),
+                            stringResource(id = R.string.travel_style_sea),
+                            stringResource(id = R.string.travel_style_city),
+                            stringResource(id = R.string.travel_style_activity),
+                            stringResource(id = R.string.travel_style_rest),
+                            stringResource(id = R.string.travel_style_culture)
+                        ),
                         selectedItem = preferredDestinations,
                         leadingIconRes = R.drawable.forest_path,
-                        placeholder = "선호 여행지 스타일 선택",
+                        placeholder = stringResource(id = R.string.mypage_prefstyle),
                         onItemSelected = { preferredDestinations = it }
                     )
                 }
@@ -209,7 +223,7 @@ fun MyPageScreen(
 
             userState?.preferredLanguages?.let {
                 Text(
-                    text = "언어 능력 테스트",
+                    text = stringResource(id = R.string.mypage_quiz),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = Black,
                     modifier = Modifier.padding(bottom = 12.dp)
@@ -240,7 +254,7 @@ fun MyPageScreen(
                 border = BorderStroke(width = 1.dp, color = BorderColor)
             ) {
                 Text(
-                    text = "모집 현황",
+                    text = stringResource(id = R.string.mypage_post),
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold)
                 )
             }
@@ -257,7 +271,7 @@ fun MyPageScreen(
                 border = BorderStroke(width = 1.dp, color = BorderColor)
             ) {
                 Text(
-                    text = "지원 현황",
+                    text = stringResource(id = R.string.mypage_apply),
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold)
                 )
             }
@@ -300,7 +314,7 @@ fun MyPageScreen(
             shape = RoundedCornerShape(12.dp)
         ) {
             Text(
-                "프로필 저장",
+                stringResource(id = R.string.mypage_profile_save),
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
             )
         }
@@ -416,7 +430,7 @@ fun ProfileSection(
 
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("닉네임 변경", style = MaterialTheme.typography.titleLarge) },
+            title = { Text(stringResource(id = R.string.mypage_nick_change), style = MaterialTheme.typography.titleLarge) },
             text = {
                 Column {
                     TextField(
@@ -424,7 +438,7 @@ fun ProfileSection(
                         onValueChange = {
                             tempNickname = it
                         },
-                        label = { Text("새 닉네임", color = SecondaryTextColor) },
+                        label = { Text(stringResource(id = R.string.mypage_new_nick), color = SecondaryTextColor) },
                         singleLine = true,
                         isError = nicknameError != null,
                         colors = TextFieldDefaults.colors(
@@ -457,7 +471,7 @@ fun ProfileSection(
                     enabled = validateNickname(tempNickname) == null,
                     colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
                 ) {
-                    Text("변경", color = White)
+                    Text(stringResource(id = R.string.mypage_change), color = White)
                 }
             },
             dismissButton = {
@@ -468,7 +482,7 @@ fun ProfileSection(
                         contentColor = Black
                     )
                 ) {
-                    Text("취소")
+                    Text(stringResource(id = R.string.mypage_cancel))
                 }
             }
         )

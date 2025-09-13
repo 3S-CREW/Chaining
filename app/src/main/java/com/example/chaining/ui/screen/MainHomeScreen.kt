@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -126,7 +127,7 @@ fun MainHomeScreen(
                 .background(Color(0xFFF3F6FF))
         ) {
             Text(
-                text = "${userState?.nickname}님 반갑습니다.",
+                text = stringResource(id = R.string.welcome_message, userState?.nickname ?: "쳉"),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -134,7 +135,7 @@ fun MainHomeScreen(
                     .padding(horizontal = 32.dp)
             )
             Text(
-                text = "최근 접수된 지원서",
+                text = stringResource(id = R.string.recent_apply),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Gray,
@@ -149,7 +150,7 @@ fun MainHomeScreen(
                 }
             } else if (recentApplication == null) {
                 Text(
-                    text = "최근 지원서가 없습니다.",
+                    text = stringResource(id = R.string.no_recent_apply),
                     fontSize = 14.sp,
                     color = Color.Gray,
                     modifier = Modifier
@@ -165,7 +166,7 @@ fun MainHomeScreen(
 
             }
             Text(
-                text = "최근 팔로우 목록",
+                text = stringResource(id = R.string.recent_follow),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Gray,

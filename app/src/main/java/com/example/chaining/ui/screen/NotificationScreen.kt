@@ -34,11 +34,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.chaining.R
 import com.example.chaining.domain.model.Notification
 import com.example.chaining.ui.component.CardItem
 import com.example.chaining.ui.component.FollowNotificationItem
@@ -50,7 +52,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationScreen(
     viewModel: NotificationViewModel = hiltViewModel()
@@ -60,7 +61,7 @@ fun NotificationScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     var selectedTabIndex by remember { mutableStateOf(0) }
-    val tabTitles = listOf("팔로우", "지원서")
+    val tabTitles = listOf(stringResource(id = R.string.alarm_follow), stringResource(id = R.string.alarm_apply))
 
     // 알림 타입별 필터링
     val filteredNotifications = when (selectedTabIndex) {
@@ -78,7 +79,7 @@ fun NotificationScreen(
                     .background(LightGrayBackground)
             ) {
                 Text(
-                    text = "알림",
+                    text = stringResource(id = R.string.alarm_title),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -136,7 +137,7 @@ fun NotificationScreen(
 
                 filteredNotifications.isEmpty() -> {
                     Text(
-                        text = "알림이 없습니다.",
+                        text = stringResource(id = R.string.alarm_apply_text_two),
                         modifier = Modifier.align(Alignment.Center),
                         fontSize = 16.sp
                     )

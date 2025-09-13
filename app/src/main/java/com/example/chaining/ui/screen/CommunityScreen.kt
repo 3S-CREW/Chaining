@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -127,7 +128,7 @@ fun CommunityScreen(
 
                 // 제목
                 Text(
-                    text = "커뮤니티",
+                    text = stringResource(id = R.string.community_title),
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
@@ -162,7 +163,7 @@ fun CommunityScreen(
                 CommunityActionButton(
                     modifier = Modifier.weight(1f),
                     iconRes = R.drawable.post,
-                    text = "게시글 작성",
+                    text = stringResource(id = R.string.community_write_post),
                     onClick = onCreatePostClick
                 )
 
@@ -170,7 +171,7 @@ fun CommunityScreen(
                 CommunityActionButton(
                     modifier = Modifier.weight(1f),
                     iconRes = R.drawable.reload,
-                    text = "새로고침",
+                    text = stringResource(id = R.string.community_refresh),
                     onClick = { postViewModel.refreshPosts() }
                 )
             }
@@ -178,7 +179,7 @@ fun CommunityScreen(
             if (posts.isEmpty()) {
                 // 데이터가 없을 때
                 Text(
-                    text = "등록된 게시글이 없습니다.",
+                    text = stringResource(id = R.string.community_no_posts),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 50.dp),

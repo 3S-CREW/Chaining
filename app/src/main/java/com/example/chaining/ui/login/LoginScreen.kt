@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -199,7 +200,11 @@ fun LoginScreen(
                     )
                 }
                 Text(
-                    text = if (isLoading) "로그인 중..." else "Google 계정으로 로그인",
+                    text = if (isLoading){
+                        stringResource(id = R.string.login_in_progress)
+                    } else {
+                        stringResource(id = R.string.login_button)
+                    },
                     style = MaterialTheme.typography.labelLarge.copy(fontSize = 18.sp)
                 )
             }

@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -81,7 +82,7 @@ fun MyPostsScreen(
 
                 // 제목
                 Text(
-                    text = "내 모집글 보기",
+                    text = stringResource(id = R.string.mypost_title),
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
@@ -109,7 +110,8 @@ fun MyPostsScreen(
                 ActionButton(
                     modifier = Modifier.weight(1f),
                     iconRes = R.drawable.post,
-                    text = if (showOnlyOpenPosts) "전체 글 보기" else "마감되지 않은 글만",
+                    text = if (showOnlyOpenPosts) stringResource(id = R.string.mypost_all_post)
+                        else stringResource(id = R.string.mypost_filter_open),
                     onClick = {
                         showOnlyOpenPosts = !showOnlyOpenPosts
                     }
@@ -118,7 +120,7 @@ fun MyPostsScreen(
             if (filteredPosts.isEmpty()) {
                 // 데이터가 없을 때
                 Text(
-                    text = "등록된 모집글이 없습니다.",
+                    text = stringResource(id = R.string.mypost_nothing),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 50.dp),

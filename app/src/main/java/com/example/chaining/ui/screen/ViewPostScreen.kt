@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -151,37 +152,37 @@ fun ViewPostScreen(
 
                     setInfo(
                         icon = R.drawable.global,
-                        title = "선호 여행지 스타일",
+                        title = stringResource(id = R.string.post_style),
                         content = currentPost.preferredDestinations
                     )
 
                     setInfo(
                         icon = R.drawable.calendar,
-                        title = "여행 일자",
+                        title = stringResource(id = R.string.post_date),
                         content = formatDate(currentPost.tourAt)
                     )
 
                     setInfo(
                         icon = R.drawable.car,
-                        title = "자차 여부",
+                        title = stringResource(id = R.string.post_car),
                         content = currentPost.hasCar
                     )
 
                     setInfo(
                         icon = R.drawable.timer,
-                        title = "모집 마감일",
+                        title = stringResource(id = R.string.post_finish),
                         content = formatDate(currentPost.closeAt)
                     )
 
                     setInfo(
                         icon = R.drawable.language,
-                        title = "선호하는 언어",
+                        title = stringResource(id = R.string.post_lang),
                         content = currentPost.preferredLanguages.values.joinToString { it.language }
                     )
 
                     setInfo(
                         icon = R.drawable.level,
-                        title = "선호하는 언어 수준",
+                        title = stringResource(id = R.string.post_lang_level),
                         content = currentPost.preferredLanguages.values.joinToString { it.level.toString() }
                     )
 
@@ -217,19 +218,19 @@ fun ViewPostScreen(
                     ) {
                         SaveButton(
                             onSave = { onEditClick(currentPost.postId) },
-                            text = "수정",
+                            text = stringResource(id = R.string.post_edit),
                             modifier = Modifier.weight(1f)
                         )
                         SaveButton(
                             onSave = { onApplicationListClick(currentPost.postId) },
-                            text = "보기",
+                            text = stringResource(id = R.string.post_look),
                             modifier = Modifier.weight(1f)
                         )
                     }
 
                     //                SaveButton(onSave = { /*TODO*/ }, text = "삭제")
                 } else {
-                    SaveButton(onSave = { onJoinPostClick(currentPost) }, text = "신청")
+                    SaveButton(onSave = { onJoinPostClick(currentPost) }, text = stringResource(id = R.string.post_button))
                     //                SaveButton(onSave = { /*TODO*/ }, text = "숨김")
 
                 }
@@ -258,24 +259,24 @@ fun setInfo(
             tint = Color(0xFF4A526A)
         )
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(12.dp))
 
         Text(
             text = title,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(2f),
             color = Color(0xFF4A526A),
-            fontSize = 16.sp,
-            textAlign = TextAlign.Left
+            fontSize = 14.sp,
+            textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(12.dp))
 
         Text(
             text = content,
             modifier = Modifier.weight(1f),
             color = Color(0xFF4A526A),
-            fontSize = 16.sp,
-            textAlign = TextAlign.Left
+            fontSize = 14.sp,
+            textAlign = TextAlign.Center
         )
     }
 }

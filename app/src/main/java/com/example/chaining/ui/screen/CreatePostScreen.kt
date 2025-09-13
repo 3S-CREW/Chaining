@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -95,7 +96,8 @@ fun CreatePostScreen(
     var closeAt by remember { mutableStateOf<Long?>(null) }
     var kakaoOpenChatUrl by remember { mutableStateOf("") }
 
-    val buttonText = if (type == "생성") "작성 완료" else "수정 완료"
+    val buttonText = if (type == "생성") stringResource(id = R.string.post_write_button)
+                else "수정 완료"
 
     LaunchedEffect(userState) {
         if (type == "생성") {
@@ -143,7 +145,7 @@ fun CreatePostScreen(
 
                 // 제목 텍스트
                 Text(
-                    text = "모집글 작성",
+                    text = stringResource(id = R.string.post_write_title),
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
@@ -169,7 +171,7 @@ fun CreatePostScreen(
                 value = title,
                 onValueChange = { if (it.length <= MAX_TITLE_LENGTH) title = it },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("제목을 입력하세요.") },
+                placeholder = { Text(text = stringResource(id = R.string.post_write_enter_title)) },
                 shape = RoundedCornerShape(16.dp),
                 singleLine = true,
                 colors = TextFieldDefaults.colors(
@@ -192,10 +194,15 @@ fun CreatePostScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             // 여행지 스타일 드롭다운
-            val travelStyles = listOf("산", "바다", "도시", "액티비티", "휴양", "문화/예술")
+            val travelStyles = listOf(stringResource(id = R.string.travel_style_mountain),
+                stringResource(id = R.string.travel_style_sea),
+                stringResource(id = R.string.travel_style_city),
+                stringResource(id = R.string.travel_style_activity),
+                stringResource(id = R.string.travel_style_rest),
+                stringResource(id = R.string.travel_style_culture))
             PreferenceSelector(
                 options = travelStyles,
-                placeholderText = "선호하는 여행 스타일 선택",
+                placeholderText = stringResource(id = R.string.post_write_style),
                 selectedOption = preferredDestinations,
                 onOptionSelected = { preferredDestinations = it }
             )
@@ -209,7 +216,7 @@ fun CreatePostScreen(
             }
             PreferenceSelector(
                 options = areaNames,
-                placeholderText = "선호하는 여행 지역 선택",
+                placeholderText = stringResource(id = R.string.post_write_location),
                 selectedOption = preferredLocation.location,
                 onOptionSelected = { selectedName ->
                     preferredLocation = preferredLocation.copy(location = selectedName)
@@ -233,8 +240,12 @@ fun CreatePostScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
             SingleDropdown(
-                label = "자차 여부",
-                options = listOf("예(6인승 이상)", "예(4인승)", "예(2인승)", "아니요"),
+                label = stringResource(id = R.string.post_write_car),
+                options = listOf(stringResource(id = R.string.post_write_car_six),
+                    stringResource(id = R.string.post_write_car_four),
+                    stringResource(id = R.string.post_write_car_two),
+                    stringResource(id = R.string.post_write_no)
+                ),
                 selectedOption = hasCar,
                 onOptionSelected = { hasCar = it }
             )
@@ -247,7 +258,7 @@ fun CreatePostScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp),
-                placeholder = { Text("카카오톡 오픈 채팅방 링크를 입력하세요.") },
+                placeholder = { Text(stringResource(id = R.string.post_write_kakao)) },
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
@@ -267,7 +278,7 @@ fun CreatePostScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp),
-                placeholder = { Text("내용을 입력하세요.") },
+                placeholder = { Text(stringResource(id = R.string.post_write)) },
                 shape = RoundedCornerShape(16.dp),
                 supportingText = {
                     Text(

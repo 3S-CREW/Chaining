@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,14 +44,16 @@ fun CardItem(
     onRightButtonClick: () -> Unit = {}
 ) {
     val title = when (type) {
-        "모집글" -> recruitPost?.title ?: "제목 없음"
-        "지원서" -> application?.recruitPostTitle ?: "지원서 제목 없음"
-        else -> "제목 없음"
+        "모집글" -> recruitPost?.title ?: stringResource(id = R.string.community_no_title)
+        "지원서" -> application?.recruitPostTitle ?: stringResource(id = R.string.community_no_title)
+        else -> stringResource(id = R.string.community_no_title)
     }
 
+    val remainingTimeText = remainingTime ?: stringResource(id = R.string.community_unknown)
+
     val timeText = when (type) {
-        "모집글" -> "모집 마감까지 ${remainingTime ?: "알 수 없음"} 남음"
-        "지원서" -> "수락/거절까지 ${remainingTime ?: "알 수 없음"} 남음"
+        "모집글" -> stringResource(id = R.string.time_left_recruit, remainingTimeText)
+        "지원서" -> stringResource(id = R.string.time_left_application, remainingTimeText)
         else -> ""
     }
 
@@ -60,24 +63,24 @@ fun CardItem(
 //        else -> UserSummary()
 //    }
 
-    val leftButtonText = if (type == "모집글") "신청" else "수락"
-    val rightButtonText = if (type == "모집글") "관심" else "거절"
+    val leftButtonText = if (type == "모집글") stringResource(id = R.string.community_apply_button) else stringResource(id = R.string.application_yes)
+    val rightButtonText = if (type == "모집글") stringResource(id = R.string.community_interest_button) else stringResource(id = R.string.application_no)
 
-    val rightText = if (type == "모집글") "모집글 보기 >" else "지원서 보기 >"
+    val rightText = if (type == "모집글") stringResource(id = R.string.community_see_post) else "지원서 보기 >"
 
     val profile = if (type == "모집글") {
         UserSummary(
             id = recruitPost?.owner?.id ?: "",
-            nickname = recruitPost?.owner?.nickname ?: "알 수 없음",
+            nickname = recruitPost?.owner?.nickname ?: stringResource(id = R.string.community_unknown),
             profileImageUrl = recruitPost?.owner?.profileImageUrl ?: "",
-            country = recruitPost?.owner?.country ?: "알 수 없음"
+            country = recruitPost?.owner?.country ?: stringResource(id = R.string.community_unknown)
         )
     } else {
         UserSummary(
             id = application?.applicant?.id ?: "",
-            nickname = application?.applicant?.nickname ?: "알 수 없음",
+            nickname = application?.applicant?.nickname ?: stringResource(id = R.string.community_unknown),
             profileImageUrl = application?.applicant?.profileImageUrl ?: "",
-            country = application?.applicant?.country ?: "알 수 없음"
+            country = application?.applicant?.country ?: stringResource(id = R.string.community_unknown)
         )
     }
 
@@ -186,7 +189,7 @@ fun CardItem(
                         // 왼쪽 버튼
                         Button(
                             onClick = onLeftButtonClick,
-                            modifier = Modifier.weight(2f),
+                            modifier = Modifier.weight(3f),
                             shape = RoundedCornerShape(20.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF4285F4),
@@ -199,7 +202,7 @@ fun CardItem(
                         // 오른쪽 버튼
                         Button(
                             onClick = onRightButtonClick,
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier.weight(2f),
                             shape = RoundedCornerShape(20.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFFEBEFFA),

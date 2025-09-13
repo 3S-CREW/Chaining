@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chaining.R
@@ -44,7 +45,7 @@ fun TestButton(
     preferredLanguages: Map<String, LanguagePref>,
     onTestClick: (String) -> Unit
 ) {
-    val languageText = "언어 능력 테스트 및 결과 확인"
+    val languageText = stringResource(id = R.string.mypage_quiz_result)
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
@@ -97,14 +98,14 @@ fun TestButton(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = "언어 테스트 현황",
+                    text = stringResource(id = R.string.mypage_quiz_status),
                     style = MaterialTheme.typography.titleMedium,
                     color = Color.Black
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                val supportedLanguages = listOf("한국어", "영어")
+                val supportedLanguages = listOf(stringResource(id = R.string.mypage_korean), stringResource(id = R.string.mypage_english))
 
                 supportedLanguages.forEach { language ->
                     val dataLanguage = when (language) {
@@ -174,7 +175,7 @@ fun LanguageTestItem(
                 )
             } else {
                 Text(
-                    text = "테스트 미응시",
+                    text = stringResource(id = R.string.mypage_quiz_incomplete),
                     fontSize = 12.sp,
                     color = Color.Gray
                 )
@@ -194,7 +195,7 @@ fun LanguageTestItem(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         ) {
             Text(
-                text = if (level != null) "재응시" else "응시하기",
+                text = if (level != null) stringResource(id = R.string.mypage_quiz_retry) else stringResource(id = R.string.mypage_quiz_start),
                 color = Color.White,
                 fontSize = 14.sp
             )
