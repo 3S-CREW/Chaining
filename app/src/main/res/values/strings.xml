@@ -65,7 +65,7 @@
     <string name="sort_by_latest">최신순</string>
     <string name="sort_by_deadline">마감순</string>
     <string name="sort_by_interest">관심순</string>
-    // 커뮤니티_모집글 작성 화면
+    // 커뮤니티_모집글 작성 화면 (CreatePostScreen.kt)
     <string name="post_write_title">모집글 작성</string>
     <string name="post_write_enter_title">제목을 입력하세요.</string>
     <string name="post_write_style">선호하는 여행 스타일 선택</string>
@@ -78,16 +78,28 @@
     <string name="post_write_kakao">카카오톡 오픈 채팅방 링크를 입력하세요.</string>
     <string name="post_write">내용을 입력하세요.</string>
     <string name="post_write_button">작성 완료</string>
+    <string name="post_title">제목</string>
+    <string name="post_content">내용</string>
+    <string name="post_travel_style">선호 여행지 스타일</string>
+    <string name="post_location">선호 여행지/장소</string>
+    <string name="post_tour_date">여행 시작일</string>
+    <string name="post_close_date">모집 마감일</string>
+    <string name="post_car">자차 여부</string>
+    <string name="post_language">선호 언어</string>
+    <string name="post_kakao_link">카카오톡 오픈채팅 링크</string>
+    <string name="post_please_enter">다음 항목을 입력해주세요: %1$s</string>
+    <string name="post_invalid_kakao_link">오픈채팅 링크는 \'https://open.kakao.com/o/\' 형식이어야 합니다.</string>
     // 커뮤니티_모집글 보기 화면
     <string name="post_style">선호 여행지 스타일</string>
     <string name="post_date">여행 일자</string>
-    <string name="post_car">자차 여부</string>
     <string name="post_finish">모집 마감일</string>
     <string name="post_lang">선호하는 언어</string>
     <string name="post_lang_level">선호하는 언어 수준</string>
     <string name="post_button">신청</string>
     <string name="post_edit">수정</string>
     <string name="post_look">보기</string>
+    <string name="post_application">내 모집글 지원서</string>
+    <string name="post_edit_button">수정 완료</string>
     // 커뮤니티_신청서 작성 화면 (JoinPostScreen.kt)
     <string name="apply_title">신청서 작성</string>
     <string name="apply_intro">자기소개</string>

@@ -78,16 +78,28 @@
     <string name="post_write_kakao">Enter KakaoTalk open chat link.</string>
     <string name="post_write">Enter content.</string>
     <string name="post_write_button">Done</string>
+    <string name="post_title">Title</string>
+    <string name="post_content">Content</string>
+    <string name="post_travel_style">Prefered Travel Style</string>
+    <string name="post_location">Preffered Location</string>
+    <string name="post_tour_date">Tour Date</string>
+    <string name="post_close_date">Application Deadline</string>
+    <string name="post_car">Car Availability</string>
+    <string name="post_language">Preferred Language</string>
+    <string name="post_kakao_link">KakaoTalk Open Chat Link</string>
+    <string name="post_please_enter">Please enter the following: %1$s</string>
+    <string name="post_invalid_kakao_link">The open chat link must be in the format \'https://open.kakao.com/o/\'.</string>
 
     <string name="post_style">Preferred Travel Style</string>
     <string name="post_date">Travel Date</string>
-    <string name="post_car">Car Availability</string>
     <string name="post_finish">Application Deadline</string>
     <string name="post_lang">Preferred Language</string>
     <string name="post_lang_level">Preferred Language Level</string>
     <string name="post_button">Apply</string>
     <string name="post_edit">edit</string>
     <string name="post_look">look</string>
+    <string name="post_application">My Post Applications</string>
+    <string name="post_edit_button">Edit</string>
 
     <string name="apply_title">Submit Application</string>
     <string name="apply_intro">Self-introduction</string>

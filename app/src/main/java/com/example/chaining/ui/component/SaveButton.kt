@@ -1,5 +1,6 @@
 package com.example.chaining.ui.component
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,11 +14,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SaveButton(onSave: () -> Unit, text: String, modifier: Modifier = Modifier) {
+fun SaveButton(
+    onSave: () -> Unit, // 이제 일반적인 람다 함수를 받습니다.
+    text: String,
+    modifier: Modifier = Modifier
+) {
     Button(
-        onClick = onSave,
-        modifier = Modifier
-            .padding(30.dp)
+        onClick = onSave, // 이제 정상적으로 연결됩니다.
+        modifier = modifier
+            .fillMaxWidth() // 버튼이 `fillMaxWidth()`가 되도록 수정 (디자인에 따라 조절)
+            .padding(horizontal = 30.dp, vertical = 0.dp) // 좌우 패딩만 유지하고 상하 패딩 제거
             .height(50.dp),
         shape = RoundedCornerShape(30.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4285F4))

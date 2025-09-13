@@ -93,7 +93,7 @@ fun ApplicationsScreen(
 
                 // 제목
                 Text(
-                    text = if (type == "Owner") "내 모집글 지원서" else stringResource(id = R.string.myapply_title),
+                    text = if (type == "Owner") stringResource(id = R.string.post_application) else stringResource(id = R.string.myapply_title),
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,

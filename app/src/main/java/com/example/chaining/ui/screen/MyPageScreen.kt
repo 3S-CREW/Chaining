@@ -102,6 +102,9 @@ fun MyPageScreen(
         )
     }
 
+    val koreanText = stringResource(id = R.string.language_korean)
+    val englishText = stringResource(id = R.string.language_english)
+
     LaunchedEffect(userState) {
         userState?.let {
             nickname = it.nickname
@@ -232,8 +235,8 @@ fun MyPageScreen(
                     preferredLanguages = it,
                     onTestClick = { language ->
                         when (language) {
-                            "한국어" -> onKRQuizClick()
-                            "영어" -> onENQuizClick()
+                            koreanText -> onKRQuizClick()
+                            englishText -> onENQuizClick()
                         }
                     }
                 )

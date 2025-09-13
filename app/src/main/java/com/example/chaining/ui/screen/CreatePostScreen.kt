@@ -97,7 +97,20 @@ fun CreatePostScreen(
     var kakaoOpenChatUrl by remember { mutableStateOf("") }
 
     val buttonText = if (type == "생성") stringResource(id = R.string.post_write_button)
-                else "수정 완료"
+                else stringResource(id = R.string.post_edit_button )
+
+    val fieldTitleText = stringResource(id = R.string.post_title)
+    val fieldContentText = stringResource(id = R.string.post_content)
+    val fieldTravelStyleText = stringResource(id = R.string.post_travel_style)
+    val fieldLocationText = stringResource(id = R.string.post_location)
+    val fieldTourDateText = stringResource(id = R.string.post_tour_date)
+    val fieldCloseDateText = stringResource(id = R.string.post_close_date)
+    val fieldCarText = stringResource(id = R.string.post_car)
+    val fieldLanguageText = stringResource(id = R.string.post_language)
+    val fieldKakaoLinkText = stringResource(id = R.string.post_kakao_link)
+    val validationPleaseEnterText = stringResource(id = R.string.post_please_enter)
+    val validationInvalidKakaoLinkText = stringResource(id = R.string.post_invalid_kakao_link)
+
 
     LaunchedEffect(userState) {
         if (type == "생성") {
@@ -302,21 +315,21 @@ fun CreatePostScreen(
             SaveButton(
                 onSave = {
                     val missingFields = mutableListOf<String>()
-                    if (title.isBlank()) missingFields.add("제목")
-                    if (content.isBlank()) missingFields.add("내용")
-                    if (preferredDestinations.isBlank()) missingFields.add("선호 여행지 스타일")
-                    if (preferredLocation.location.isBlank()) missingFields.add("선호 여행지/장소")
-                    if (tourAt == null) missingFields.add("여행 시작일")
-                    if (closeAt == null) missingFields.add("모집 마감일")
-                    if (hasCar.isBlank()) missingFields.add("자차 여부")
-                    if (preferredLanguages.isEmpty()) missingFields.add("선호 언어")
+                    if (title.isBlank()) missingFields.add(fieldTitleText)
+                    if (content.isBlank()) missingFields.add(fieldContentText)
+                    if (preferredDestinations.isBlank()) missingFields.add(fieldTravelStyleText)
+                    if (preferredLocation.location.isBlank()) missingFields.add(fieldLocationText)
+                    if (tourAt == null) missingFields.add(fieldTourDateText)
+                    if (closeAt == null) missingFields.add(fieldCloseDateText)
+                    if (hasCar.isBlank()) missingFields.add(fieldCarText)
+                    if (preferredLanguages.isEmpty()) missingFields.add(fieldLanguageText)
                     val kakaoUrl = kakaoOpenChatUrl.trim()
                     if (kakaoUrl.isBlank()) {
-                        missingFields.add("카카오톡 오픈채팅 링크")
+                        missingFields.add(fieldKakaoLinkText)
                     } else if (!kakaoUrl.startsWith("https://open.kakao.com/o/")) {
                         Toast.makeText(
                             context,
-                            "오픈채팅 링크는 'https://open.kakao.com/o/' 형식이어야 합니다.",
+                            validationInvalidKakaoLinkText,
                             Toast.LENGTH_LONG
                         ).show()
                         return@SaveButton
@@ -324,7 +337,12 @@ fun CreatePostScreen(
 
                     if (missingFields.isNotEmpty()) {
                         // 어떤 항목이 비었는지 Toast 또는 Alert
-                        println("다음 항목을 입력해주세요: ${missingFields.joinToString(", ")}")
+                        val missingFieldsString = missingFields.joinToString(", ")
+                        Toast.makeText(
+                            context,
+                            String.format(validationPleaseEnterText, missingFieldsString),
+                            Toast.LENGTH_LONG
+                        ).show()
                     } else {
                         // 모든 항목 유효
                         val newPost = RecruitPost(
