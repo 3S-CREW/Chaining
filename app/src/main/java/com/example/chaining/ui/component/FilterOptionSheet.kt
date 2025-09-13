@@ -35,10 +35,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.chaining.R
 import com.example.chaining.data.model.FilterState
 import com.example.chaining.viewmodel.AreaViewModel
 
@@ -65,16 +67,22 @@ fun FilterOptionsSheet(
     var expandedSortBy by remember { mutableStateOf(false) }
 
     // 드롭다운 옵션 목록
-    val travelStyles = listOf("산", "바다", "도시", "액티비티", "휴양", "문화/예술")
+    val travelStyles = listOf(stringResource(id = R.string.travel_style_mountain),
+        stringResource(id = R.string.travel_style_sea),
+        stringResource(id = R.string.travel_style_city),
+        stringResource(id = R.string.travel_style_activity),
+        stringResource(id = R.string.travel_style_rest),
+        stringResource(id = R.string.travel_style_culture))
     val travelLocations = remember(areaEntities) {
         areaEntities
             .map { it.regionName }
     }
-    val languages = listOf("한국어", "영어")
+    val languages = listOf(stringResource(id = R.string.language_korean),
+        stringResource(id = R.string.language_english))
     val languageLevels = (1..10).toList()
     val sortByOptions = mapOf(
-        "latest" to "최신순",
-        "deadline" to "마감순",
+        "latest" to stringResource(id = R.string.sort_by_latest),
+        "deadline" to stringResource(id = R.string.sort_by_deadline),
         // "interest" to "관심순"
     )
 
@@ -94,7 +102,7 @@ fun FilterOptionsSheet(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "모집 글 필터 설정",
+                text = stringResource(id = R.string.filter_title),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF4A526A)
@@ -107,7 +115,7 @@ fun FilterOptionsSheet(
 
         // 여행지 스타일 드롭다운
         FilterDropdown(
-            label = "여행지 스타일",
+            label = stringResource(id = R.string.filter_placeholder_travel_style),
             selectedValue = selectedTravelStyle,
             options = travelStyles,
             expanded = expandedTravelStyle,
@@ -118,7 +126,7 @@ fun FilterOptionsSheet(
 
         // 여행지 드롭다운
         FilterDropdown(
-            label = "여행지",
+            label = stringResource(id = R.string.filter_placeholder_travel_location),
             selectedValue = selectedTravelLocation,
             options = travelLocations,
             expanded = expandedTravelLocation,
@@ -129,7 +137,7 @@ fun FilterOptionsSheet(
 
         // 언어 드롭다운
         FilterDropdown(
-            label = "언어",
+            label = stringResource(id = R.string.filter_placeholder_language),
             selectedValue = selectedLanguage,
             options = languages,
             expanded = expandedLanguage,
@@ -140,9 +148,9 @@ fun FilterOptionsSheet(
 
         // 언어 레벨 드롭다운
         FilterDropdown(
-            label = "언어 레벨",
+            label = stringResource(id = R.string.filter_placeholder_language_level),
             selectedValue = selectedLanguageLevel?.toString(), // Int? -> String? 변환
-            options = (listOf("상관 없음") + languageLevels.map { it.toString() }), // "상관 없음" 추가
+            options = (listOf(stringResource(id = R.string.filter_option_any)) + languageLevels.map { it.toString() }), // "상관 없음" 추가
             expanded = expandedLanguageLevel,
             onExpandedChange = { expandedLanguageLevel = it },
             onValueChange = { value ->
@@ -153,7 +161,7 @@ fun FilterOptionsSheet(
 
         // 정렬 방식 드롭다운
         FilterDropdown(
-            label = "정렬 방식",
+            label = stringResource(id = R.string.filter_placeholder_sort_by),
             selectedValue = sortByOptions[selectedSortBy], // 맵에서 값 가져오기
             options = sortByOptions.values.toList(), // 옵션은 표시할 텍스트 리스트
             expanded = expandedSortBy,
@@ -183,7 +191,7 @@ fun FilterOptionsSheet(
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4A526A)),
             contentPadding = PaddingValues(12.dp)
         ) {
-            Text("필터 적용", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(id = R.string.filter_apply_button), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -212,7 +220,7 @@ fun FilterDropdown(
         modifier = Modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
-            value = selectedValue ?: "선택 안 함",
+            value = selectedValue ?: stringResource(id = R.string.filter_option_none),
             onValueChange = {},
             readOnly = true,
             label = { Text(label) },

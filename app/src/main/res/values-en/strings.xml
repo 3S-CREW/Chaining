@@ -1,0 +1,164 @@
+<resources>
+    <string name="app_name">Chaining</string>
+
+    <string name="login_title">Login</string>
+    <string name="login_button">Login with Google Account</string>
+    <string name="login_in_progress">Logging in...</string>
+    <string name="login_admin_button">Admin Login</string>
+
+    <string name="welcome_message">Welcome, %1$s.</string>
+    <string name="recent_apply">Recent Applications</string>
+    <string name="no_recent_apply">No recent applications.</string>
+    <string name="recent_follow">Recent Followers</string>
+    <string name="follow_message">%1$s followed you.</string>
+
+    <string name="community_title">Community</string>
+    <string name="community_write_post">Write Post</string>
+    <string name="community_refresh">Refresh</string>
+    <string name="community_no_posts">No posts available.</string>
+    <string name="community_see_post">View Post ></string>
+    <string name="community_apply_button">Apply</string>
+    <string name="community_interest_button">Interest</string>
+    <string name="community_no_title">no title</string>
+    <string name="time_left_recruit">%1$s left until deadline</string>
+    <string name="community_unknown">unknown</string>
+
+    <string name="time_left_application">%1$s left to accept/decline</string>
+    <string name="application_yes">Accept</string>
+    <string name="application_no">Decline</string>
+
+    <string name="filter_title">Post Filter Settings</string>
+    <string name="filter_close_button_desc">Close</string>
+    <string name="filter_apply_button">Apply Filter</string>
+    <string name="filter_reset_button">Reset</string>
+    <string name="filter_option_none">Not selected</string>
+    <string name="filter_option_any">Any</string>
+    <string name="filter_placeholder_travel_style">Preferred Travel Style</string>
+    <string name="travel_style_mountain">Mountain</string>
+    <string name="travel_style_sea">Sea</string>
+    <string name="travel_style_city">City</string>
+    <string name="travel_style_activity">Activity</string>
+    <string name="travel_style_rest">Relaxation</string>
+    <string name="travel_style_culture">Culture/Art</string>
+    <string name="filter_placeholder_travel_location">Destination</string>
+    <string name="location_gangwon">Gangwon-do</string>
+    <string name="location_gyeonggi">Gyeonggi-do</string>
+    <string name="location_gyeongnam">Gyeongsangnam-do</string>
+    <string name="location_gyeongbuk">Gyeongsangbuk-do</string>
+    <string name="location_gwangju">Gwangju</string>
+    <string name="location_daegu">Daegu</string>
+    <string name="location_daejeon">Daejeon</string>
+    <string name="location_busan">Busan</string>
+    <string name="location_seoul">Seoul</string>
+    <string name="location_ulsan">Ulsan</string>
+    <string name="location_incheon">Incheon</string>
+    <string name="location_jeonnam">Jeollanam-do</string>
+    <string name="location_jeonbuk">Jeonbuk-do</string>
+    <string name="location_jeju">Jeju-do</string>
+    <string name="location_chungnam">Chungcheongnam-do</string>
+    <string name="location_chungbuk">Chungcheongbuk-do</string>
+    <string name="filter_placeholder_language">Language</string>
+    <string name="language_korean">Korean</string>
+    <string name="language_english">English</string>
+    <string name="filter_placeholder_language_level">Language Level</string>
+    <string name="filter_placeholder_sort_by">Sort By</string>
+    <string name="sort_by_latest">Latest</string>
+    <string name="sort_by_deadline">Deadline</string>
+    <string name="sort_by_interest">Interest</string>
+
+    <string name="post_write_title">Write a Post</string>
+    <string name="post_write_enter_title">Enter a title.</string>
+    <string name="post_write_style">Select preferred travel style</string>
+    <string name="post_write_location">Select preferred travel region</string>
+    <string name="post_write_car">Do you have a car?</string>
+    <string name="post_write_car_six">Yes (6+ seats)</string>
+    <string name="post_write_car_four">Yes (4 seats)</string>
+    <string name="post_write_car_two">Yes (2 seats)</string>
+    <string name="post_write_no">No</string>
+    <string name="post_write_kakao">Enter KakaoTalk open chat link.</string>
+    <string name="post_write">Enter content.</string>
+    <string name="post_write_button">Done</string>
+    <string name="post_title">Title</string>
+    <string name="post_content">Content</string>
+    <string name="post_travel_style">Prefered Travel Style</string>
+    <string name="post_location">Preffered Location</string>
+    <string name="post_tour_date">Tour Date</string>
+    <string name="post_close_date">Application Deadline</string>
+    <string name="post_car">Car Availability</string>
+    <string name="post_language">Preferred Language</string>
+    <string name="post_kakao_link">KakaoTalk Open Chat Link</string>
+    <string name="post_please_enter">Please enter the following: %1$s</string>
+    <string name="post_invalid_kakao_link">The open chat link must be in the format \'https://open.kakao.com/o/\'.</string>
+
+    <string name="post_style">Preferred Travel Style</string>
+    <string name="post_date">Travel Date</string>
+    <string name="post_finish">Application Deadline</string>
+    <string name="post_lang">Preferred Language</string>
+    <string name="post_lang_level">Preferred Language Level</string>
+    <string name="post_button">Apply</string>
+    <string name="post_edit">edit</string>
+    <string name="post_look">look</string>
+    <string name="post_application">My Post Applications</string>
+    <string name="post_edit_button">Edit</string>
+
+    <string name="apply_title">Submit Application</string>
+    <string name="apply_intro">Self-introduction</string>
+    <string name="apply_write">Enter content.</string>
+    <string name="apply_text_one">A KakaoTalk open chat link will be sent if the recruiter accepts.</string>
+    <string name="apply_text_two">Please check if your profile is updated via [View My Application].</string>
+    <string name="apply_mine">View My Application</string>
+    <string name="apply_button">Submit</string>
+
+    <string name="feed_title">Feed</string>
+    <string name="feed_item_region_place">%2$s in %1$s</string>
+    <string name="feed_item_address">Address: %1$s</string>
+    // 알림 화면 (NotificationScreen.kt)
+    <string name="alarm_title">Notifications</string>
+    <string name="alarm_follow">Follows</string>
+    <string name="alarm_apply">Applications</string>
+    <string name="alarm_follow_text">followed you.</string>
+    <string name="alarm_apply_text">applied to your post.</string>
+    <string name="alarm_follow_text_two">No follows.</string>
+    <string name="alarm_apply_text_two">No notifications.</string>
+    // 마이페이지 화면 (MypageScreen.kt)
+    <string name="mypage_info">Basic Information</string>
+    <string name="mypage_nick_change">Change Nickname</string>
+    <string name="mypage_new_nick">New Nickname</string>
+    <string name="mypage_cancel">Cancel</string>
+    <string name="mypage_change">Save</string>
+    <string name="mypage_follower">Follower</string>
+    <string name="mypage_follow">Follow</string>
+    <string name="mypage_country">Select Home Country</string>
+    <string name="mypage_location">Select Current Residence</string>
+    <string name="mypage_prefstyle">Select Preferred Travel Style</string>
+    <string name="mypage_quiz">Language Skill Test</string>
+    <string name="mypage_quiz_result">Language Skill Test &amp; Results</string>
+    <string name="mypage_post">My Posts</string>
+    <string name="mypage_apply">Application Status</string>
+    <string name="mypage_logout">Logout</string>
+    <string name="mypage_profile_save">Save</string>
+    <string name="mypage_kr">Korea</string>
+    <string name="mypage_us">USA</string>
+    <string name="mypage_jp">Japan</string>
+    <string name="mypage_cn">China</string>
+    <string name="mypage_uk">UK</string>
+    <string name="mypage_gm">Germany</string>
+    <string name="mypage_fr">France</string>
+    <string name="mypage_korean">Korean</string>
+    <string name="mypage_english">English</string>
+    <string name="mypage_quiz_incomplete">Quiz Incomplete</string>
+    <string name="mypage_quiz_complete">Quiz Complete</string>
+    <string name="mypage_quiz_start">Start</string>
+    <string name="mypage_quiz_status">Quiz Status</string>
+    <string name="mypage_quiz_retry">Retry</string>
+    // 마이페이지_내 모집글 (MyPostScreen.kt)
+    <string name="mypost_title">View My Posts</string>
+    <string name="mypost_all_post">View All Posts</string>
+    <string name="mypost_filter_open">Show open posts only</string>
+    <string name="mypost_nothing">You haven\'t created any posts yet.</string>
+    // 마이페이지_지원 현황 (ApplicationScreen.kt)
+    <string name="myapply_title">View My Applications</string>
+    <string name="myapply_all_post">View All Applications</string>
+    <string name="myapply_filter_open">Show the Apply Results</string>
+    <string name="myapply_nothing">You haven\'t created any applications yet.</string>
+</resources>

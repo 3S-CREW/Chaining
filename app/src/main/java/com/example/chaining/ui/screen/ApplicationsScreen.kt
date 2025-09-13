@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -92,7 +93,7 @@ fun ApplicationsScreen(
 
                 // 제목
                 Text(
-                    text = if (type == "Owner") "내 모집글 지원서" else "내 지원서",
+                    text = if (type == "Owner") stringResource(id = R.string.post_application) else stringResource(id = R.string.myapply_title),
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
@@ -120,7 +121,7 @@ fun ApplicationsScreen(
                 ActionButton(
                     modifier = Modifier.weight(1f),
                     iconRes = R.drawable.post,
-                    text = if (showOnlyFinishedApplications) "전체 지원서 보기" else "지원서 결과 보기",
+                    text = if (showOnlyFinishedApplications) stringResource(id = R.string.myapply_all_post) else stringResource(id = R.string.myapply_filter_open),
                     onClick = {
                         showOnlyFinishedApplications = !showOnlyFinishedApplications
                     }
@@ -129,7 +130,7 @@ fun ApplicationsScreen(
             if (filteredApplications.isEmpty()) {
                 // 데이터가 없을 때
                 Text(
-                    text = "등록된 지원서가 없습니다.",
+                    text = stringResource(id = R.string.myapply_nothing),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 50.dp),

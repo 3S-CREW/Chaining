@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -93,7 +94,7 @@ fun JoinPostScreen(
 
                 // 제목 텍스트
                 Text(
-                    text = "신청서 작성",
+                    text = stringResource(id = R.string.apply_title),
                     modifier = Modifier.weight(1f), // 남는 공간을 모두 차지
                     color = Color.White,
                     fontSize = 20.sp,
@@ -146,7 +147,7 @@ fun JoinPostScreen(
                 modifier = Modifier.fillMaxWidth() // 너비를 꽉 채워 왼쪽 정렬 효과
             ) {
                 Text(
-                    text = "자기 소개",
+                    text = stringResource(id = R.string.apply_intro),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = Color(0xFF4A526A)
@@ -162,7 +163,7 @@ fun JoinPostScreen(
                         .height(150.dp),
                     placeholder = {
                         Text(
-                            "내용을 입력하세요.",
+                            stringResource(id = R.string.apply_write),
                             fontSize = 13.sp,
                             color = Color.Gray
                         )
@@ -185,7 +186,7 @@ fun JoinPostScreen(
                     )
                 )
                 Text(
-                    text = "모집자가 수락하면 카카오톡 오픈 채팅 링크가 전달됩니다.",
+                    text = stringResource(id = R.string.apply_text_one),
                     modifier = Modifier
                         .padding(top = 8.dp)
                         .align(Alignment.End), // 오른쪽 정렬
@@ -196,7 +197,7 @@ fun JoinPostScreen(
             Spacer(modifier = Modifier.height(60.dp))
 
             Text(
-                text = "[내 지원서 보기]를 통해 최신 프로필로 업데이트 되어있는지 확인하세요.",
+                text = stringResource(id = R.string.apply_text_two),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 fontSize = 10.sp,
@@ -217,7 +218,7 @@ fun JoinPostScreen(
                     contentColor = Color(0xFF7282B4)
                 )
             ) {
-                Text("내 지원서 보기", fontSize = 16.sp)
+                Text(stringResource(id = R.string.apply_mine), fontSize = 16.sp)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -241,7 +242,7 @@ fun JoinPostScreen(
                     )
                     applicationViewModel.submitApplication(newApplication)
                 }
-            }, text = "신청 완료")
+            }, text = stringResource(id = R.string.apply_button))
 
             Spacer(modifier = Modifier.height(16.dp))
 

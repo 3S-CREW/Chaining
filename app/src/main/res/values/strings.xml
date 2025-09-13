@@ -1,3 +1,165 @@
 <resources>
     <string name="app_name">Chaining</string>
+    // 로그인 화면
+    <string name="login_title">로그인</string>
+    <string name="login_button">Google 계정으로 로그인</string>
+    <string name="login_in_progress">로그인 중...</string>
+    <string name="login_admin_button">관리자 로그인</string>
+    // 메인 홈 화면
+    <string name="welcome_message">%1$s님 반갑습니다.</string>
+    <string name="recent_apply">최근 접수된 지원서</string>
+    <string name="no_recent_apply">최근 지원서가 없습니다.</string>
+    <string name="recent_follow">최근 팔로우 목록</string>
+    <string name="follow_message">%1$s님께서 팔로우를 하셨습니다.</string>
+    // 커뮤니티 화면
+    <string name="community_title">커뮤니티</string>
+    <string name="community_write_post">게시글 작성</string>
+    <string name="community_refresh">새로고침</string>
+    <string name="community_no_posts">등록된 게시글이 없습니다.</string>
+    <string name="community_see_post">모집글 보기 ></string>
+    <string name="community_apply_button">신청</string>
+    <string name="community_interest_button">관심</string>
+    <string name="community_no_title">제목 없음</string>
+    <string name="time_left_recruit">모집 마감까지 %1$s 남음</string>
+    <string name="community_unknown">알 수 없음</string>
+    // 지원서 화면
+    <string name="time_left_application">수락/거절까지 %1$s 남음</string>
+    <string name="application_yes">수락</string>
+    <string name="application_no">거절</string>
+    // 커뮤니티_필터링
+    <string name="filter_title">모집 글 필터 설정</string>
+    <string name="filter_close_button_desc">닫기</string>
+    <string name="filter_apply_button">필터 적용</string>
+    <string name="filter_reset_button">초기화</string>
+    <string name="filter_option_none">선택 안 함</string>
+    <string name="filter_option_any">상관 없음</string>
+    <string name="filter_placeholder_travel_style">여행지 스타일</string>
+    <string name="travel_style_mountain">산</string>
+    <string name="travel_style_sea">바다</string>
+    <string name="travel_style_city">도시</string>
+    <string name="travel_style_activity">액티비티</string>
+    <string name="travel_style_rest">휴양</string>
+    <string name="travel_style_culture">문화/예술</string>
+    <string name="filter_placeholder_travel_location">여행지</string>
+    <string name="location_gangwon">강원특별자치도</string>
+    <string name="location_gyeonggi">경기도</string>
+    <string name="location_gyeongnam">경상남도</string>
+    <string name="location_gyeongbuk">경상북도</string>
+    <string name="location_gwangju">광주광역시</string>
+    <string name="location_daegu">대구광역시</string>
+    <string name="location_daejeon">대전광역시</string>
+    <string name="location_busan">부산광역시</string>
+    <string name="location_seoul">서울특별시</string>
+    <string name="location_ulsan">울산광역시</string>
+    <string name="location_incheon">인천광역시</string>
+    <string name="location_jeonnam">전라남도</string>
+    <string name="location_jeonbuk">전북특별자치도</string>
+    <string name="location_jeju">제주특별자치도</string>
+    <string name="location_chungnam">충청남도</string>
+    <string name="location_chungbuk">충청북도</string>
+    <string name="filter_placeholder_language">언어</string>
+    <string name="language_korean">한국어</string>
+    <string name="language_english">영어</string>
+    <string name="filter_placeholder_language_level">언어 레벨</string>
+    <string name="filter_placeholder_sort_by">정렬 방식</string>
+    <string name="sort_by_latest">최신순</string>
+    <string name="sort_by_deadline">마감순</string>
+    <string name="sort_by_interest">관심순</string>
+    // 커뮤니티_모집글 작성 화면 (CreatePostScreen.kt)
+    <string name="post_write_title">모집글 작성</string>
+    <string name="post_write_enter_title">제목을 입력하세요.</string>
+    <string name="post_write_style">선호하는 여행 스타일 선택</string>
+    <string name="post_write_location">선호하는 여행 지역 선택</string>
+    <string name="post_write_car">자차 여부</string>
+    <string name="post_write_car_six">예(6인승 이상)</string>
+    <string name="post_write_car_four">예(4인승)</string>
+    <string name="post_write_car_two">예(2인승)</string>
+    <string name="post_write_no">아니요</string>
+    <string name="post_write_kakao">카카오톡 오픈 채팅방 링크를 입력하세요.</string>
+    <string name="post_write">내용을 입력하세요.</string>
+    <string name="post_write_button">작성 완료</string>
+    <string name="post_title">제목</string>
+    <string name="post_content">내용</string>
+    <string name="post_travel_style">선호 여행지 스타일</string>
+    <string name="post_location">선호 여행지/장소</string>
+    <string name="post_tour_date">여행 시작일</string>
+    <string name="post_close_date">모집 마감일</string>
+    <string name="post_car">자차 여부</string>
+    <string name="post_language">선호 언어</string>
+    <string name="post_kakao_link">카카오톡 오픈채팅 링크</string>
+    <string name="post_please_enter">다음 항목을 입력해주세요: %1$s</string>
+    <string name="post_invalid_kakao_link">오픈채팅 링크는 \'https://open.kakao.com/o/\' 형식이어야 합니다.</string>
+    // 커뮤니티_모집글 보기 화면
+    <string name="post_style">선호 여행지 스타일</string>
+    <string name="post_date">여행 일자</string>
+    <string name="post_finish">모집 마감일</string>
+    <string name="post_lang">선호하는 언어</string>
+    <string name="post_lang_level">선호하는 언어 수준</string>
+    <string name="post_button">신청</string>
+    <string name="post_edit">수정</string>
+    <string name="post_look">보기</string>
+    <string name="post_application">내 모집글 지원서</string>
+    <string name="post_edit_button">수정 완료</string>
+    // 커뮤니티_신청서 작성 화면 (JoinPostScreen.kt)
+    <string name="apply_title">신청서 작성</string>
+    <string name="apply_intro">자기소개</string>
+    <string name="apply_write">내용을 입력하세요.</string>
+    <string name="apply_text_one">모집자가 수락하면 카카오톡 오픈 채팅 링크가 전달됩니다.</string>
+    <string name="apply_text_two">[내 지원서 보기]를 통해 최신 프로필로 업데이트 되어있는지 확인하세요.</string>
+    <string name="apply_mine">내 지원서 보기</string>
+    <string name="apply_button">신청완료</string>
+    // 피드 화면
+    <string name="feed_title">피드</string>
+    <string name="feed_item_region_place">%1$s에 위치한 %2$s</string>
+    <string name="feed_item_address">주소: %1$s</string>
+    // 알림 화면 (NotificationScreen.kt)
+    <string name="alarm_title">알림</string>
+    <string name="alarm_follow">팔로우</string>
+    <string name="alarm_apply">지원서</string>
+    <string name="alarm_follow_text">님께서 팔로우를 하셨습니다.</string>
+    <string name="alarm_apply_text">님께서 지원하셨습니다.</string>
+    <string name="alarm_follow_text_two">팔로우가 없습니다.</string>
+    <string name="alarm_apply_text_two">알림이 없습니다.</string>
+    // 마이페이지 화면 (MypageScreen.kt)
+    <string name="mypage_info">기본 정보</string>
+    <string name="mypage_nick_change">닉네임 변경</string>
+    <string name="mypage_new_nick">새 닉네임</string>
+    <string name="mypage_cancel">취소</string>
+    <string name="mypage_change">변경</string>
+    <string name="mypage_follower">팔로워</string>
+    <string name="mypage_follow">팔로우</string>
+    <string name="mypage_country">출신 국가 선택</string>
+    <string name="mypage_location">현재 거주지 선택</string>
+    <string name="mypage_prefstyle">선호 여행지 스타일 선택</string>
+    <string name="mypage_quiz">언어 능력 테스트</string>
+    <string name="mypage_quiz_result">언어 능력 테스트 및 결과 확인</string>
+    <string name="mypage_post">모집 현황</string>
+    <string name="mypage_apply">지원 현황</string>
+    <string name="mypage_logout">로그아웃</string>
+    <string name="mypage_profile_save">프로필 저장</string>
+    <string name="mypage_kr">한국</string>
+    <string name="mypage_us">미국</string>
+    <string name="mypage_jp">일본</string>
+    <string name="mypage_cn">중국</string>
+    <string name="mypage_uk">영국</string>
+    <string name="mypage_gm">독일</string>
+    <string name="mypage_fr">프랑스</string>
+    <string name="mypage_korean">한국어</string>
+    <string name="mypage_english">영어</string>
+    <string name="mypage_quiz_incomplete">퀴즈 미응시</string>
+    <string name="mypage_quiz_complete">퀴즈 응시</string>
+    <string name="mypage_quiz_start">응시하기</string>
+    <string name="mypage_quiz_status">언어 테스트 현황</string>
+    <string name="mypage_quiz_retry">재응시</string>
+    // 마이페이지_내 모집글 (MyPostScreen.kt)
+    <string name="mypost_title">내 모집글 보기</string>
+    <string name="mypost_all_post">전체 글 보기</string>
+    <string name="mypost_filter_open">마감되지 않은 글만 보기</string>
+    <string name="mypost_nothing">등록된 모집글이 없습니다.</string>
+    // 마이페이지_지원 현황 (ApplicationScreen.kt)
+    <string name="myapply_title">내 지원서</string>
+    <string name="myapply_all_post">전체 지원서 보기</string>
+    <string name="myapply_filter_open">지원서 결과 보기</string>
+    <string name="myapply_nothing">등록된 지원서가 없습니다.</string>
+
 </resources>
