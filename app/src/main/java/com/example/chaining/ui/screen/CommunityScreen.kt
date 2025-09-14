@@ -67,6 +67,7 @@ fun CommunityScreen(
     // ✅ 1. ViewModel로부터 필터링된 posts와 현재 filterState를 직접 구독
     val posts by postViewModel.posts.collectAsState()
     val filterState by postViewModel.filterState.collectAsState()
+    val userState by userViewModel.user.collectAsState()
 
     // 1. Bottom Sheet의 상태를 제어하기 위한 변수들
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -187,15 +188,18 @@ fun CommunityScreen(
                 )
             } else {
                 posts.forEach { post ->
+                    val isLiked = userState?.likedPosts?.get(post.postId) == true
                     CardItem(
                         onClick = { onViewPostClick(post.postId) },
                         type = "모집글",
                         recruitPost = post,
+                        isLiked = isLiked,
                         remainingTime = formatRemainingTime(
                             context,
                             post.closeAt - System.currentTimeMillis()
                         ),
-                        onRightButtonClick = { userViewModel.toggleLike(post.postId) }
+                        onRightButtonClick = { userViewModel.toggleLike(post.postId) },
+                        currentUserId = userState?.id
                     )
                 }
             }
