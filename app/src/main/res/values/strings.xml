@@ -37,6 +37,9 @@
     <string name="time_left_application">수락/거절까지 %1$s 남음</string>
     <string name="application_yes">수락</string>
     <string name="application_no">거절</string>
+    <string name="application_submit_success">지원서가 성공적으로 제출되었습니다.</string>
+    <string name="application_submit_failed">지원서 제출에 실패했습니다.</string>
+    <string name="application_intro_blank">자기소개를 입력해주세요.</string>
     <!--    커뮤니티_필터링-->
     <string name="filter_title">모집 글 필터 설정</string>
     <string name="filter_close_button_desc">닫기</string>
@@ -102,6 +105,9 @@
     <string name="post_kakao_link">카카오톡 오픈채팅 링크</string>
     <string name="post_please_enter">다음 항목을 입력해주세요: %1$s</string>
     <string name="post_invalid_kakao_link">오픈채팅 링크는 \'https://open.kakao.com/o/\' 형식이어야 합니다.</string>
+    <string name="post_creation_success">게시글이 등록되었습니다.</string>
+    <string name="post_creation_failed">게시글 등록에 실패했습니다: %1$s</string>
+    <string name="unknown_error">알 수 없는 오류가 발생했습니다.</string>
     <!--    커뮤니티_모집글 보기 화면-->
     <string name="post_style">선호 여행지 스타일</string>
     <string name="post_date">여행 일자</string>
@@ -164,6 +170,20 @@
     <string name="mypage_quiz_start">응시하기</string>
     <string name="mypage_quiz_status">언어 테스트 현황</string>
     <string name="mypage_quiz_retry">재응시</string>
+    <string name="mypage_follower_info">팔로워 %1$s · 팔로우 %2$s</string>
+    <string name="mypage_no_nickname">닉네임 없음</string>
+    <string name="mypage_edit_nickname">닉네임 수정</string>
+    <string name="mypage_select_image_under_2mb">2MB 이하 이미지를 선택해주세요.</string>
+    <string name="mypage_login_required">로그인이 필요합니다.</string>
+    <string name="mypage_profile_image_changed">프로필 이미지가 변경되었습니다.</string>
+    <string name="mypage_image_upload_failed">이미지 업로드 실패: %1$s</string>
+    <string name="mypage_profile_save_success">프로필이 저장되었습니다.</string>
+    <string name="mypage_profile_save_button">저장</string>
+    <string name="mypage_select_placeholder">항목을 선택해주세요.</string>
+    <string name="validation_select_fields">%1$s 항목을 선택해주세요.</string>
+    <string name="error_nickname_blank">닉네임을 입력해주세요.</string>
+    <string name="error_nickname_pattern">닉네임은 한글, 영어, 숫자만 사용할 수 있습니다. (공백 제외)</string>
+    <string name="error_nickname_length">닉네임은 한글 6자 또는 영문/숫자 12자 이내로 제한됩니다.</string>
     <!--    마이페이지_내 모집글 (MyPostScreen.kt)-->
     <string name="mypost_title">내 모집글 보기</string>
     <string name="mypost_all_post">전체 글 보기</string>

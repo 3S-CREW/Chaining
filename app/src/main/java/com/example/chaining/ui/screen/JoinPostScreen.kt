@@ -49,6 +49,7 @@ import com.example.chaining.ui.component.ownerProfile
 import com.example.chaining.viewmodel.ApplicationViewModel
 import com.example.chaining.viewmodel.UserViewModel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 private const val MAX_CONTENT_LENGTH = 300
 
@@ -56,18 +57,39 @@ private const val MAX_CONTENT_LENGTH = 300
 fun JoinPostScreen(
     applicationViewModel: ApplicationViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {},
+    onSubmitSuccess: () -> Unit,
     userViewModel: UserViewModel = hiltViewModel(),
-    post: RecruitPost
+    post: RecruitPost,
+    onViewMyApplications: () -> Unit
 ) {
     val context = LocalContext.current
-
     val userState by userViewModel.user.collectAsState()
-
     var introduction by remember { mutableStateOf("") }
 
-    LaunchedEffect(key1 = true) {
-        applicationViewModel.toastEvent.collectLatest { message ->
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    val isSubmitSuccess by applicationViewModel.isSubmitSuccess.collectAsState()
+
+    LaunchedEffect(Unit) {
+        // 신청 완료 이벤트 처리
+        launch {
+            applicationViewModel.isSubmitSuccess.collectLatest { success ->
+                if (success) {
+                    onSubmitSuccess() // 성공 시 콜백 호출 (화면 전환)
+                    applicationViewModel.resetSubmitStatus() // 상태 초기화
+                }
+            }
+        }
+        // 토스트 메시지 이벤트 처리
+        launch {
+            applicationViewModel.toastEvent.collectLatest { eventKey ->
+                val message = when (eventKey) {
+                    "application_success" -> context.getString(R.string.application_submit_success)
+                    "application_failed" -> context.getString(R.string.application_submit_failed)
+                    else -> null
+                }
+                message?.let {
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -208,7 +230,7 @@ fun JoinPostScreen(
 
             // '내 지원서 보기' 버튼 (보조 버튼)
             Button(
-                onClick = { /* TODO */ },
+                onClick = { onViewMyApplications() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -226,7 +248,7 @@ fun JoinPostScreen(
             // '신청 완료' 버튼 (주요 버튼)
             SaveButton(onSave = {
                 if (introduction.isBlank()) {
-                    println("자기 소개를 입력해주세요.")
+                    Toast.makeText(context, context.getString(R.string.application_intro_blank), Toast.LENGTH_SHORT).show()
                 } else {
                     val newApplication = Application(
                         applicationId = "",

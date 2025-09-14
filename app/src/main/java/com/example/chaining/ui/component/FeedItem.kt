@@ -9,10 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.chaining.R
 
 @Composable
 fun FeedItem(
@@ -51,7 +53,7 @@ fun FeedItem(
             ) {
                 // 지역명과 명소명
                 Text(
-                    text = "${region}에 위치한 $place",
+                    text = stringResource(id = R.string.feed_item_region_place, region, place),
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
@@ -60,7 +62,7 @@ fun FeedItem(
 
                 // 주소
                 Text(
-                    text = "주소: $address",
+                    text = stringResource(id = R.string.feed_item_address, address),
                     color = Color.White.copy(alpha = 0.8f),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal

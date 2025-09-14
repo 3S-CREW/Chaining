@@ -26,6 +26,9 @@
     <string name="time_left_application">%1$s left to accept/decline</string>
     <string name="application_yes">Accept</string>
     <string name="application_no">Decline</string>
+    <string name="application_submit_success">Application submitted successfully.</string>
+    <string name="application_submit_failed">Failed to submit application.</string>
+    <string name="application_intro_blank">Please introduce yourself.</string>
 
     <string name="filter_title">Post Filter Settings</string>
     <string name="filter_close_button_desc">Close</string>
@@ -105,6 +108,9 @@
     <string name="post_kakao_link">KakaoTalk Open Chat Link</string>
     <string name="post_please_enter">Please enter the following: %1$s</string>
     <string name="post_invalid_kakao_link">The open chat link must be in the format \'https://open.kakao.com/o/\'.</string>
+    <string name="post_creation_success">Post created successfully.</string>
+    <string name="post_creation_failed">Failed to create post: %1$s</string>
+    <string name="unknown_error">An unknown error occurred.</string>
 
     <string name="post_style">Preferred Travel Style</string>
     <string name="post_date">Travel Date</string>
@@ -167,6 +173,20 @@
     <string name="mypage_quiz_start">Start</string>
     <string name="mypage_quiz_status">Quiz Status</string>
     <string name="mypage_quiz_retry">Retry</string>
+    <string name="mypage_follower_info">Followers %1$s · Following %2$s</string>
+    <string name="mypage_no_nickname">No Nickname</string>
+    <string name="mypage_edit_nickname">Edit Nickname</string>
+    <string name="mypage_select_image_under_2mb">Please select an image under 2MB.</string>
+    <string name="mypage_login_required">Login required.</string>
+    <string name="mypage_profile_image_changed">Profile image has been changed.</string>
+    <string name="mypage_image_upload_failed">Image upload failed: %1$s</string>
+    <string name="mypage_profile_save_success">Profile saved successfully.</string>
+    <string name="mypage_profile_save_button">Save</string>
+    <string name="mypage_select_placeholder">Please select items.</string>
+    <string name="validation_select_fields">Please select the following: %1$s</string>
+    <string name="error_nickname_blank">Please enter a nickname.</string>
+    <string name="error_nickname_pattern">Nickname can only contain Korean, English, and numbers (no spaces).</string>
+    <string name="error_nickname_length">Nickname is limited to 6 Korean or 12 English/numeric characters.</string>
     // 마이페이지_내 모집글 (MyPostScreen.kt)
     <string name="mypost_title">View My Posts</string>
     <string name="mypost_all_post">View All Posts</string>

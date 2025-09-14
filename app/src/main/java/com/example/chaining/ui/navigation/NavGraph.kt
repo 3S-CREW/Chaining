@@ -110,7 +110,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             CreatePostScreen(
                 type = type,
                 postId = postId,
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onPostCreated = { navController.popBackStack() }
             )
         }
 
@@ -169,7 +170,13 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 val post = remember(it) { Gson().fromJson(it, RecruitPost::class.java) }
                 JoinPostScreen(
                     onBackClick = { navController.popBackStack() },
-                    post = post
+                    post = post,
+                    onSubmitSuccess = {
+                        navController.navigate("mainHome")
+                    },
+                    onViewMyApplications = {
+                        navController.navigate(Screen.Applications.createRoute(type = "My"))
+                    }
                 )
             }
         }
@@ -260,7 +267,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
 
         composable(route = Screen.MyPosts.route) {
-            MyPostsScreen()
+            MyPostsScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
         composable(
             route = Screen.Applications.route,
@@ -269,11 +278,19 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     type = NavType.StringType
                     defaultValue = "My"
                 },
+                navArgument("postId") {
+                    type = NavType.StringType
+                    nullable = true // postId는 선택사항이므로 nullable
+                    defaultValue = null // 기본값은 null
+                }
             )
         ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type") ?: "My"
+            val postId = backStackEntry.arguments?.getString("postId")
+
             ApplicationsScreen(
                 type = type,
+                postId = postId,
                 onBackClick = { navController.popBackStack() },
                 onViewApplyClick = { applicationId ->
                     navController.navigate(

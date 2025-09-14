@@ -49,6 +49,7 @@ import com.example.chaining.domain.model.UserSummary
 import com.example.chaining.ui.component.DatePickerFieldToModal
 import com.example.chaining.ui.component.SaveButton
 import com.example.chaining.viewmodel.AreaViewModel
+import com.example.chaining.viewmodel.PostCreationEvent
 import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -61,6 +62,7 @@ fun CreatePostScreen(
     postId: String? = null,
     postViewModel: RecruitPostViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {},
+    onPostCreated: () -> Unit,
     userViewModel: UserViewModel = hiltViewModel(),
     type: String, // "생성" or "수정"
     areaViewModel: AreaViewModel = hiltViewModel()
@@ -69,6 +71,7 @@ fun CreatePostScreen(
     val areaEntities by areaViewModel.areaCodes.collectAsState()
     val userState by userViewModel.user.collectAsState()
     val postState by postViewModel.post.collectAsState()
+    val postCreationSuccess by postViewModel.postCreationSuccess.collectAsState()
 
     LaunchedEffect(key1 = type, key2 = postId) {
         if (type == "수정" && postId != null) {
@@ -76,8 +79,21 @@ fun CreatePostScreen(
         }
     }
 
-    LaunchedEffect(key1 = true) {
-        postViewModel.toastEvent.collectLatest { message ->
+
+    // ✅ ViewModel의 이벤트를 구독하고 Toast 메시지를 표시
+    LaunchedEffect(Unit) {
+        postViewModel.postCreationEvent.collectLatest { event ->
+            val message = when (event) {
+                is PostCreationEvent.Success -> {
+                    // 성공 시 strings.xml에서 성공 메시지를 가져옴
+                    context.getString(R.string.post_creation_success)
+                }
+                is PostCreationEvent.Failure -> {
+                    // 실패 시 strings.xml에서 실패 메시지 형식을 가져와 조합
+                    val errorMessage = event.message ?: context.getString(R.string.unknown_error)
+                    context.getString(R.string.post_creation_failed, errorMessage)
+                }
+            }
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
     }
@@ -111,6 +127,12 @@ fun CreatePostScreen(
     val validationPleaseEnterText = stringResource(id = R.string.post_please_enter)
     val validationInvalidKakaoLinkText = stringResource(id = R.string.post_invalid_kakao_link)
 
+    LaunchedEffect(postCreationSuccess) {
+        if (postCreationSuccess) {
+            onPostCreated() // NavGraph에 정의된 화면 이동 로직 실행
+            postViewModel.onPostCreationHandled() // 상태 초기화
+        }
+    }
 
     LaunchedEffect(userState) {
         if (type == "생성") {
