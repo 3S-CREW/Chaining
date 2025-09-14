@@ -421,7 +421,7 @@ fun ApplyScreen(
             ) {
                 // 프로필 사진
                 AsyncImage(
-                    model = "https://newsimg-hams.hankookilbo.com/2023/03/24/4531dada-e9cf-4775-951c-902e3558ca41.jpg",
+                    model = application?.applicant?.profileImageUrl,
                     contentDescription = "프로필 사진",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

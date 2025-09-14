@@ -1,5 +1,6 @@
 package com.example.chaining.ui.notification
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,6 +49,7 @@ import com.example.chaining.ui.component.formatRemainingTime
 import com.example.chaining.ui.screen.LightGrayBackground
 import com.example.chaining.ui.screen.PrimaryBlue
 import com.example.chaining.viewmodel.ApplicationViewModel
+import com.example.chaining.viewmodel.NotificationEvent
 import com.example.chaining.viewmodel.NotificationViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -55,17 +57,39 @@ import java.util.Locale
 
 @Composable
 fun NotificationScreen(
-    viewModel: NotificationViewModel = hiltViewModel()
+    viewModel: NotificationViewModel = hiltViewModel(),
+    onViewApplyClick: (String) -> Unit
 ) {
     val notifications by viewModel.notifications.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+
+    val eventFlow = viewModel.event
+    val context = LocalContext.current
 
     var selectedTabIndex by remember { mutableStateOf(0) }
     val tabTitles = listOf(
         stringResource(id = R.string.alarm_follow),
         stringResource(id = R.string.alarm_apply)
     )
+
+    LaunchedEffect(Unit) {
+        eventFlow.collect { event ->
+            when (event) {
+                is NotificationEvent.NavigateToApplication -> {
+                    onViewApplyClick(event.applicationId)
+                }
+
+                is NotificationEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+
+                NotificationEvent.Refresh -> {
+                    // 필요하면 새로고침 처리
+                }
+            }
+        }
+    }
 
     // 알림 타입별 필터링
     val filteredNotifications = when (selectedTabIndex) {
@@ -154,7 +178,9 @@ fun NotificationScreen(
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                     ) {
                         items(filteredNotifications) { notification ->
-                            NotificationItem(notification = notification)
+                            NotificationItem(
+                                notification = notification,
+                            )
                         }
                     }
                 }
@@ -166,7 +192,8 @@ fun NotificationScreen(
 @Composable
 fun NotificationItem(
     notification: Notification,
-    applicationViewModel: ApplicationViewModel = hiltViewModel()
+    viewModel: NotificationViewModel = hiltViewModel(),
+    applicationViewModel: ApplicationViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val formattedDate = remember(notification.createdAt) {
@@ -194,7 +221,11 @@ fun NotificationItem(
             }
 
             CardItem(
-                onClick = { /* 카드 클릭 시 처리 */ },
+                onClick = {
+                    notification.applicationId?.let { id ->
+                        viewModel.onApplicationClick(id)
+                    }
+                },
                 type = "지원서",
                 application = application, // Notification -> Application 매핑 필요
                 remainingTime = formatRemainingTime(

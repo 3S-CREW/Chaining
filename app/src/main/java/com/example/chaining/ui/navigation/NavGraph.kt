@@ -94,7 +94,15 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onMyPageClick = { navController.navigate("myPage") },
                 onCommunityClick = { navController.navigate("community") },
                 onFeedClick = { navController.navigate("feed") },
-                onNotificationClick = { navController.navigate(route = Screen.Notification.route) }
+                onNotificationClick = { navController.navigate(route = Screen.Notification.route) },
+                onViewApplyClick = { applicationId ->
+                    navController.navigate(
+                        Screen.Apply.createRoute(
+                            type = "Owner",
+                            applicationId = applicationId
+                        )
+                    )
+                },
             )
         }
         composable(
@@ -304,7 +312,16 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
 
         composable(route = Screen.Notification.route) {
-            NotificationScreen()
+            NotificationScreen(
+                onViewApplyClick = { applicationId ->
+                    navController.navigate(
+                        Screen.Apply.createRoute(
+                            type = "Owner",
+                            applicationId = applicationId
+                        )
+                    )
+                }
+            )
         }
     }
 }

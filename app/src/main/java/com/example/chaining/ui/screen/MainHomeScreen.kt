@@ -1,5 +1,6 @@
 package com.example.chaining.ui.screen
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -27,6 +28,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -36,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,6 +50,7 @@ import coil.compose.AsyncImage
 import com.example.chaining.R
 import com.example.chaining.domain.model.Notification
 import com.example.chaining.ui.notification.NotificationItem
+import com.example.chaining.viewmodel.NotificationEvent
 import com.example.chaining.viewmodel.NotificationViewModel
 import com.example.chaining.viewmodel.UserViewModel
 
@@ -61,9 +65,32 @@ fun MainHomeScreen(
     onCommunityClick: () -> Unit,
     onFeedClick: () -> Unit,
     onNotificationClick: () -> Unit,
-    userViewModel: UserViewModel = hiltViewModel()
+    userViewModel: UserViewModel = hiltViewModel(),
+    onViewApplyClick: (String) -> Unit
 
 ) {
+
+    val eventFlow = notificationViewModel.event
+    val context = LocalContext.current
+
+
+    LaunchedEffect(Unit) {
+        eventFlow.collect { event ->
+            when (event) {
+                is NotificationEvent.NavigateToApplication -> {
+                    onViewApplyClick(event.applicationId)
+                }
+
+                is NotificationEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+
+                NotificationEvent.Refresh -> {
+                    // 필요하면 새로고침 처리
+                }
+            }
+        }
+    }
     val userState by userViewModel.user.collectAsState()
     BackHandler(enabled = true) {
         onBackClick()
