@@ -105,6 +105,9 @@
     <string name="post_kakao_link">KakaoTalk Open Chat Link</string>
     <string name="post_please_enter">Please enter the following: %1$s</string>
     <string name="post_invalid_kakao_link">The open chat link must be in the format \'https://open.kakao.com/o/\'.</string>
+    <string name="post_creation_success">Post created successfully.</string>
+    <string name="post_creation_failed">Failed to create post: %1$s</string>
+    <string name="unknown_error">An unknown error occurred.</string>
 
     <string name="post_style">Preferred Travel Style</string>
     <string name="post_date">Travel Date</string>

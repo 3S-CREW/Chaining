@@ -20,6 +20,13 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+// ✅ ViewModel과 UI 간의 통신을 위한 이벤트 클래스 정의
+sealed class PostCreationEvent {
+    data class Success(val postId: String) : PostCreationEvent()
+    data class Failure(val message: String?) : PostCreationEvent()
+}
+
 @HiltViewModel
 class RecruitPostViewModel @Inject constructor(
     private val repo: RecruitPostRepository,
@@ -28,8 +35,10 @@ class RecruitPostViewModel @Inject constructor(
     private val _post = MutableStateFlow<RecruitPost?>(null)
     val post: StateFlow<RecruitPost?> = _post
 
-    private val _toastEvent = MutableSharedFlow<String>()
-    val toastEvent = _toastEvent.asSharedFlow()
+
+    // ✅ String 대신 PostCreationEvent를 전달하도록 Flow 타입 변경
+    private val _postCreationEvent = MutableSharedFlow<PostCreationEvent>()
+    val postCreationEvent = _postCreationEvent.asSharedFlow()
 
     // 원본 게시글 전체 목록 (비공개)
     private val _allPosts = MutableStateFlow<List<RecruitPost>>(emptyList())
@@ -83,11 +92,11 @@ class RecruitPostViewModel @Inject constructor(
         result.onSuccess { postId ->
             Log.d("RecruitPostViewModel", "Post created successfully with id: $postId")
             fetchAllPosts(force = true)
-            _toastEvent.emit("게시글이 등록되었습니다.")
+            _postCreationEvent.emit(PostCreationEvent.Success(postId))
             _postCreationSuccess.value = true
         }.onFailure { exception ->
             Log.e("RecruitPostViewModel", "Failed to create post", exception)
-            _toastEvent.emit(exception.message ?: "알 수 없는 오류가 발생했습니다.")
+            _postCreationEvent.emit(PostCreationEvent.Failure(exception.message))
         }
     }
 

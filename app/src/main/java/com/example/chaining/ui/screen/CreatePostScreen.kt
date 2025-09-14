@@ -49,6 +49,7 @@ import com.example.chaining.domain.model.UserSummary
 import com.example.chaining.ui.component.DatePickerFieldToModal
 import com.example.chaining.ui.component.SaveButton
 import com.example.chaining.viewmodel.AreaViewModel
+import com.example.chaining.viewmodel.PostCreationEvent
 import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -78,8 +79,21 @@ fun CreatePostScreen(
         }
     }
 
-    LaunchedEffect(key1 = true) {
-        postViewModel.toastEvent.collectLatest { message ->
+
+    // ✅ ViewModel의 이벤트를 구독하고 Toast 메시지를 표시
+    LaunchedEffect(Unit) {
+        postViewModel.postCreationEvent.collectLatest { event ->
+            val message = when (event) {
+                is PostCreationEvent.Success -> {
+                    // 성공 시 strings.xml에서 성공 메시지를 가져옴
+                    context.getString(R.string.post_creation_success)
+                }
+                is PostCreationEvent.Failure -> {
+                    // 실패 시 strings.xml에서 실패 메시지 형식을 가져와 조합
+                    val errorMessage = event.message ?: context.getString(R.string.unknown_error)
+                    context.getString(R.string.post_creation_failed, errorMessage)
+                }
+            }
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
     }
