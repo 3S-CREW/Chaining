@@ -59,7 +59,8 @@ fun JoinPostScreen(
     onBackClick: () -> Unit = {},
     onSubmitSuccess: () -> Unit,
     userViewModel: UserViewModel = hiltViewModel(),
-    post: RecruitPost
+    post: RecruitPost,
+    onViewMyApplications: () -> Unit
 ) {
     val context = LocalContext.current
     val userState by userViewModel.user.collectAsState()
@@ -229,7 +230,7 @@ fun JoinPostScreen(
 
             // '내 지원서 보기' 버튼 (보조 버튼)
             Button(
-                onClick = { /* TODO */ },
+                onClick = { onViewMyApplications() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),

@@ -45,8 +45,9 @@ fun ApplicationsScreen(
     onBackClick: () -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel(),
     postViewModel: RecruitPostViewModel = hiltViewModel(),
+    postId: String?,
     type: String, // "My" or "Owner"
-    onViewApplyClick: (applicationId: String) -> Unit = {}
+    onViewApplyClick: (String) -> Unit
 ) {
     val userState by userViewModel.user.collectAsState()
     val myApplications = userState?.applications.orEmpty()
@@ -65,6 +66,7 @@ fun ApplicationsScreen(
     } else {
         myApplications.values.toList()
     }
+
 
     val filteredApplications: List<Application> = if (showOnlyFinishedApplications) {
         applications.filter { application -> application.status != "PENDING" }

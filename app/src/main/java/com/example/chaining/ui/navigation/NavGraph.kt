@@ -173,6 +173,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     post = post,
                     onSubmitSuccess = {
                         navController.navigate("mainHome")
+                    },
+                    onViewMyApplications = {
+                        navController.navigate(Screen.Applications.createRoute(type = "My"))
                     }
                 )
             }
@@ -275,11 +278,19 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     type = NavType.StringType
                     defaultValue = "My"
                 },
+                navArgument("postId") {
+                    type = NavType.StringType
+                    nullable = true // postId는 선택사항이므로 nullable
+                    defaultValue = null // 기본값은 null
+                }
             )
         ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type") ?: "My"
+            val postId = backStackEntry.arguments?.getString("postId")
+
             ApplicationsScreen(
                 type = type,
+                postId = postId,
                 onBackClick = { navController.popBackStack() },
                 onViewApplyClick = { applicationId ->
                     navController.navigate(
