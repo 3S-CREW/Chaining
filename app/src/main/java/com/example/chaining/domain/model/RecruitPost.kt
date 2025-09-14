@@ -7,7 +7,7 @@ data class RecruitPost(
     val postId: String = "",
     val title: String = "",                                   // 제목
     val preferredDestinations: String = "",                   // 선호 여행지 스타일
-    val preferredLocations: LocationPref = LocationPref(),    // 선호 여행지 or 장소
+    val preferredLocations: String = "",    // 선호 여행지 or 장소
     val tourAt: Long = 0L,                                    // 여행 일자
     val hasCar: String = "",                                  // 자차 여부
     val closeAt: Long = 0L,                                   // 모집 마감일
@@ -28,10 +28,4 @@ data class UserSummary(   // 간단 버전 (닉네임/사진 정도만)
     val nickname: String = "",
     val profileImageUrl: String = "",
     val country: String = ""
-)
-
-@kotlinx.serialization.Serializable
-data class LocationPref(
-    val type: String = "",
-    val location: String = ""
 )

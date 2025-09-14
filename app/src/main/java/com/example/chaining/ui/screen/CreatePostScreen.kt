@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
-import com.example.chaining.domain.model.LocationPref
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.domain.model.UserSummary
 import com.example.chaining.ui.component.DatePickerFieldToModal
@@ -88,6 +87,7 @@ fun CreatePostScreen(
                     // 성공 시 strings.xml에서 성공 메시지를 가져옴
                     context.getString(R.string.post_creation_success)
                 }
+
                 is PostCreationEvent.Failure -> {
                     // 실패 시 strings.xml에서 실패 메시지 형식을 가져와 조합
                     val errorMessage = event.message ?: context.getString(R.string.unknown_error)
@@ -101,7 +101,7 @@ fun CreatePostScreen(
     var title by remember { mutableStateOf(userState?.nickname ?: "") }
     var content by remember { mutableStateOf("") }
     var preferredDestinations by remember { mutableStateOf("") }
-    var preferredLocation by remember { mutableStateOf<LocationPref>(LocationPref()) }
+    var preferredLocations by remember { mutableStateOf("") }
     var preferredLanguages by remember {
         mutableStateOf(
             userState?.preferredLanguages ?: emptyMap()
@@ -113,7 +113,7 @@ fun CreatePostScreen(
     var kakaoOpenChatUrl by remember { mutableStateOf("") }
 
     val buttonText = if (type == "생성") stringResource(id = R.string.post_write_button)
-                else stringResource(id = R.string.post_edit_button )
+    else stringResource(id = R.string.post_edit_button)
 
     val fieldTitleText = stringResource(id = R.string.post_title)
     val fieldContentText = stringResource(id = R.string.post_content)
@@ -122,7 +122,6 @@ fun CreatePostScreen(
     val fieldTourDateText = stringResource(id = R.string.post_tour_date)
     val fieldCloseDateText = stringResource(id = R.string.post_close_date)
     val fieldCarText = stringResource(id = R.string.post_car)
-    val fieldLanguageText = stringResource(id = R.string.post_language)
     val fieldKakaoLinkText = stringResource(id = R.string.post_kakao_link)
     val validationPleaseEnterText = stringResource(id = R.string.post_please_enter)
     val validationInvalidKakaoLinkText = stringResource(id = R.string.post_invalid_kakao_link)
@@ -149,7 +148,7 @@ fun CreatePostScreen(
             title = currentPost.title
             content = currentPost.content
             preferredDestinations = currentPost.preferredDestinations
-            preferredLocation = currentPost.preferredLocations
+            preferredLocations = currentPost.preferredLocations
             preferredLanguages = currentPost.preferredLanguages
             hasCar = currentPost.hasCar
             tourAt = currentPost.tourAt
@@ -229,12 +228,14 @@ fun CreatePostScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             // 여행지 스타일 드롭다운
-            val travelStyles = listOf(stringResource(id = R.string.travel_style_mountain),
+            val travelStyles = listOf(
+                stringResource(id = R.string.travel_style_mountain),
                 stringResource(id = R.string.travel_style_sea),
                 stringResource(id = R.string.travel_style_city),
                 stringResource(id = R.string.travel_style_activity),
                 stringResource(id = R.string.travel_style_rest),
-                stringResource(id = R.string.travel_style_culture))
+                stringResource(id = R.string.travel_style_culture)
+            )
             PreferenceSelector(
                 options = travelStyles,
                 placeholderText = stringResource(id = R.string.post_write_style),
@@ -252,9 +253,9 @@ fun CreatePostScreen(
             PreferenceSelector(
                 options = areaNames,
                 placeholderText = stringResource(id = R.string.post_write_location),
-                selectedOption = preferredLocation.location,
+                selectedOption = preferredLocations,
                 onOptionSelected = { selectedName ->
-                    preferredLocation = preferredLocation.copy(location = selectedName)
+                    preferredLocations = selectedName
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -276,7 +277,8 @@ fun CreatePostScreen(
             Spacer(modifier = Modifier.height(16.dp))
             SingleDropdown(
                 label = stringResource(id = R.string.post_write_car),
-                options = listOf(stringResource(id = R.string.post_write_car_six),
+                options = listOf(
+                    stringResource(id = R.string.post_write_car_six),
                     stringResource(id = R.string.post_write_car_four),
                     stringResource(id = R.string.post_write_car_two),
                     stringResource(id = R.string.post_write_no)
@@ -340,11 +342,10 @@ fun CreatePostScreen(
                     if (title.isBlank()) missingFields.add(fieldTitleText)
                     if (content.isBlank()) missingFields.add(fieldContentText)
                     if (preferredDestinations.isBlank()) missingFields.add(fieldTravelStyleText)
-                    if (preferredLocation.location.isBlank()) missingFields.add(fieldLocationText)
+                    if (preferredLocations.isBlank()) missingFields.add(fieldLocationText)
                     if (tourAt == null) missingFields.add(fieldTourDateText)
                     if (closeAt == null) missingFields.add(fieldCloseDateText)
                     if (hasCar.isBlank()) missingFields.add(fieldCarText)
-                    if (preferredLanguages.isEmpty()) missingFields.add(fieldLanguageText)
                     val kakaoUrl = kakaoOpenChatUrl.trim()
                     if (kakaoUrl.isBlank()) {
                         missingFields.add(fieldKakaoLinkText)
@@ -372,7 +373,7 @@ fun CreatePostScreen(
                             title = title,
                             content = content,
                             preferredDestinations = preferredDestinations,
-                            preferredLocations = preferredLocation,
+                            preferredLocations = preferredLocations,
                             tourAt = tourAt!!,
                             closeAt = closeAt!!,
                             hasCar = hasCar,
