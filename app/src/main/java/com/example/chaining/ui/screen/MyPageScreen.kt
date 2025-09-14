@@ -6,6 +6,7 @@ import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -104,6 +105,11 @@ fun MyPageScreen(
 
     val koreanText = stringResource(id = R.string.language_korean)
     val englishText = stringResource(id = R.string.language_english)
+    val countryFieldText = stringResource(id = R.string.mypage_country)
+    val locationFieldText = stringResource(id = R.string.mypage_location)
+    val prefstyleFieldText = stringResource(id = R.string.mypage_prefstyle)
+    val validationMessageFormat = stringResource(id = R.string.validation_select_fields)
+    val saveSuccessMessage = stringResource(id = R.string.mypage_profile_save_success)
 
     LaunchedEffect(userState) {
         userState?.let {
@@ -285,13 +291,13 @@ fun MyPageScreen(
         Button(
             onClick = {
                 val unselectedFields = mutableListOf<String>()
-                if (country.isEmpty()) unselectedFields.add("출신 국가")
-                if (residence.isEmpty()) unselectedFields.add("현재 거주지")
-                if (preferredDestinations.isEmpty()) unselectedFields.add("선호 여행지 스타일")
+                if (country.isEmpty()) unselectedFields.add(countryFieldText)
+                if (residence.isEmpty()) unselectedFields.add(locationFieldText)
+                if (preferredDestinations.isEmpty()) unselectedFields.add(prefstyleFieldText)
 
 
                 if (unselectedFields.isNotEmpty()) {
-                    val message = "${unselectedFields.joinToString(", ")} 항목을 선택해주세요."
+                    val message = context.getString(R.string.validation_select_fields, unselectedFields.joinToString(", "))
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 } else {
                     userState?.let { currentUser ->
@@ -302,7 +308,7 @@ fun MyPageScreen(
                             preferredDestinations = preferredDestinations
                         )
                         userViewModel.updateMyUser(updatedUser)
-                        Toast.makeText(context, "프로필이 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.mypage_profile_save_success), Toast.LENGTH_SHORT).show()
                     }
                 }
             },
@@ -341,12 +347,12 @@ fun ProfileSection(
         uri?.let {
             val size = getFileSize(context, uri)
             if (size > 2 * 1024 * 1024) {
-                Toast.makeText(context, "2MB 이하 이미지를 선택해주세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.mypage_select_image_under_2mb), Toast.LENGTH_SHORT).show()
                 return@let
             }
 
             val uid = FirebaseAuth.getInstance().currentUser?.uid ?: run {
-                Toast.makeText(context, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.mypage_login_required), Toast.LENGTH_SHORT).show()
                 return@let
             }
             val storageRef = Firebase.storage.reference.child("profileImages/$uid.jpg")
@@ -355,11 +361,11 @@ fun ProfileSection(
                 .addOnSuccessListener {
                     storageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
                         userViewModel.updateProfileImage(downloadUrl.toString())
-                        Toast.makeText(context, "프로필 이미지가 변경되었습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.mypage_profile_image_changed), Toast.LENGTH_SHORT).show()
                     }
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(context, "이미지 업로드 실패: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.mypage_image_upload_failed, e.message), Toast.LENGTH_SHORT).show()
                 }
         }
     }
@@ -402,14 +408,14 @@ fun ProfileSection(
             }
         ) {
             Text(
-                text = nickname.ifEmpty { "닉네임 없음" },
+                text = nickname.ifEmpty { stringResource(id = R.string.mypage_no_nickname) },
                 style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                 color = Black
             )
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 painter = painterResource(id = R.drawable.pen_squared),
-                contentDescription = "닉네임 수정",
+                contentDescription = stringResource(id = R.string.mypage_edit_nickname),
                 tint = SecondaryTextColor,
                 modifier = Modifier.size(24.dp)
             )
@@ -417,7 +423,7 @@ fun ProfileSection(
 
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "팔로워 203 · 팔로우 106",
+            text = stringResource(id = R.string.mypage_follower_info, "203", "106"),
             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
             color = Color.Gray,
         )
@@ -425,10 +431,11 @@ fun ProfileSection(
 
     if (showDialog) {
         var tempNickname by remember(nickname) { mutableStateOf(nickname) }
-        var nicknameError by remember { mutableStateOf<String?>(null) }
+        var nicknameErrorResId by remember { mutableStateOf<Int?>(null) }
 
         LaunchedEffect(tempNickname) {
-            nicknameError = validateNickname(tempNickname)
+            // ✅ validateNickname으로부터 이제 String이 아닌 Int? (리소스 ID)를 받음
+            nicknameErrorResId = validateNickname(tempNickname)
         }
 
         AlertDialog(
@@ -443,7 +450,7 @@ fun ProfileSection(
                         },
                         label = { Text(stringResource(id = R.string.mypage_new_nick), color = SecondaryTextColor) },
                         singleLine = true,
-                        isError = nicknameError != null,
+                        isError = nicknameErrorResId != null,
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = LightGrayBackground,
                             unfocusedContainerColor = LightGrayBackground,
@@ -453,9 +460,10 @@ fun ProfileSection(
                         ),
                         modifier = Modifier.fillMaxWidth()
                     )
-                    if (nicknameError != null) {
+                    nicknameErrorResId?.let { resId ->
                         Text(
-                            text = nicknameError!!,
+                            // stringResource를 사용해 ID를 실제 텍스트로 변환
+                            text = stringResource(id = resId),
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.padding(start = 16.dp, top = 4.dp)
@@ -633,24 +641,21 @@ private fun getFileSize(context: Context, uri: Uri): Long {
     return size ?: 0L
 }
 
-fun validateNickname(nickname: String): String? {
+fun validateNickname(nickname: String): Int? {
     if (nickname.isBlank()) {
-        return "닉네임을 입력해주세요."
+        return R.string.error_nickname_blank
     }
-
     val pattern = Regex("^[a-zA-Z0-9가-힣]*$")
     if (!pattern.matches(nickname)) {
-        return "닉네임은 한글, 영어, 숫자만 사용할 수 있습니다. (공백 제외)"
+        return R.string.error_nickname_pattern
     }
-
     var weightedLength = 0
     for (char in nickname) {
         weightedLength += if (char in '가'..'힣') 2 else 1
     }
     if (weightedLength > 12) {
-        return "닉네임은 한글 6자 또는 영문/숫자 12자 이내로 제한됩니다."
+        return R.string.error_nickname_length
     }
-
     return null
 }
 

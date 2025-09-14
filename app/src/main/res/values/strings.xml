@@ -170,6 +170,20 @@
     <string name="mypage_quiz_start">응시하기</string>
     <string name="mypage_quiz_status">언어 테스트 현황</string>
     <string name="mypage_quiz_retry">재응시</string>
+    <string name="mypage_follower_info">팔로워 %1$s · 팔로우 %2$s</string>
+    <string name="mypage_no_nickname">닉네임 없음</string>
+    <string name="mypage_edit_nickname">닉네임 수정</string>
+    <string name="mypage_select_image_under_2mb">2MB 이하 이미지를 선택해주세요.</string>
+    <string name="mypage_login_required">로그인이 필요합니다.</string>
+    <string name="mypage_profile_image_changed">프로필 이미지가 변경되었습니다.</string>
+    <string name="mypage_image_upload_failed">이미지 업로드 실패: %1$s</string>
+    <string name="mypage_profile_save_success">프로필이 저장되었습니다.</string>
+    <string name="mypage_profile_save_button">저장</string>
+    <string name="mypage_select_placeholder">항목을 선택해주세요.</string>
+    <string name="validation_select_fields">%1$s 항목을 선택해주세요.</string>
+    <string name="error_nickname_blank">닉네임을 입력해주세요.</string>
+    <string name="error_nickname_pattern">닉네임은 한글, 영어, 숫자만 사용할 수 있습니다. (공백 제외)</string>
+    <string name="error_nickname_length">닉네임은 한글 6자 또는 영문/숫자 12자 이내로 제한됩니다.</string>
     <!--    마이페이지_내 모집글 (MyPostScreen.kt)-->
     <string name="mypost_title">내 모집글 보기</string>
     <string name="mypost_all_post">전체 글 보기</string>
