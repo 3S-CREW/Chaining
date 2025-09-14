@@ -61,6 +61,7 @@ fun CreatePostScreen(
     postId: String? = null,
     postViewModel: RecruitPostViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {},
+    onPostCreated: () -> Unit,
     userViewModel: UserViewModel = hiltViewModel(),
     type: String, // "생성" or "수정"
     areaViewModel: AreaViewModel = hiltViewModel()
@@ -69,6 +70,7 @@ fun CreatePostScreen(
     val areaEntities by areaViewModel.areaCodes.collectAsState()
     val userState by userViewModel.user.collectAsState()
     val postState by postViewModel.post.collectAsState()
+    val postCreationSuccess by postViewModel.postCreationSuccess.collectAsState()
 
     LaunchedEffect(key1 = type, key2 = postId) {
         if (type == "수정" && postId != null) {
@@ -111,6 +113,12 @@ fun CreatePostScreen(
     val validationPleaseEnterText = stringResource(id = R.string.post_please_enter)
     val validationInvalidKakaoLinkText = stringResource(id = R.string.post_invalid_kakao_link)
 
+    LaunchedEffect(postCreationSuccess) {
+        if (postCreationSuccess) {
+            onPostCreated() // NavGraph에 정의된 화면 이동 로직 실행
+            postViewModel.onPostCreationHandled() // 상태 초기화
+        }
+    }
 
     LaunchedEffect(userState) {
         if (type == "생성") {

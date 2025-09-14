@@ -110,7 +110,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             CreatePostScreen(
                 type = type,
                 postId = postId,
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onPostCreated = { navController.popBackStack() }
             )
         }
 

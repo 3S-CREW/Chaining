@@ -31,14 +31,14 @@ class RecruitPostViewModel @Inject constructor(
     private val _toastEvent = MutableSharedFlow<String>()
     val toastEvent = _toastEvent.asSharedFlow()
 
-    // ✅ 1. 원본 게시글 전체 목록 (비공개)
+    // 원본 게시글 전체 목록 (비공개)
     private val _allPosts = MutableStateFlow<List<RecruitPost>>(emptyList())
 
-    // ✅ 2. 현재 필터 상태를 저장하는 StateFlow
+    // 현재 필터 상태를 저장하는 StateFlow
     private val _filterState = MutableStateFlow(FilterState())
     val filterState: StateFlow<FilterState> = _filterState
 
-    // ✅ 3. UI에 보여줄 최종 필터링된 게시글 목록 (공개)
+    // UI에 보여줄 최종 필터링된 게시글 목록 (공개)
     val posts: StateFlow<List<RecruitPost>> =
         combine(_allPosts, _filterState) { allPosts, filter ->
             applyFiltering(allPosts, filter)
@@ -48,6 +48,10 @@ class RecruitPostViewModel @Inject constructor(
             started = SharingStarted.Eagerly,
             initialValue = emptyList() // 초기값
         )
+
+    // 작성 완료 이벤트를 UI에 알리기 위한 StateFlow 추가
+    private val _postCreationSuccess = MutableStateFlow(false)
+    val postCreationSuccess: StateFlow<Boolean> = _postCreationSuccess
 
     private var lastFetchTime = 0L
     private val fetchInterval = 10 * 60 * 1000L // 10분(ms)
@@ -80,10 +84,15 @@ class RecruitPostViewModel @Inject constructor(
             Log.d("RecruitPostViewModel", "Post created successfully with id: $postId")
             fetchAllPosts(force = true)
             _toastEvent.emit("게시글이 등록되었습니다.")
+            _postCreationSuccess.value = true
         }.onFailure { exception ->
             Log.e("RecruitPostViewModel", "Failed to create post", exception)
             _toastEvent.emit(exception.message ?: "알 수 없는 오류가 발생했습니다.")
         }
+    }
+
+    fun onPostCreationHandled() {
+        _postCreationSuccess.value = false
     }
 //            || currentTime - lastFetchTime >= fetchInterval
 
