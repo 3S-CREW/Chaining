@@ -261,7 +261,9 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         }
 
         composable(route = Screen.MyPosts.route) {
-            MyPostsScreen()
+            MyPostsScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
         composable(
             route = Screen.Applications.route,
