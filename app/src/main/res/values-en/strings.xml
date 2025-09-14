@@ -197,4 +197,39 @@
     <string name="myapply_all_post">View All Applications</string>
     <string name="myapply_filter_open">Show the Apply Results</string>
     <string name="myapply_nothing">You haven\'t created any applications yet.</string>
+
+    <string name="terms_agreement_required">You must agree to the terms to use the service.</string>
+    <string name="agree_and_start">Agree and Start</string>
+    <string name="terms_of_service_title">Terms of Service</string>
+    <string name="agree_all">Agree to All</string>
+    <string name="agree_terms_of_service_required">[Required] Agree to Terms of Service</string>
+    <string name="agree_privacy_policy_required">[Required] Agree to Privacy Policy</string>
+    <string name="fail_to_sign_up">Failed to cancel membership.</string>
+
+    <!-- Full Terms of Service Content -->
+    <string name="terms_of_service_content">
+        Article 1 (Purpose)\n
+        The purpose of these Terms of Service is to define the conditions of use, procedures, and other necessary matters concerning the rights, obligations, and responsibilities of the Member and the App for all services provided by Chaining (hereinafter referred to as the "App").\n\n
+        Article 2 (Definition of Terms)\n
+        The definitions of terms used in these Terms are as follows:\n
+        1. "Service" refers to Chaining and all related services that the Member can use, regardless of the terminal device.\n
+        2. "Member" refers to a customer who accesses the App\'s service, enters into a service agreement with the App in accordance with these Terms, and uses the services provided by the App.\n\n
+        Article 3 (Effect and Amendment of the Terms)\n
+        1. These Terms shall become effective for all Members who wish to use the Service.\n
+        2. The App may amend these Terms if necessary, to the extent that it does not violate applicable laws and regulations.
+    </string>
+
+    <!-- Full Privacy Policy Content -->
+    <string name="privacy_policy_content">
+        Chaining (hereinafter referred to as the "App") complies with personal information protection regulations under applicable laws, including the Personal Information Protection Act, and does its best to protect the rights and interests of users by establishing a privacy policy based on these laws.\n\n
+        1. Items of Personal Information Collected\n
+        For the purposes of membership registration, smooth customer consultation, and the provision of various services, the App collects the following personal information at the time of initial registration:\n
+        - Required Items: Google account information (UID, Nickname, Email Address)\n\n
+        2. Purpose of Collection and Use of Personal Information\n
+        The App uses the collected personal information for the following purposes:\n
+        - To fulfill contracts for service provision and to manage services provided.\n
+        - For member management, including identity verification and personal identification for using membership-based services.\n\n
+        3. Period of Retention and Use of Personal Information\n
+        As a general rule, the user\'s personal information shall be destroyed without delay once the purposes of its collection and use have been achieved.
+    </string>
 </resources>

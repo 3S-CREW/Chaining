@@ -154,7 +154,7 @@ fun MainHomeScreen(
                 .background(Color(0xFFF3F6FF))
         ) {
             Text(
-                text = stringResource(id = R.string.welcome_message, userState?.nickname ?: "쳉"),
+                text = stringResource(id = R.string.welcome_message, userState?.nickname ?: "체이닝"),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier

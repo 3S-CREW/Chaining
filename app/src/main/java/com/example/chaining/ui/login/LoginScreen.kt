@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.BuildConfig
 import com.example.chaining.R
-import com.example.chaining.domain.model.User
 import com.example.chaining.ui.screen.generateRandomNickname
 import com.example.chaining.ui.screen.validateNickname
 import com.example.chaining.viewmodel.UserViewModel
@@ -55,6 +54,7 @@ import com.google.firebase.auth.auth
 fun LoginScreen(
     onLoginSuccess: () -> Unit, // 구글 로그인
     onAdminLoginClick: () -> Unit, // 관리자 로그인
+    onNavigateToTerms: (uid: String, nickname: String) -> Unit,
     userViewModel: UserViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -83,27 +83,19 @@ fun LoginScreen(
                                     val uid = firebaseUser.uid
 
                                     userViewModel.checkUserExists(uid) { exists ->
-                                        if (!exists) {
+                                        if (exists) {
+                                            onLoginSuccess()
+                                        } else {
                                             val googleNickname = firebaseUser.displayName ?: ""
-
                                             val isGoogleNicknameValid =
                                                 validateNickname(googleNickname) == null
-
                                             val finalNickname = if (isGoogleNicknameValid) {
                                                 googleNickname
                                             } else {
                                                 generateRandomNickname()
                                             }
-
-                                            // 3. 최종 결정된 닉네임으로 사용자 추가
-                                            userViewModel.addUser(
-                                                User(
-                                                    id = uid,
-                                                    nickname = finalNickname
-                                                )
-                                            )
+                                            onNavigateToTerms(uid, finalNickname)
                                         }
-                                        onLoginSuccess()
                                     }
                                 }
                             } else {
@@ -200,7 +192,7 @@ fun LoginScreen(
                     )
                 }
                 Text(
-                    text = if (isLoading){
+                    text = if (isLoading) {
                         stringResource(id = R.string.login_in_progress)
                     } else {
                         stringResource(id = R.string.login_button)

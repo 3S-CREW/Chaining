@@ -46,5 +46,7 @@ sealed class Screen(val route: String) {
     }
 
     object Feed : Screen("feed")
+    object Term : Screen("term/{uid}/{nickname}")
+
     object Notification : Screen("notification")
 }

@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.ui.login.LoginScreen
+import com.example.chaining.ui.login.TermsScreen
 import com.example.chaining.ui.notification.NotificationScreen
 import com.example.chaining.ui.screen.AdminLoginScreen
 import com.example.chaining.ui.screen.ApplicationsScreen
@@ -53,9 +54,38 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 // 관리자 로그인 버튼 클릭 시
                 onAdminLoginClick = {
                     navController.navigate("adminLogin")
+                },
+                onNavigateToTerms = { uid, nickname ->
+                    navController.navigate("terms/$uid/$nickname")
                 }
             )
         }
+
+        composable(
+            route = Screen.Term.route,
+            arguments = listOf(
+                navArgument("uid") { type = NavType.StringType },
+                navArgument("nickname") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val uid = backStackEntry.arguments?.getString("uid") ?: ""
+            val nickname = backStackEntry.arguments?.getString("nickname") ?: ""
+
+            TermsScreen(
+                uid = uid,
+                nickname = nickname,
+                onSuccess = {
+                    navController.navigate(Screen.MainHome.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
+                },
+                onCancel = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+
         composable(Screen.AdminLogin.route) {
             AdminLoginScreen(
                 onBackClick = { navController.popBackStack() },
