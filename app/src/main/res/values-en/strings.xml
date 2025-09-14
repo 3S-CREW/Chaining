@@ -26,6 +26,9 @@
     <string name="time_left_application">%1$s left to accept/decline</string>
     <string name="application_yes">Accept</string>
     <string name="application_no">Decline</string>
+    <string name="application_submit_success">Application submitted successfully.</string>
+    <string name="application_submit_failed">Failed to submit application.</string>
+    <string name="application_intro_blank">Please introduce yourself.</string>
 
     <string name="filter_title">Post Filter Settings</string>
     <string name="filter_close_button_desc">Close</string>

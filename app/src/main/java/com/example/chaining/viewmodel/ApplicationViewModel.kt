@@ -25,6 +25,10 @@ class ApplicationViewModel @Inject constructor(
     private val _statusUpdates = MutableStateFlow<List<Application>>(emptyList())
     val statusUpdates: StateFlow<List<Application>> = _statusUpdates
 
+    // ✅ 1. 신청 완료 이벤트를 UI에 알리기 위한 StateFlow 추가
+    private val _isSubmitSuccess = MutableStateFlow(false)
+    val isSubmitSuccess: StateFlow<Boolean> = _isSubmitSuccess
+
     private val _toastEvent = MutableSharedFlow<String>()
     val toastEvent = _toastEvent.asSharedFlow()
 
@@ -51,11 +55,11 @@ class ApplicationViewModel @Inject constructor(
             )
             updatedList.add(newApplicationForUi)
             _applications.value = updatedList
-
-            _toastEvent.emit("지원서가 성공적으로 제출되었습니다.")
-
+            _toastEvent.emit("application_success")
+            // ✅ 2. 신청 성공 시, isSubmitSuccess 상태를 true로 변경
+            _isSubmitSuccess.value = true
         }.onFailure { exception ->
-            _toastEvent.emit(exception.message ?: "지원서 제출에 실패했습니다.")
+            _toastEvent.emit("application_failed")
         }
 //        val updatedList = _applications.value.toMutableList()
 //        val newApplication = application.copy(
@@ -64,6 +68,9 @@ class ApplicationViewModel @Inject constructor(
 //        )
 //        updatedList.add(newApplication)
 //        _applications.value = updatedList
+    }
+    fun resetSubmitStatus() {
+        _isSubmitSuccess.value = false
     }
 
     fun fetchApplication(applicationId: String) = viewModelScope.launch {

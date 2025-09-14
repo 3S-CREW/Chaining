@@ -170,7 +170,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 val post = remember(it) { Gson().fromJson(it, RecruitPost::class.java) }
                 JoinPostScreen(
                     onBackClick = { navController.popBackStack() },
-                    post = post
+                    post = post,
+                    onSubmitSuccess = {
+                        navController.navigate("mainHome")
+                    }
                 )
             }
         }

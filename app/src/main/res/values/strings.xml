@@ -37,6 +37,9 @@
     <string name="time_left_application">수락/거절까지 %1$s 남음</string>
     <string name="application_yes">수락</string>
     <string name="application_no">거절</string>
+    <string name="application_submit_success">지원서가 성공적으로 제출되었습니다.</string>
+    <string name="application_submit_failed">지원서 제출에 실패했습니다.</string>
+    <string name="application_intro_blank">자기소개를 입력해주세요.</string>
     <!--    커뮤니티_필터링-->
     <string name="filter_title">모집 글 필터 설정</string>
     <string name="filter_close_button_desc">닫기</string>
