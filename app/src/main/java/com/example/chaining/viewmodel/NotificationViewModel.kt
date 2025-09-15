@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.chaining.data.repository.NotificationRepository
 import com.example.chaining.domain.model.Notification
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -25,8 +27,17 @@ class NotificationViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
+    private val _event = MutableSharedFlow<NotificationEvent>()
+    val event: SharedFlow<NotificationEvent> = _event
+
     init {
         fetchNotifications()
+    }
+
+    fun onApplicationClick(id: String) {
+        viewModelScope.launch {
+            _event.emit(NotificationEvent.NavigateToApplication(id))
+        }
     }
 
     /** 알림 실시간 구독 시작 */
@@ -59,4 +70,10 @@ class NotificationViewModel @Inject constructor(
     fun clearError() {
         _errorMessage.value = null
     }
+}
+
+sealed class NotificationEvent {
+    data class NavigateToApplication(val applicationId: String) : NotificationEvent()
+    data class ShowToast(val message: String) : NotificationEvent()
+    object Refresh : NotificationEvent()
 }

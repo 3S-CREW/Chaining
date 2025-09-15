@@ -95,7 +95,9 @@ fun ApplicationsScreen(
 
                 // 제목
                 Text(
-                    text = if (type == "Owner") stringResource(id = R.string.post_application) else stringResource(id = R.string.myapply_title),
+                    text = if (type == "Owner") stringResource(id = R.string.post_application) else stringResource(
+                        id = R.string.myapply_title
+                    ),
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
@@ -123,7 +125,9 @@ fun ApplicationsScreen(
                 ActionButton(
                     modifier = Modifier.weight(1f),
                     iconRes = R.drawable.post,
-                    text = if (showOnlyFinishedApplications) stringResource(id = R.string.myapply_all_post) else stringResource(id = R.string.myapply_filter_open),
+                    text = if (showOnlyFinishedApplications) stringResource(id = R.string.myapply_all_post) else stringResource(
+                        id = R.string.myapply_filter_open
+                    ),
                     onClick = {
                         showOnlyFinishedApplications = !showOnlyFinishedApplications
                     }
@@ -145,7 +149,6 @@ fun ApplicationsScreen(
                     CardItem(
                         onClick = {
                             onViewApplyClick(application.applicationId)
-                            println("포포" + application)
                         },
                         type = "지원서",
                         application = application,

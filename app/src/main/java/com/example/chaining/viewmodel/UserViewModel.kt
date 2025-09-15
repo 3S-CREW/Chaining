@@ -70,8 +70,27 @@ class UserViewModel @Inject constructor(
     }
 
     fun toggleLike(postId: String) = viewModelScope.launch {
-        _user.value?.id?.let { uid ->
-            repo.toggleLikedPost(uid, postId)
+//        _user.value?.id?.let { uid ->
+//            repo.toggleLikedPost(uid, postId)
+//        }
+        val uid = _user.value?.id ?: ""
+
+        // 1. 낙관적 업데이트: UI 먼저 반영
+        val currentLiked = _user.value?.likedPosts?.get(postId) == true
+        val newLikedPosts = _user.value?.likedPosts?.toMutableMap() ?: mutableMapOf()
+        if (currentLiked) newLikedPosts.remove(postId) else newLikedPosts[postId] = true
+
+        _user.value = _user.value?.copy(likedPosts = newLikedPosts)
+
+        // 2. DB 업데이트
+        viewModelScope.launch {
+            try {
+                repo.toggleLikedPost(uid, postId)
+            } catch (e: Exception) {
+                // DB 실패 시, 낙관적 업데이트 되돌리기
+                if (currentLiked) newLikedPosts[postId] = true else newLikedPosts.remove(postId)
+                _user.value = _user.value?.copy(likedPosts = newLikedPosts)
+            }
         }
     }
 

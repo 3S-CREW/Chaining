@@ -138,7 +138,7 @@ class RecruitPostViewModel @Inject constructor(
         }
         filter.travelLocation?.let { location ->
             filteredList = filteredList.filter {
-                it.preferredLocations.location.contains(
+                it.preferredLocations.contains(
                     location,
                     ignoreCase = true
                 )

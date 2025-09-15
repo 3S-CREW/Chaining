@@ -1,5 +1,9 @@
 package com.example.chaining.ui.component
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,9 +21,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -41,7 +49,9 @@ fun CardItem(
     application: Application? = null,
     remainingTime: String? = null,
     onLeftButtonClick: () -> Unit = {},
-    onRightButtonClick: () -> Unit = {}
+    onRightButtonClick: () -> Unit = {},
+    currentUserId: String? = "",
+    isLiked: Boolean? = false,
 ) {
     val title = when (type) {
         "모집글" -> recruitPost?.title ?: stringResource(id = R.string.community_no_title)
@@ -92,6 +102,27 @@ fun CardItem(
             country = application?.applicant?.country
                 ?: stringResource(id = R.string.community_unknown)
         )
+    }
+
+    val buttonColor by animateColorAsState(
+        targetValue = if (isLiked == true) Color(0xFFFF4D4D) else Color(0xFFEBEFFA),
+        animationSpec = tween(durationMillis = 300),
+        label = "likeColor"
+    )
+
+    val scale = remember { Animatable(1f) }
+
+    LaunchedEffect(isLiked) {
+        if (isLiked == true) {
+            scale.animateTo(
+                targetValue = 1.05f,
+                animationSpec = spring(stiffness = 500f)
+            )
+            scale.animateTo(
+                targetValue = 1f,
+                animationSpec = spring(stiffness = 500f)
+            )
+        }
     }
 
     Card(
@@ -210,16 +241,32 @@ fun CardItem(
                         }
 
                         // 오른쪽 버튼
-                        Button(
-                            onClick = onRightButtonClick,
-                            modifier = Modifier.weight(2f),
-                            shape = RoundedCornerShape(20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFEBEFFA),
-                                contentColor = Color.Gray
-                            )
-                        ) {
-                            Text(text = rightButtonText)
+                        if (type == "모집글") {
+                            Button(
+                                onClick = onRightButtonClick,
+                                modifier = Modifier
+                                    .weight(2f)
+                                    .scale(scale.value),
+                                shape = RoundedCornerShape(20.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = buttonColor,
+                                    contentColor = if (isLiked == true) Color.White else Color.Gray
+                                )
+                            ) {
+                                Text(text = rightButtonText)
+                            }
+                        } else {
+                            Button(
+                                onClick = onRightButtonClick,
+                                modifier = Modifier.weight(2f),
+                                shape = RoundedCornerShape(20.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFFEBEFFA),
+                                    contentColor = Color.Gray
+                                )
+                            ) {
+                                Text(text = rightButtonText)
+                            }
                         }
                     }
                 }
