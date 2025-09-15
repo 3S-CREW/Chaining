@@ -1,5 +1,6 @@
 package com.example.chaining.ui.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
 import com.example.chaining.data.model.FilterState
+import com.example.chaining.ui.screen.SecondaryTextColor
 import com.example.chaining.viewmodel.AreaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -131,6 +134,7 @@ fun FilterOptionsSheet(
             expanded = expandedTravelStyle,
             onExpandedChange = { expandedTravelStyle = it },
             onValueChange = { value -> selectedTravelStyle = value },
+            leadingIconRes = R.drawable.global,
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -142,6 +146,7 @@ fun FilterOptionsSheet(
             expanded = expandedTravelLocation,
             onExpandedChange = { expandedTravelLocation = it },
             onValueChange = { value -> selectedTravelLocation = value },
+            leadingIconRes = R.drawable.country,
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -153,6 +158,7 @@ fun FilterOptionsSheet(
             expanded = expandedLanguage,
             onExpandedChange = { expandedLanguage = it },
             onValueChange = { value -> selectedLanguage = value },
+            leadingIconRes = R.drawable.language,
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -168,6 +174,7 @@ fun FilterOptionsSheet(
             onValueChange = { value ->
                 selectedLanguageLevel = if (value == "상관 없음") null else value?.toIntOrNull()
             },
+            leadingIconRes = R.drawable.level,
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -184,6 +191,7 @@ fun FilterOptionsSheet(
                 // 표시된 텍스트(value)로 실제 키를 찾아 저장
                 selectedSortBy = sortByOptions.entries.find { it.value == value }?.key ?: "latest"
             },
+            leadingIconRes = R.drawable.sort,
         )
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -225,25 +233,30 @@ fun FilterDropdown(
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
     onValueChange: (String?) -> Unit,
+    @DrawableRes leadingIconRes: Int,
 ) {
-    Text(
-        label,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp,
-        color = Color(0xFF4A526A),
-        modifier = Modifier.fillMaxWidth(),
-    )
     Spacer(modifier = Modifier.height(8.dp))
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = onExpandedChange,
-        modifier = Modifier.fillMaxWidth(),
     ) {
         OutlinedTextField(
             value = selectedValue ?: stringResource(id = R.string.filter_option_none),
             onValueChange = {},
             readOnly = true,
-            label = { Text(label) },
+            label = {
+                Text(
+                    text = label,
+                    fontSize = 14.sp,
+                )
+            },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = leadingIconRes),
+                    contentDescription = label,
+                    tint = SecondaryTextColor,
+                )
+            },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier =
                 Modifier
@@ -258,6 +271,10 @@ fun FilterDropdown(
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { onExpandedChange(false) },
+            modifier =
+                Modifier
+                    .exposedDropdownSize()
+                    .background(Color.White),
         ) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.filter_option_none)) },
