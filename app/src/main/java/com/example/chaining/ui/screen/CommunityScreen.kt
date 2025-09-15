@@ -8,11 +8,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -84,6 +89,8 @@ fun CommunityScreen(
             }
         }
     }
+    val systemBarHorizontalPadding = WindowInsets.systemBars.asPaddingValues()
+    val horizontalPaddingValue = systemBarHorizontalPadding.calculateStartPadding(LocalLayoutDirection.current) + 16.dp
 
     // 3. Bottom Sheet UI 구현
     if (showBottomSheet) {
@@ -108,6 +115,7 @@ fun CommunityScreen(
         onBackClick()
     }
     Scaffold(
+        contentWindowInsets = WindowInsets.systemBars,
         topBar = {
             Row(
                 modifier =
@@ -148,13 +156,14 @@ fun CommunityScreen(
             }
         },
         containerColor = Color(0xFFF3F6FF),
-    ) { innerPadding ->
+    ) { innerPadding->
         Column(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(16.dp)
+                    .padding(top = innerPadding.calculateTopPadding()) // TopBar 아래 여백
+                    .padding(bottom = 0.dp)
+                    .padding(horizontal = horizontalPaddingValue)
                     .verticalScroll(rememberScrollState()),
         ) {
             Row(
