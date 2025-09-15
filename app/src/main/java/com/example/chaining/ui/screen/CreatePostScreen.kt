@@ -205,8 +205,14 @@ fun CreatePostScreen(
             OutlinedTextField(
                 value = title,
                 onValueChange = { if (it.length <= MAX_TITLE_LENGTH) title = it },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text(text = stringResource(id = R.string.post_write_enter_title)) },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.post_write_enter_title),
+                        modifier = Modifier.padding(start = 14.dp)
+                    )
+                },
                 shape = RoundedCornerShape(16.dp),
                 singleLine = true,
                 colors = TextFieldDefaults.colors(
@@ -282,6 +288,7 @@ fun CreatePostScreen(
             Spacer(modifier = Modifier.height(16.dp))
             SingleDropdown(
                 label = stringResource(id = R.string.post_write_car),
+                leadingIconRes = R.drawable.car,
                 options = listOf(
                     stringResource(id = R.string.post_write_car_six),
                     stringResource(id = R.string.post_write_car_four),
@@ -298,9 +305,13 @@ fun CreatePostScreen(
                 value = kakaoOpenChatUrl,
                 onValueChange = { kakaoOpenChatUrl = it },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                placeholder = { Text(stringResource(id = R.string.post_write_kakao)) },
+                    .fillMaxWidth(),
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.post_write_kakao),
+                        modifier = Modifier.padding(start = 14.dp)
+                    )
+                },
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
@@ -311,7 +322,7 @@ fun CreatePostScreen(
                     unfocusedIndicatorColor = Color.LightGray
                 )
             )
-            Spacer(modifier = Modifier.height(36.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             // 내용 입력창
             OutlinedTextField(
@@ -320,7 +331,12 @@ fun CreatePostScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp),
-                placeholder = { Text(stringResource(id = R.string.post_write)) },
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.post_write),
+                        modifier = Modifier.padding(start = 14.dp)
+                    )
+                },
                 shape = RoundedCornerShape(16.dp),
                 supportingText = {
                     Text(
@@ -409,6 +425,7 @@ fun CreatePostScreen(
 @Composable
 fun SingleDropdown(
     label: String,
+    @DrawableRes leadingIconRes: Int,
     options: List<String>,
     selectedOption: String,
     onOptionSelected: (String) -> Unit
@@ -429,10 +446,26 @@ fun SingleDropdown(
                     fontSize = 14.sp
                 )
             },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = leadingIconRes),
+                    contentDescription = label,
+                    tint = Color(0xFF4285F4)
+                )
+            },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             modifier = Modifier
                 .fillMaxWidth()
-                .menuAnchor()
+                .menuAnchor(),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color(0xFFF3F6FF),
+                unfocusedContainerColor = Color(0xFFF3F6FF),
+                focusedPlaceholderColor = Color.Gray,
+                unfocusedPlaceholderColor = Color.LightGray,
+                focusedIndicatorColor = Color.LightGray,
+                unfocusedIndicatorColor = Color.LightGray
+            ),
+            shape = RoundedCornerShape(4.dp)
         )
         ExposedDropdownMenu(
             expanded = expanded,
@@ -476,6 +509,7 @@ fun PreferenceSelector(
             value = selectedOption,
             onValueChange = {},
             placeholder = { Text(placeholderText) },
+            label = { Text(placeholderText) },
             leadingIcon = {
                 Icon(
                     painter = painterResource(id = leadingIconRes),
@@ -483,24 +517,25 @@ fun PreferenceSelector(
                     tint = Color(0xFF4285F4)
                 )
             },
-            trailingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.down_arrow),
-                    contentDescription = "드롭다운 메뉴 열기",
-                    modifier = Modifier.size(16.dp),
-                    tint = Color.LightGray
-
-                )
-            },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
+//            trailingIcon = {
+//                Icon(
+//                    painter = painterResource(id = R.drawable.down_arrow),
+//                    contentDescription = "드롭다운 메뉴 열기",
+//                    modifier = Modifier.size(16.dp),
+//                    tint = Color.LightGray
+//
+//                )
+//            },
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
+                focusedContainerColor = Color(0xFFF3F6FF),
+                unfocusedContainerColor = Color(0xFFF3F6FF),
                 focusedPlaceholderColor = Color.Gray,
                 unfocusedPlaceholderColor = Color.LightGray,
                 focusedIndicatorColor = Color.LightGray,
                 unfocusedIndicatorColor = Color.LightGray
             ),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(4.dp)
         )
         ExposedDropdownMenu(
             expanded = isExpanded,

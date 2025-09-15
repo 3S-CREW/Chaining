@@ -86,7 +86,7 @@
     <string name="view_application">View Application></string>
 
     <string name="post_write_title">Write a Post</string>
-    <string name="post_write_enter_title">Enter a title.</string>
+    <string name="post_write_enter_title">Enter a title. (Max 20 characters)</string>
     <string name="post_write_style">Select preferred travel style</string>
     <string name="post_write_location">Select preferred travel region</string>
     <string name="post_write_car">Do you have a car?</string>
@@ -95,7 +95,7 @@
     <string name="post_write_car_two">Yes (2 seats)</string>
     <string name="post_write_no">No</string>
     <string name="post_write_kakao">Enter KakaoTalk open chat link.</string>
-    <string name="post_write">Enter content.</string>
+    <string name="post_write">Enter content. (Max 50 characters)</string>
     <string name="post_write_button">Done</string>
     <string name="post_title">Title</string>
     <string name="post_content">Content</string>

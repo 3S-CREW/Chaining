@@ -83,7 +83,7 @@
     <!--    커뮤니티_모집글 작성 화면 (CreatePostScreen.kt)-->
     <string name="post_write_title">모집글 작성</string>
     <string name="post_writer">작성자</string>
-    <string name="post_write_enter_title">제목을 입력하세요.</string>
+    <string name="post_write_enter_title">제목을 입력하세요. (20자 이내)</string>
     <string name="post_write_style">선호하는 여행 스타일 선택</string>
     <string name="post_write_location">선호하는 여행 지역 선택</string>
     <string name="post_write_car">자차 여부</string>
@@ -92,7 +92,7 @@
     <string name="post_write_car_two">예(2인승)</string>
     <string name="post_write_no">아니요</string>
     <string name="post_write_kakao">카카오톡 오픈 채팅방 링크를 입력하세요.</string>
-    <string name="post_write">내용을 입력하세요.</string>
+    <string name="post_write">내용을 입력하세요. (50자 이내)</string>
     <string name="post_write_button">작성 완료</string>
     <string name="post_title">제목</string>
     <string name="post_content">내용</string>

@@ -23,8 +23,7 @@ fun SaveButton(
         onClick = onSave, // 이제 정상적으로 연결됩니다.
         modifier = modifier
             .fillMaxWidth() // 버튼이 `fillMaxWidth()`가 되도록 수정 (디자인에 따라 조절)
-            .padding(horizontal = 30.dp, vertical = 0.dp) // 좌우 패딩만 유지하고 상하 패딩 제거
-            .height(50.dp),
+            .height(45.dp),
         shape = RoundedCornerShape(30.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4285F4))
     ) {
