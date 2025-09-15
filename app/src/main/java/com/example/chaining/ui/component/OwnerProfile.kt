@@ -41,12 +41,15 @@ fun OwnerProfile(
     userViewModel: UserViewModel = hiltViewModel(),
     // "상세 보기"
     type: String? = "",
-) {
+    showFollowButton: Boolean = false,
+    ) {
     val userState by userViewModel.user.collectAsState()
     val nicknameInfo =
         when (where) {
             "카드뷰" -> 18.sp to 0xFF4A526A
-            "모집글 상세보기" -> 14.sp to 0xFFFFFFFF
+            "모집글 상세보기" -> {
+                if (showFollowButton) 14.sp to 0xFFFFFFFF else 16.sp to 0xFFFFFFFF // 버튼 없으면 폰트 크게
+            }
             "지원서" -> 14.sp to 0xFF4A526A
             else -> 14.sp to 0xFF4A526A
         }
@@ -87,13 +90,16 @@ fun OwnerProfile(
                 fontSize = nicknameInfo.first,
                 color = Color(nicknameInfo.second),
             )
-            Text(
-                text = owner.country,
-                fontSize = countryInfo.first,
-                color = Color(countryInfo.second),
-            )
+            if (where != "모집글 상세보기") {
+                Text(
+                    text = owner.country,
+                    fontSize = countryInfo.first,
+                    color = Color(countryInfo.second),
+                )
+            }
         }
-        if (type == "상세 보기") {
+        if (showFollowButton) {
+            Spacer(modifier = Modifier.width(8.dp))
             Box(
                 modifier =
                     Modifier
