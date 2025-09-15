@@ -47,7 +47,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(Screen.Login.route) {
             LoginScreen(
                 onLoginSuccess = {
-                    navController.navigate("home") {
+                    navController.navigate("mainHome") {
                         popUpTo("login") { inclusive = true }
                     }
                 },
@@ -90,17 +90,17 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
             AdminLoginScreen(
                 onBackClick = { navController.popBackStack() },
                 onAdminLoginSuccess = {
-                    navController.navigate("home") {
+                    navController.navigate("mainHome") {
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 }
             )
         }
-        composable(Screen.Home.route) {
-            HomeScreen(
-                onMainHomeClick = { navController.navigate("mainHome") }
-            )
-        }
+//        composable(Screen.Home.route) {
+//            HomeScreen(
+//                onMainHomeClick = { navController.navigate("mainHome") }
+//            )
+//        }
 
         composable(Screen.MyPage.route) {
             MyPageScreen(

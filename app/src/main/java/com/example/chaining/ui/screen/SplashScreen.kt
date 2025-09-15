@@ -70,7 +70,7 @@ fun SplashScreen(navController: NavController) {
 
         val isLoggedIn = Firebase.auth.currentUser != null
         if (isLoggedIn) {
-            navController.navigate("home") {
+            navController.navigate("mainHome") {
                 popUpTo("splash") { inclusive = true }
             }
         } else {

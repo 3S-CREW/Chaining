@@ -1,6 +1,7 @@
 package com.example.chaining.ui.screen
 
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -204,8 +205,14 @@ fun CreatePostScreen(
             OutlinedTextField(
                 value = title,
                 onValueChange = { if (it.length <= MAX_TITLE_LENGTH) title = it },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text(text = stringResource(id = R.string.post_write_enter_title)) },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.post_write_enter_title),
+                        modifier = Modifier.padding(start = 14.dp)
+                    )
+                },
                 shape = RoundedCornerShape(16.dp),
                 singleLine = true,
                 colors = TextFieldDefaults.colors(
@@ -240,7 +247,8 @@ fun CreatePostScreen(
                 options = travelStyles,
                 placeholderText = stringResource(id = R.string.post_write_style),
                 selectedOption = preferredDestinations,
-                onOptionSelected = { preferredDestinations = it }
+                onOptionSelected = { preferredDestinations = it },
+                leadingIconRes = R.drawable.favorite_spot
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -256,13 +264,15 @@ fun CreatePostScreen(
                 selectedOption = preferredLocations,
                 onOptionSelected = { selectedName ->
                     preferredLocations = selectedName
-                }
+                },
+                leadingIconRes = R.drawable.country
             )
             Spacer(modifier = Modifier.height(16.dp))
 
             // 여행 시작일 선택
             DatePickerFieldToModal(
                 modifier = Modifier.fillMaxWidth(),
+                label = stringResource(id = R.string.post_tour_date),
                 selectedDate = tourAt,
                 onDateSelected = { tourAt = it }
             )
@@ -271,12 +281,14 @@ fun CreatePostScreen(
             // 모집 마감일 선택
             DatePickerFieldToModal(
                 modifier = Modifier.fillMaxWidth(),
+                label = stringResource(id = R.string.post_close_date),
                 selectedDate = closeAt,
                 onDateSelected = { closeAt = it }
             )
             Spacer(modifier = Modifier.height(16.dp))
             SingleDropdown(
                 label = stringResource(id = R.string.post_write_car),
+                leadingIconRes = R.drawable.car,
                 options = listOf(
                     stringResource(id = R.string.post_write_car_six),
                     stringResource(id = R.string.post_write_car_four),
@@ -293,9 +305,13 @@ fun CreatePostScreen(
                 value = kakaoOpenChatUrl,
                 onValueChange = { kakaoOpenChatUrl = it },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                placeholder = { Text(stringResource(id = R.string.post_write_kakao)) },
+                    .fillMaxWidth(),
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.post_write_kakao),
+                        modifier = Modifier.padding(start = 14.dp)
+                    )
+                },
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
@@ -306,7 +322,7 @@ fun CreatePostScreen(
                     unfocusedIndicatorColor = Color.LightGray
                 )
             )
-            Spacer(modifier = Modifier.height(36.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             // 내용 입력창
             OutlinedTextField(
@@ -315,7 +331,12 @@ fun CreatePostScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp),
-                placeholder = { Text(stringResource(id = R.string.post_write)) },
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.post_write),
+                        modifier = Modifier.padding(start = 14.dp)
+                    )
+                },
                 shape = RoundedCornerShape(16.dp),
                 supportingText = {
                     Text(
@@ -404,36 +425,57 @@ fun CreatePostScreen(
 @Composable
 fun SingleDropdown(
     label: String,
+    @DrawableRes leadingIconRes: Int,
     options: List<String>,
     selectedOption: String,
     onOptionSelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var displayText by remember { mutableStateOf(selectedOption) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded }
     ) {
         OutlinedTextField(
-            value = displayText,
+            value = selectedOption,
             onValueChange = {},
             readOnly = true,
-            label = { Text(label) },
+            label = {
+                Text(
+                    text = label,
+                    fontSize = 14.sp
+                )
+            },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = leadingIconRes),
+                    contentDescription = label,
+                    tint = Color(0xFF4285F4)
+                )
+            },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             modifier = Modifier
                 .fillMaxWidth()
-                .menuAnchor() // 중요: 메뉴 위치 잡아줌
+                .menuAnchor(),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color(0xFFF3F6FF),
+                unfocusedContainerColor = Color(0xFFF3F6FF),
+                focusedPlaceholderColor = Color.Gray,
+                unfocusedPlaceholderColor = Color.LightGray,
+                focusedIndicatorColor = Color.LightGray,
+                unfocusedIndicatorColor = Color.LightGray
+            ),
+            shape = RoundedCornerShape(4.dp)
         )
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(Color.White)
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
                     text = { Text(option) },
                     onClick = {
-                        displayText = option // TextField에 바로 반영
                         onOptionSelected(option) // 부모 상태 반영
                         expanded = false
                     }
@@ -450,7 +492,8 @@ fun PreferenceSelector(
     options: List<String>,
     placeholderText: String,
     selectedOption: String,
-    onOptionSelected: (String) -> Unit
+    onOptionSelected: (String) -> Unit,
+    @DrawableRes leadingIconRes: Int
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -466,31 +509,33 @@ fun PreferenceSelector(
             value = selectedOption,
             onValueChange = {},
             placeholder = { Text(placeholderText) },
+            label = { Text(placeholderText) },
             leadingIcon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.favorite_spot),
+                    painter = painterResource(id = leadingIconRes),
                     contentDescription = null,
                     tint = Color(0xFF4285F4)
                 )
             },
-            trailingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.down_arrow),
-                    contentDescription = "드롭다운 메뉴 열기",
-                    modifier = Modifier.size(16.dp),
-                    tint = Color.LightGray
-
-                )
-            },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
+//            trailingIcon = {
+//                Icon(
+//                    painter = painterResource(id = R.drawable.down_arrow),
+//                    contentDescription = "드롭다운 메뉴 열기",
+//                    modifier = Modifier.size(16.dp),
+//                    tint = Color.LightGray
+//
+//                )
+//            },
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
+                focusedContainerColor = Color(0xFFF3F6FF),
+                unfocusedContainerColor = Color(0xFFF3F6FF),
                 focusedPlaceholderColor = Color.Gray,
                 unfocusedPlaceholderColor = Color.LightGray,
                 focusedIndicatorColor = Color.LightGray,
                 unfocusedIndicatorColor = Color.LightGray
             ),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(4.dp)
         )
         ExposedDropdownMenu(
             expanded = isExpanded,

@@ -43,6 +43,7 @@ import java.util.Locale
 @Composable
 fun DatePickerFieldToModal(
     modifier: Modifier = Modifier,
+    label: String,
     selectedDate: Long?,
     onDateSelected: (Long?) -> Unit
 ) {
@@ -72,7 +73,7 @@ fun DatePickerFieldToModal(
         ) {
             Column {
                 Text(
-                    text = "DOB",
+                    text = label,
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
@@ -92,7 +93,7 @@ fun DatePickerFieldToModal(
 
             Icon(
                 imageVector = Icons.Default.DateRange,
-                contentDescription = "Select date",
+                contentDescription = stringResource(id = R.string.datepicker_icon_description),
                 tint = Color(0xFF4285F4),
                 modifier = Modifier.size(24.dp)
             )
@@ -134,7 +135,7 @@ fun DatePickerModal(
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("취소", color = Color(0xFF637387))
+                Text(text = stringResource(id = R.string.mypage_cancel), color = Color(0xFF637387))
             }
         },
     ) {
