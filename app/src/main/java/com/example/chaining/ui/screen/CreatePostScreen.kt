@@ -1,6 +1,7 @@
 package com.example.chaining.ui.screen
 
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -240,7 +241,8 @@ fun CreatePostScreen(
                 options = travelStyles,
                 placeholderText = stringResource(id = R.string.post_write_style),
                 selectedOption = preferredDestinations,
-                onOptionSelected = { preferredDestinations = it }
+                onOptionSelected = { preferredDestinations = it },
+                leadingIconRes = R.drawable.favorite_spot
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -256,13 +258,15 @@ fun CreatePostScreen(
                 selectedOption = preferredLocations,
                 onOptionSelected = { selectedName ->
                     preferredLocations = selectedName
-                }
+                },
+                leadingIconRes = R.drawable.country
             )
             Spacer(modifier = Modifier.height(16.dp))
 
             // 여행 시작일 선택
             DatePickerFieldToModal(
                 modifier = Modifier.fillMaxWidth(),
+                label = stringResource(id = R.string.post_tour_date),
                 selectedDate = tourAt,
                 onDateSelected = { tourAt = it }
             )
@@ -271,6 +275,7 @@ fun CreatePostScreen(
             // 모집 마감일 선택
             DatePickerFieldToModal(
                 modifier = Modifier.fillMaxWidth(),
+                label = stringResource(id = R.string.post_close_date),
                 selectedDate = closeAt,
                 onDateSelected = { closeAt = it }
             )
@@ -409,31 +414,35 @@ fun SingleDropdown(
     onOptionSelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var displayText by remember { mutableStateOf(selectedOption) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded }
     ) {
         OutlinedTextField(
-            value = displayText,
+            value = selectedOption,
             onValueChange = {},
             readOnly = true,
-            label = { Text(label) },
+            label = {
+                Text(
+                    text = label,
+                    fontSize = 14.sp
+                )
+            },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             modifier = Modifier
                 .fillMaxWidth()
-                .menuAnchor() // 중요: 메뉴 위치 잡아줌
+                .menuAnchor()
         )
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(Color.White)
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
                     text = { Text(option) },
                     onClick = {
-                        displayText = option // TextField에 바로 반영
                         onOptionSelected(option) // 부모 상태 반영
                         expanded = false
                     }
@@ -450,7 +459,8 @@ fun PreferenceSelector(
     options: List<String>,
     placeholderText: String,
     selectedOption: String,
-    onOptionSelected: (String) -> Unit
+    onOptionSelected: (String) -> Unit,
+    @DrawableRes leadingIconRes: Int
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -468,7 +478,7 @@ fun PreferenceSelector(
             placeholder = { Text(placeholderText) },
             leadingIcon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.favorite_spot),
+                    painter = painterResource(id = leadingIconRes),
                     contentDescription = null,
                     tint = Color(0xFF4285F4)
                 )

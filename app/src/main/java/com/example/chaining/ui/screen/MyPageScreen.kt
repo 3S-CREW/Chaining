@@ -41,8 +41,10 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -64,6 +66,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.chaining.R
@@ -511,126 +514,77 @@ fun DropDownField(
     onItemSelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val rotation by animateFloatAsState(
-        targetValue = if (expanded) 180f else 0f,
-        animationSpec = tween(durationMillis = 300), label = "dropdownArrowRotation"
-    )
-
-    Column(modifier = Modifier.fillMaxWidth()) {
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded },
+    // FilterDropdown의 구조와 로직을 가져와 스타일만 MyPage에 맞게 수정
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+    ) {
+        OutlinedTextField( // OutlinedTextField로 통일하되, 색상/테두리 조절로 기존 TextField처럼 보이게 함
+            value = if (selectedItem.isEmpty()) placeholder else selectedItem,
+            onValueChange = {},
+            readOnly = true,
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                fontWeight = FontWeight.Medium,
+                color = if (selectedItem.isEmpty()) Color.Gray else SecondaryTextColor
+            ),
+            label = { Text(placeholder, style = MaterialTheme.typography.labelSmall, fontSize = 14.sp) },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = leadingIconRes),
+                    contentDescription = null,
+                    tint = SecondaryTextColor,
+                    modifier = Modifier.size(24.dp)
+                )
+            },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                // 배경색은 투명하게 유지
+                focusedContainerColor = White,
+                unfocusedContainerColor = White,
+                // 테두리 색상 지정
+                focusedBorderColor = PrimaryBlue,
+                unfocusedBorderColor = BorderColor
+            ),
+            shape = RoundedCornerShape(4.dp),
             modifier = Modifier
+                .menuAnchor()
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .background(LightGrayBackground)
-                .border(
-                    width = 1.dp,
-                    color = BorderColor,
-                    shape = RoundedCornerShape(12.dp)
-                )
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(White)
         ) {
-            Crossfade(
-                targetState = if (selectedItem.isEmpty()) placeholder else selectedItem,
-                animationSpec = tween(300),
-                label = "dropdownCrossfade"
-            ) { animatedItem ->
-                TextField(
-                    value = animatedItem,
-                    onValueChange = { },
-                    readOnly = true,
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Medium,
-                        color = SecondaryTextColor
-                    ),
-                    label = {
-                        Text(
-                            placeholder,
-                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Normal),
-                            color = Color.Gray,
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = leadingIconRes),
-                            contentDescription = null,
-                            tint = SecondaryTextColor,
-                            modifier = Modifier
-                                .size(24.dp)
-                        )
-                    },
-                    trailingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.triangle_arrow),
-                            contentDescription = null,
-                            tint = SecondaryTextColor,
-                            modifier = Modifier
-                                .size(20.dp)
-                                .rotate(rotation)
-                        )
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedTextColor = Black,
-                        unfocusedTextColor = Black,
-                        disabledTextColor = Black,
-                        focusedContainerColor = LightGrayBackground,
-                        unfocusedContainerColor = LightGrayBackground,
-                        disabledContainerColor = LightGrayBackground,
-                        cursorColor = PrimaryBlue,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        focusedLabelColor = PrimaryBlue,
-                        unfocusedLabelColor = Color.Gray
-                    ),
-                    modifier = Modifier
-                        .menuAnchor()
-                        .fillMaxWidth()
-                )
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier
-                        .exposedDropdownSize()
-                        .background(White, RoundedCornerShape(8.dp))
-                        .border(1.dp, BorderColor, RoundedCornerShape(8.dp))
-                ) {
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = placeholder,
-                                color = Color.Gray,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        },
-                        onClick = {
-                            expanded = false
-                            onItemSelected("")
-                        }
-                    )
-
-                    items.forEach { c ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = c,
-                                    color = Black,
-                                    fontWeight = if (c == selectedItem) FontWeight.Bold else FontWeight.Normal,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            },
-                            onClick = {
-                                expanded = false
-                                onItemSelected(c)
-                            }
-                        )
-                    }
+            // "선택 안 함" 옵션 추가 (값을 비우는 기능)
+            DropdownMenuItem(
+                text = { Text(placeholder, color = Color.Gray) },
+                onClick = {
+                    onItemSelected("") // 빈 문자열을 전달하여 선택 해제
+                    expanded = false
                 }
+            )
+            items.forEach { item ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = item,
+                            fontWeight = if (item == selectedItem) FontWeight.Bold else FontWeight.Normal
+                        )
+                    },
+                    onClick = {
+                        onItemSelected(item)
+                        expanded = false
+                    }
+                )
             }
         }
     }
 }
+
 
 private fun getFileSize(context: Context, uri: Uri): Long {
     val cursor = context.contentResolver.query(uri, null, null, null, null)
