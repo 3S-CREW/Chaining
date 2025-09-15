@@ -27,3 +27,13 @@ subprojects {
         }
     }
 }
+
+tasks.register("fixParameterComments") {
+    doLast {
+        fileTree("src").matching { include("**/*.kt") }.forEach { file ->
+            val text = file.readText()
+                .replace(Regex(",\\s*//(.*)"), ",\n    //\\1")
+            file.writeText(text)
+        }
+    }
+}

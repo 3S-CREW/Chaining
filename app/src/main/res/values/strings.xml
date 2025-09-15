@@ -1,3 +1,240 @@
 <resources>
     <string name="app_name">Chaining</string>
+    <!--    로그인 화면-->
+    <string name="login_title">로그인</string>
+    <string name="login_button">Google 계정으로 로그인</string>
+    <string name="login_in_progress">로그인 중...</string>
+    <string name="login_admin_button">관리자 로그인</string>
+    <!--    메인 홈 화면-->
+    <string name="welcome_message">%1$s님 반갑습니다.</string>
+    <string name="recent_apply">최근 접수된 지원서</string>
+    <string name="no_recent_apply">최근 지원서가 없습니다.</string>
+    <string name="recent_follow">최근 팔로우 목록</string>
+    <string name="follow_message">%1$s님께서 팔로우를 하셨습니다.</string>
+    <string name="view_application">지원서 보기></string>
+    <!--    커뮤니티 화면-->
+    <string name="community_title">커뮤니티</string>
+    <string name="community_write_post">게시글 작성</string>
+    <string name="community_refresh">새로고침</string>
+    <string name="community_no_posts">등록된 게시글이 없습니다.</string>
+    <string name="community_see_post">모집글 보기 ></string>
+    <string name="community_apply_button">신청</string>
+    <string name="community_interest_button">관심</string>
+    <string name="community_no_title">제목 없음</string>
+    <string name="time_left_recruit">모집 마감까지 %1$s 남음</string>
+    <string name="community_unknown">알 수 없음</string>
+    <string name="time_closed">마감됨</string>
+    <plurals name="time_unit_days">
+        <item quantity="other">%d일</item>
+    </plurals>
+    <plurals name="time_unit_hours">
+        <item quantity="other">%d시간</item>
+    </plurals>
+    <plurals name="time_unit_minutes">
+        <item quantity="other">%d분</item>
+    </plurals>
+    <!--    지원서 화면-->
+    <string name="time_left_application">수락/거절까지 %1$s 남음</string>
+    <string name="application_yes">수락</string>
+    <string name="application_no">거절</string>
+    <string name="application_submit_success">지원서가 성공적으로 제출되었습니다.</string>
+    <string name="application_submit_failed">지원서 제출에 실패했습니다.</string>
+    <string name="application_intro_blank">자기소개를 입력해주세요.</string>
+    <!--    커뮤니티_필터링-->
+    <string name="filter_title">모집 글 필터 설정</string>
+    <string name="filter_close_button_desc">닫기</string>
+    <string name="filter_apply_button">필터 적용</string>
+    <string name="filter_reset_button">초기화</string>
+    <string name="filter_option_none">선택 안 함</string>
+    <string name="choose">선택</string>
+    <string name="filter_option_any">상관 없음</string>
+    <string name="filter_placeholder_travel_style">여행지 스타일</string>
+    <string name="travel_style_mountain">산</string>
+    <string name="travel_style_sea">바다</string>
+    <string name="travel_style_city">도시</string>
+    <string name="travel_style_activity">액티비티</string>
+    <string name="travel_style_rest">휴양</string>
+    <string name="travel_style_culture">문화/예술</string>
+    <string name="filter_placeholder_travel_location">여행지</string>
+    <string name="location_gangwon">강원특별자치도</string>
+    <string name="location_gyeonggi">경기도</string>
+    <string name="location_gyeongnam">경상남도</string>
+    <string name="location_gyeongbuk">경상북도</string>
+    <string name="location_gwangju">광주광역시</string>
+    <string name="location_daegu">대구광역시</string>
+    <string name="location_daejeon">대전광역시</string>
+    <string name="location_busan">부산광역시</string>
+    <string name="location_seoul">서울특별시</string>
+    <string name="location_ulsan">울산광역시</string>
+    <string name="location_incheon">인천광역시</string>
+    <string name="location_jeonnam">전라남도</string>
+    <string name="location_jeonbuk">전북특별자치도</string>
+    <string name="location_jeju">제주특별자치도</string>
+    <string name="location_chungnam">충청남도</string>
+    <string name="location_chungbuk">충청북도</string>
+    <string name="filter_placeholder_language">언어</string>
+    <string name="language_korean">한국어</string>
+    <string name="language_english">영어</string>
+    <string name="filter_placeholder_language_level">언어 레벨</string>
+    <string name="filter_placeholder_sort_by">정렬 방식</string>
+    <string name="sort_by_latest">최신순</string>
+    <string name="sort_by_deadline">마감순</string>
+    <string name="sort_by_interest">관심순</string>
+    <!--    커뮤니티_모집글 작성 화면 (CreatePostScreen.kt)-->
+    <string name="post_write_title">모집글 작성</string>
+    <string name="post_writer">작성자</string>
+    <string name="post_write_enter_title">제목을 입력하세요. (20자 이내)</string>
+    <string name="post_write_style">선호하는 여행 스타일 선택</string>
+    <string name="post_write_location">선호하는 여행 지역 선택</string>
+    <string name="post_write_car">자차 여부</string>
+    <string name="post_write_car_six">예(6인승 이상)</string>
+    <string name="post_write_car_four">예(4인승)</string>
+    <string name="post_write_car_two">예(2인승)</string>
+    <string name="post_write_no">아니요</string>
+    <string name="post_write_kakao">카카오톡 오픈 채팅방 링크를 입력하세요.</string>
+    <string name="post_write">내용을 입력하세요. (50자 이내)</string>
+    <string name="post_write_button">작성 완료</string>
+    <string name="post_title">제목</string>
+    <string name="post_content">내용</string>
+    <string name="post_travel_style">선호 여행지 스타일</string>
+    <string name="post_location">선호 여행지/장소</string>
+    <string name="post_tour_date">여행 시작일</string>
+    <string name="post_close_date">모집 마감일</string>
+    <string name="post_car">자차 여부</string>
+    <string name="post_language">선호 언어</string>
+    <string name="post_kakao_link">카카오톡 오픈채팅 링크</string>
+    <string name="post_please_enter">다음 항목을 입력해주세요: %1$s</string>
+    <string name="post_invalid_kakao_link">오픈채팅 링크는 \'https://open.kakao.com/o/\' 형식이어야 합니다.</string>
+    <string name="post_creation_success">게시글이 등록되었습니다.</string>
+    <string name="post_creation_failed">게시글 등록에 실패했습니다: %1$s</string>
+    <string name="unknown_error">알 수 없는 오류가 발생했습니다.</string>
+    <string name="datepicker_icon_description">날짜 선택</string>
+    <!--    커뮤니티_모집글 보기 화면-->
+    <string name="post_style">선호 여행지 스타일</string>
+    <string name="post_date">여행 일자</string>
+    <string name="post_finish">모집 마감일</string>
+    <string name="post_lang">선호하는 언어</string>
+    <string name="post_lang_level">선호하는 언어 수준</string>
+    <string name="post_button">신청</string>
+    <string name="post_edit">수정</string>
+    <string name="post_look">보기</string>
+    <string name="post_application">내 모집글 지원서</string>
+    <string name="post_edit_button">수정 완료</string>
+    <!--    커뮤니티_신청서 작성 화면 (JoinPostScreen.kt)-->
+    <string name="apply_title">신청서 작성</string>
+    <string name="apply_intro">자기소개</string>
+    <string name="apply_write">내용을 입력하세요.</string>
+    <string name="apply_text_one">모집자가 수락하면 카카오톡 오픈 채팅 링크가 전달됩니다.</string>
+    <string name="apply_text_two">[내 지원서 보기]를 통해 최신 프로필로 업데이트 되어있는지 확인하세요.</string>
+    <string name="apply_mine">내 지원서 보기</string>
+    <string name="apply_button">신청완료</string>
+    <!--    피드 화면-->
+    <string name="feed_title">피드</string>
+    <string name="feed_item_region_place">%1$s에 위치한 %2$s</string>
+    <string name="feed_item_address">주소: %1$s</string>
+    <!--    알림 화면 (NotificationScreen.kt)-->
+    <string name="alarm_title">알림</string>
+    <string name="alarm_follow">팔로우</string>
+    <string name="alarm_apply">지원서</string>
+    <string name="alarm_follow_text">님께서 팔로우를 하셨습니다.</string>
+    <string name="alarm_apply_text">님께서 지원하셨습니다.</string>
+    <string name="alarm_follow_text_two">팔로우가 없습니다.</string>
+    <string name="alarm_apply_text_two">알림이 없습니다.</string>
+    <!--    마이페이지 화면 (MypageScreen.kt)-->
+    <string name="mypage_info">기본 정보</string>
+    <string name="mypage_nick_change">닉네임 변경</string>
+    <string name="mypage_new_nick">새 닉네임</string>
+    <string name="mypage_cancel">취소</string>
+    <string name="mypage_change">변경</string>
+    <string name="mypage_follower">팔로워</string>
+    <string name="mypage_follow">팔로우</string>
+    <string name="mypage_country">출신 국가 선택</string>
+    <string name="mypage_location">현재 거주지 선택</string>
+    <string name="mypage_prefstyle">선호 여행지 스타일 선택</string>
+    <string name="mypage_quiz">언어 능력 테스트</string>
+    <string name="mypage_quiz_result">언어 능력 테스트 및 결과 확인</string>
+    <string name="mypage_post">모집 현황</string>
+    <string name="mypage_apply">지원 현황</string>
+    <string name="mypage_logout">로그아웃</string>
+    <string name="mypage_profile_save">프로필 저장</string>
+    <string name="mypage_kr">한국</string>
+    <string name="mypage_us">미국</string>
+    <string name="mypage_jp">일본</string>
+    <string name="mypage_cn">중국</string>
+    <string name="mypage_uk">영국</string>
+    <string name="mypage_gm">독일</string>
+    <string name="mypage_fr">프랑스</string>
+    <string name="mypage_korean">한국어</string>
+    <string name="mypage_english">영어</string>
+    <string name="mypage_quiz_incomplete">퀴즈 미응시</string>
+    <string name="mypage_quiz_complete">퀴즈 응시</string>
+    <string name="mypage_quiz_start">응시하기</string>
+    <string name="mypage_quiz_status">언어 테스트 현황</string>
+    <string name="mypage_quiz_retry">재응시</string>
+    <string name="mypage_follower_info">팔로워 %1$s · 팔로우 %2$s</string>
+    <string name="mypage_no_nickname">닉네임 없음</string>
+    <string name="mypage_edit_nickname">닉네임 수정</string>
+    <string name="mypage_select_image_under_2mb">2MB 이하 이미지를 선택해주세요.</string>
+    <string name="mypage_login_required">로그인이 필요합니다.</string>
+    <string name="mypage_profile_image_changed">프로필 이미지가 변경되었습니다.</string>
+    <string name="mypage_image_upload_failed">이미지 업로드 실패: %1$s</string>
+    <string name="mypage_profile_save_success">프로필이 저장되었습니다.</string>
+    <string name="mypage_profile_save_button">저장</string>
+    <string name="mypage_select_placeholder">항목을 선택해주세요.</string>
+    <string name="validation_select_fields">%1$s 항목을 선택해주세요.</string>
+    <string name="error_nickname_blank">닉네임을 입력해주세요.</string>
+    <string name="error_nickname_pattern">닉네임은 한글, 영어, 숫자만 사용할 수 있습니다. (공백 제외)</string>
+    <string name="error_nickname_length">닉네임은 한글 6자 또는 영문/숫자 12자 이내로 제한됩니다.</string>
+    <!--    마이페이지_내 모집글 (MyPostScreen.kt)-->
+    <string name="mypost_title">내 모집글 보기</string>
+    <string name="mypost_all_post">전체 글 보기</string>
+    <string name="mypost_filter_open">마감되지 않은 글만 보기</string>
+    <string name="mypost_nothing">등록된 모집글이 없습니다.</string>
+    <!--    마이페이지_지원 현황 (ApplicationScreen.kt)-->
+    <string name="myapply_title">내 지원서</string>
+    <string name="myapply_all_post">전체 지원서 보기</string>
+    <string name="myapply_filter_open">지원서 결과 보기</string>
+    <string name="myapply_nothing">등록된 지원서가 없습니다.</string>
+
+
+    <string name="terms_agreement_required">서비스 이용을 위해 약관 동의가 필요합니다.</string>
+    <string name="agree_and_start">동의하고 시작하기</string>
+    <string name="terms_of_service_title">서비스 이용약관</string>
+    <string name="agree_all">전체 동의</string>
+    <string name="agree_terms_of_service_required">[필수] 서비스 이용약관 동의</string>
+    <string name="agree_privacy_policy_required">[필수] 개인정보 처리방침 동의</string>
+    <string name="fail_to_sign_up">회원가입 취소에 실패했습니다.</string>
+
+
+    <!-- Full Terms of Service Content -->
+    <string name="terms_of_service_content">
+    제1조 (목적)
+    본 약관은 Chaining(이하 "앱")이 제공하는 모든 서비스의 이용 조건 및 절차, 회원과 앱의 권리, 의무, 책임사항과 기타 필요한 사항을 규정함을 목적으로 합니다.
+
+    제2조 (용어의 정의)
+    본 약관에서 사용하는 용어의 정의는 다음과 같습니다.
+    1. "서비스"라 함은 구현되는 단말기와 상관없이 회원이 이용할 수 있는 Chaining 및 관련 제반 서비스를 의미합니다.
+    2. "회원"이라 함은 앱의 서비스에 접속하여 본 약관에 따라 앱과 이용계약을 체결하고 앱이 제공하는 서비스를 이용하는 고객을 말합니다.
+
+    제3조 (약관의 효력과 변경)
+    1. 본 약관은 서비스를 이용하고자 하는 모든 회원에 대하여 그 효력을 발생합니다.
+    2. 앱은 필요한 경우, 관련 법령을 위배하지 않는 범위 내에서 본 약관을 개정할 수 있습니다.
+    </string>
+
+    <!-- Full Privacy Policy Content -->
+    <string name="privacy_policy_content">
+    Chaining(이하 "앱")은 개인정보보호법 등 관련 법령상의 개인정보보호 규정을 준수하며, 관련 법령에 의거한 개인정보처리방침을 정하여 이용자 권익 보호에 최선을 다하고 있습니다.
+
+    1. 수집하는 개인정보의 항목
+    앱은 회원가입, 원활한 고객상담, 각종 서비스의 제공을 위해 최초 회원가입 당시 아래와 같은 개인정보를 수집하고 있습니다.
+    - 필수항목 : 구글 계정 정보(UID, 닉네임, 이메일 주소)
+
+    2. 개인정보의 수집 및 이용목적
+    앱은 수집한 개인정보를 다음의 목적을 위해 활용합니다.
+    - 서비스 제공에 관한 계약 이행 및 서비스 제공에 따른 요금정산
+    - 회원 관리: 회원제 서비스 이용에 따른 본인확인, 개인 식별
+
+    3. 개인정보의 보유 및 이용기간
+    이용자의 개인정보는 원칙적으로 개인정보의 수집 및 이용목적이 달성되면 지체 없이 파기합니다.
+    </string>
 </resources>
