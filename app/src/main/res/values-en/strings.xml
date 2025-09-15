@@ -111,6 +111,7 @@
     <string name="post_creation_success">Post created successfully.</string>
     <string name="post_creation_failed">Failed to create post: %1$s</string>
     <string name="unknown_error">An unknown error occurred.</string>
+    <string name="datepicker_icon_description">Select date</string>
 
     <string name="post_style">Preferred Travel Style</string>
     <string name="post_date">Travel Date</string>
