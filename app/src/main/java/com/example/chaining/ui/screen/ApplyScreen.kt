@@ -59,15 +59,17 @@ import com.example.chaining.viewmodel.UserViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Suppress("FunctionName")
 @Composable
 fun ApplyScreen(
     onBackClick: () -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel(),
-    type: String, // My, Owner
+    // My, Owner
+    type: String,
     applicationId: String,
     applicationViewModel: ApplicationViewModel = hiltViewModel(),
     postViewModel: RecruitPostViewModel = hiltViewModel(),
-    onNavigateHome: () -> Unit? = {}
+    onNavigateHome: () -> Unit? = {},
 ) {
     val userState by userViewModel.user.collectAsState()
     val application by applicationViewModel.application.collectAsState()
@@ -106,79 +108,87 @@ fun ApplyScreen(
         // 상단바 배경색을 직접 파란색으로 지정
         topBar = {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp) // 상단바의 기본 높이
-                    .background(Color(0xFF4285F4)),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        // 상단바의 기본 높이
+                        .height(64.dp)
+                        .background(Color(0xFF4285F4)),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "뒤로 가기",
                         modifier = Modifier.size(20.dp),
-                        tint = Color.White
+                        tint = Color.White,
                     )
                 }
 
                 Text(
-                    text = if (type == "Owner") {
-                        stringResource(id = R.string.view_application)
-                    } else {
-                        stringResource(id = R.string.apply_mine)
-                    },
+                    text =
+                        if (type == "Owner") {
+                            stringResource(id = R.string.view_application)
+                        } else {
+                            stringResource(id = R.string.apply_mine)
+                        },
                     fontSize = 20.sp,
                     color = Color.White,
                     modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
                 // 제목을 완벽한 중앙에 맞추기 위한 빈 공간
                 Spacer(modifier = Modifier.width(48.dp))
             }
         },
         // 전체 기본 배경은 흰색으로 둡니다.
-        containerColor = Color.White
+        containerColor = Color.White,
     ) { innerPadding ->
         // Box를 사용해 파란 헤더와 흰색 콘텐츠를 겹치게 합니다.
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
         ) {
             // 곡선 효과가 있는 파란색 헤더
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .clip(RoundedCornerShape(bottomEndPercent = 50))
-                    .background(Color(0xFF4285F4))
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .clip(RoundedCornerShape(bottomEndPercent = 50))
+                        .background(Color(0xFF4285F4)),
             ) {
                 // 타이머 텍스트를 담을 Column 추가
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp), // 상단바와의 간격
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            // 상단바와의 간격
+                            .padding(top = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
                         text = "수락/거절까지",
                         color = Color.White.copy(alpha = 0.8f),
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
                     )
                     Text(
                         text = "12시간 30분 남음",
                         color = Color.White,
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 }
             }
 
             // 스크롤되는 흰색 콘텐츠 영역
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
             ) {
                 // 프로필 사진에 내용이 가려지지 않도록 공간 확보
                 Spacer(modifier = Modifier.height(200.dp))
@@ -186,24 +196,24 @@ fun ApplyScreen(
                 // 상세 정보 콘텐츠 추가
                 Column(
                     modifier = Modifier.padding(horizontal = 50.dp),
-                    horizontalAlignment = Alignment.Start
+                    horizontalAlignment = Alignment.Start,
                 ) {
                     Text(
                         text =
-                        application?.applicant?.nickname
-                            ?: stringResource(id = R.string.community_unknown),
+                            application?.applicant?.nickname
+                                ?: stringResource(id = R.string.community_unknown),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF4A526A)
+                        color = Color(0xFF4A526A),
                     )
                     Text(
                         text =
-                        application?.applicant?.country
-                            ?: stringResource(id = R.string.community_unknown),
+                            application?.applicant?.country
+                                ?: stringResource(id = R.string.community_unknown),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF7282B4),
-                        modifier = Modifier.padding(top = 4.dp)
+                        modifier = Modifier.padding(top = 4.dp),
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -211,7 +221,8 @@ fun ApplyScreen(
                     // 언어 수준
                     Column(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.Start // 이 부분만 왼쪽 정렬
+                        // 이 부분만 왼쪽 정렬
+                        horizontalAlignment = Alignment.Start,
                     ) {
                         Text(
 //                            text = if (type == "Owner") {
@@ -224,7 +235,7 @@ fun ApplyScreen(
 //                                } / 10"
 //                            },
                             text = stringResource(id = R.string.community_unknown),
-                            color = Color(0xFF4A526A)
+                            color = Color(0xFF4A526A),
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -238,7 +249,7 @@ fun ApplyScreen(
 //                                } / 10"
 //                            },
                             text = stringResource(id = R.string.community_unknown),
-                            color = Color(0xFF4A526A)
+                            color = Color(0xFF4A526A),
                         )
                     }
 
@@ -247,19 +258,19 @@ fun ApplyScreen(
                     // 자기 소개
                     Column(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.Start
+                        horizontalAlignment = Alignment.Start,
                     ) {
                         Text(
                             text = "자기소개:",
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF7282B4)
+                            color = Color(0xFF7282B4),
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text =
-                            application?.introduction
-                                ?: stringResource(id = R.string.community_unknown),
-                            color = Color(0xFF4A526A)
+                                application?.introduction
+                                    ?: stringResource(id = R.string.community_unknown),
+                            color = Color(0xFF4A526A),
                         )
                     }
 
@@ -273,19 +284,21 @@ fun ApplyScreen(
                                     application?.let { apply ->
                                         applicationViewModel.updateStatus(
                                             application = apply,
-                                            value = "승인"
+                                            value = "승인",
                                         )
                                     }
                                 },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .height(50.dp)
-                                    .width(200.dp),
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .height(50.dp)
+                                        .width(200.dp),
                                 shape = RoundedCornerShape(20.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF2C80FF),
-                                    contentColor = Color.White
-                                )
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFF2C80FF),
+                                        contentColor = Color.White,
+                                    ),
                             ) {
                                 Text("승인", fontSize = 16.sp)
                             }
@@ -296,70 +309,79 @@ fun ApplyScreen(
                                     application?.let { apply ->
                                         applicationViewModel.updateStatus(
                                             application = apply,
-                                            value = "거절"
+                                            value = "거절",
                                         )
                                     }
                                 },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .height(50.dp)
-                                    .width(120.dp),
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .height(50.dp)
+                                        .width(120.dp),
                                 shape = RoundedCornerShape(20.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFFF0F2F5),
-                                    contentColor = Color.DarkGray
-                                )
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFFF0F2F5),
+                                        contentColor = Color.DarkGray,
+                                    ),
                             ) {
                                 Text("거절", fontSize = 16.sp)
                             }
                         }
-
-
                     } else {
                         // 결과 버튼
                         Button(
                             onClick = { showResultDialog = true },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(50.dp),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
                             shape = RoundedCornerShape(20.dp),
                             enabled = application?.status != "PENDING",
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (application?.status == "PENDING") Color(
-                                    0xFFF0F2F5
-                                ) else Color(0xFF2C80FF),
-                                contentColor = Color.White
-                            )
+                            colors =
+                                ButtonDefaults.buttonColors(
+                                    containerColor =
+                                        if (application?.status == "PENDING") {
+                                            Color(
+                                                0xFFF0F2F5,
+                                            )
+                                        } else {
+                                            Color(0xFF2C80FF)
+                                        },
+                                    contentColor = Color.White,
+                                ),
                         ) {
                             Text("결과 보기", fontSize = 16.sp)
                         }
-
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp)) // 하단 네비게이션 바와의 간격
+                    // 하단 네비게이션 바와의 간격
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
-            // **결과 모달(Dialog)**
+            // 결과 모달(Dialog)
             if (showResultDialog) {
                 AlertDialog(
                     onDismissRequest = { showResultDialog = false },
                     title = {
                         Text(
-                            text = when (application?.status) {
-                                "승인" -> "축하합니다! 🎉"
-                                "거절" -> "아쉽지만 다음 기회에!"
-                                else -> "결과 대기 중"
-                            },
-                            fontWeight = FontWeight.Bold
+                            text =
+                                when (application?.status) {
+                                    "승인" -> "축하합니다! 🎉"
+                                    "거절" -> "아쉽지만 다음 기회에!"
+                                    else -> "결과 대기 중"
+                                },
+                            fontWeight = FontWeight.Bold,
                         )
                     },
                     text = {
                         Text(
-                            text = when (application?.status) {
-                                "승인" -> "지원하신 모집에 합격하셨습니다.\n카카오 오픈채팅으로 바로 이동할 수 있어요."
-                                "거절" -> "아쉽게도 이번에는 합격하지 못했어요.\n다른 멋진 모집글을 찾아보세요!"
-                                else -> "결과가 아직 나오지 않았습니다."
-                            }
+                            text =
+                                when (application?.status) {
+                                    "승인" -> "지원하신 모집에 합격하셨습니다.\n카카오 오픈채팅으로 바로 이동할 수 있어요."
+                                    "거절" -> "아쉽게도 이번에는 합격하지 못했어요.\n다른 멋진 모집글을 찾아보세요!"
+                                    else -> "결과가 아직 나오지 않았습니다."
+                                },
                         )
                     },
                     confirmButton = {
@@ -379,10 +401,10 @@ fun ApplyScreen(
                                             Toast.makeText(
                                                 context,
                                                 "카카오 오픈채팅 URL이 존재하지 않습니다.",
-                                                Toast.LENGTH_SHORT
+                                                Toast.LENGTH_SHORT,
                                             ).show()
                                         }
-                                    }
+                                    },
                                 ) {
                                     Text("카카오톡 오픈채팅으로 이동")
                                 }
@@ -393,7 +415,7 @@ fun ApplyScreen(
                                     onClick = {
                                         showResultDialog = false
                                         onNavigateHome()
-                                    }
+                                    },
                                 ) {
                                     Text("다른 모집글 보러가기")
                                 }
@@ -410,61 +432,66 @@ fun ApplyScreen(
                         TextButton(onClick = { showResultDialog = false }) {
                             Text("닫기")
                         }
-                    }
+                    },
                 )
             }
             Row(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(top = 100.dp, start = 60.dp),
-                verticalAlignment = Alignment.Bottom
+                modifier =
+                    Modifier
+                        .align(Alignment.TopStart)
+                        .padding(top = 100.dp, start = 60.dp),
+                verticalAlignment = Alignment.Bottom,
             ) {
                 // 프로필 사진
                 AsyncImage(
                     model = application?.applicant?.profileImageUrl,
                     contentDescription = "프로필 사진",
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(RoundedCornerShape(20.dp))
-                        .border(3.dp, Color.White, RoundedCornerShape(20.dp))
+                    modifier =
+                        Modifier
+                            .size(80.dp)
+                            .clip(RoundedCornerShape(20.dp))
+                            .border(3.dp, Color.White, RoundedCornerShape(20.dp)),
                 )
 
                 Spacer(modifier = Modifier.width(20.dp))
 
                 // 친구 추가 아이콘
                 Box(
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF3ECDFF))
-                        .border(3.dp, Color.White, CircleShape)
-                        .padding(4.dp),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .size(60.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF3ECDFF))
+                            .border(3.dp, Color.White, CircleShape)
+                            .padding(4.dp),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.follow),
                         contentDescription = "친구 추가",
                         tint = Color.White,
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clickable {
-                                val currentUser = userState
-                                val currentApplication = application
+                        modifier =
+                            Modifier
+                                .size(16.dp)
+                                .clickable {
+                                    val currentUser = userState
+                                    val currentApplication = application
 
-                                if (currentUser != null && currentApplication != null) {
-                                    val myInfo = UserSummary(
-                                        id = currentUser.id,
-                                        nickname = currentUser.nickname,
-                                        profileImageUrl = currentUser.profileImageUrl,
-                                        country = currentUser.country
-                                    )
-                                    userViewModel.toggleFollow(
-                                        myInfo,
-                                        currentApplication.applicant
-                                    )
-                                }
-                            }
+                                    if (currentUser != null && currentApplication != null) {
+                                        val myInfo =
+                                            UserSummary(
+                                                id = currentUser.id,
+                                                nickname = currentUser.nickname,
+                                                profileImageUrl = currentUser.profileImageUrl,
+                                                country = currentUser.country,
+                                            )
+                                        userViewModel.toggleFollow(
+                                            myInfo,
+                                            currentApplication.applicant,
+                                        )
+                                    }
+                                },
                     )
                 }
             }

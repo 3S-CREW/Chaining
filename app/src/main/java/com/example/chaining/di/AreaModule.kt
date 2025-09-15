@@ -50,7 +50,7 @@ object AreaModule {
     fun provideAreaRepository(
         @KoreanArea korAreaService: AreaService,
         @EnglishArea engAreaService: AreaService,
-        areaDao: AreaDao
+        areaDao: AreaDao,
     ): AreaRepository {
         return AreaRepository(korAreaService, engAreaService, areaDao)
     }

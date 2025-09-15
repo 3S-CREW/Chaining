@@ -7,11 +7,13 @@ sealed class Screen(val route: String) {
     object Splash : Screen("splash")
     object Login : Screen("login")
     object AdminLogin : Screen("adminLogin")
-    object Home : Screen("home")
     object MyPage : Screen("myPage")
     object MainHome : Screen("mainHome")
     object CreatePost : Screen("createPost?type={type}&postId={postId}") {
-        fun createRoute(type: String, postId: String? = ""): String {
+        fun createRoute(
+            type: String,
+            postId: String? = "",
+        ): String {
             return "createPost?type=$type&postId=${postId ?: ""}"
         }
     }
@@ -31,7 +33,10 @@ sealed class Screen(val route: String) {
 
     object MyPosts : Screen("myPosts")
     object Applications : Screen("applications?type={type}&postId={postId}") {
-        fun createRoute(type: String, postId: String? = ""): String {
+        fun createRoute(
+            type: String,
+            postId: String? = "",
+        ): String {
             return "applications?type=$type&postId=${postId ?: ""}"
         }
     }
@@ -40,13 +45,16 @@ sealed class Screen(val route: String) {
     object ENQuiz : Screen("enQuiz")
     object QuizResult : Screen("quizResult")
     object Apply : Screen("apply?type={type}&applicationId={applicationId}") {
-        fun createRoute(type: String, applicationId: String? = ""): String {
+        fun createRoute(
+            type: String,
+            applicationId: String? = "",
+        ): String {
             return "apply?type=$type&applicationId=${applicationId ?: ""}"
         }
     }
 
     object Feed : Screen("feed")
-    object Term : Screen("term/{uid}/{nickname}")
+    object Term : Screen("terms/{uid}/{nickname}")
 
     object Notification : Screen("notification")
 }

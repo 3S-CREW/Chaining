@@ -29,10 +29,11 @@ import com.example.chaining.domain.model.QuizType
 import com.example.chaining.viewmodel.QuizViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
+@Suppress("FunctionName")
 @Composable
 fun KRQuizScreen(
     quizViewModel: QuizViewModel = viewModel(),
-    onNavigateToResult: () -> Unit
+    onNavigateToResult: () -> Unit,
 ) {
     val context = LocalContext.current
     val isQuizFinished = quizViewModel.isQuizFinished.value
@@ -68,24 +69,26 @@ fun KRQuizScreen(
     val isAnswerSubmitted = quizViewModel.isAnswerSubmitted.value
 
     Scaffold(
-        containerColor = Color(0xFFF3F6FF)
+        containerColor = Color(0xFFF3F6FF),
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(24.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(24.dp),
         ) {
             QuizProgressIndicator(
                 currentQuestionIndex = currentIndex,
-                totalQuestions = totalQuestions
+                totalQuestions = totalQuestions,
             )
 
             if (currentQuiz != null) {
-                val questionTextToShow = when (currentQuiz.type) {
-                    QuizType.MULTIPLE_CHOICE.name -> currentQuiz.problem
-                    else -> currentQuiz.translation
-                }
+                val questionTextToShow =
+                    when (currentQuiz.type) {
+                        QuizType.MULTIPLE_CHOICE.name -> currentQuiz.problem
+                        else -> currentQuiz.translation
+                    }
 
                 Spacer(modifier = Modifier.height(60.dp))
 
@@ -95,7 +98,7 @@ fun KRQuizScreen(
                     textAlign = TextAlign.Center,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = Color.Black,
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -106,22 +109,24 @@ fun KRQuizScreen(
                             remainingWords = quizViewModel.remainingWordChips.value,
                             userAnswer = userAnswerSentence,
                             onWordChipClicked = quizViewModel::onWordChipClicked,
-                            onAnswerWordClicked = quizViewModel::onAnswerWordClicked
+                            onAnswerWordClicked = quizViewModel::onAnswerWordClicked,
                         )
                     }
+
                     QuizType.MULTIPLE_CHOICE.name -> {
                         MultipleChoiceAnswerArea(
                             options = currentQuiz.options,
                             selectedOption = selectedOption,
-                            onOptionSelected = quizViewModel::onOptionSelected
+                            onOptionSelected = quizViewModel::onOptionSelected,
                         )
                     }
+
                     QuizType.FILL_IN_THE_BLANK.name -> {
                         FillInTheBlankAnswerArea(
                             problem = currentQuiz.problem,
                             options = currentQuiz.options,
                             selectedWord = selectedBlankWord,
-                            onWordSelected = quizViewModel::onBlankWordSelected
+                            onWordSelected = quizViewModel::onBlankWordSelected,
                         )
                     }
                 }
@@ -130,20 +135,27 @@ fun KRQuizScreen(
 
                 // '다음' 버튼
                 Button(
-                    onClick = { quizViewModel.submitAndGoToNext() }, // 항상 다음 문제로 이동
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    enabled = isAnswerSubmitted, // 사용자가 답을 제출했을 때만 활성화
+                    // 항상 다음 문제로 이동
+                    onClick = { quizViewModel.submitAndGoToNext() },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                    // 사용자가 답을 제출했을 때만 활성화
+                    enabled = isAnswerSubmitted,
                     shape = RoundedCornerShape(30.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF4285F4), // 버튼의 배경색
-                        contentColor = Color.White        // 버튼 안의 텍스트 색상
-                    )
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            // 버튼의 배경색
+                            containerColor = Color(0xFF4285F4),
+                            // 버튼 안의 텍스트 색상
+                            contentColor = Color.White,
+                        ),
                 ) {
                     Text(
-                        text = "다음", // 텍스트를 '다음'으로 고정
-                        fontSize = 16.sp
+                        // 텍스트를 '다음'으로 고정
+                        text = "다음",
+                        fontSize = 16.sp,
                     )
                 }
             }

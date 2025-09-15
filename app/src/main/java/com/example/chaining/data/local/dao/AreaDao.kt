@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface AreaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(areas: List<AreaEntity>)
-    
+
     @Query("SELECT * FROM area_codes ORDER BY region_name ASC")
     fun getAll(): Flow<List<AreaEntity>>
 

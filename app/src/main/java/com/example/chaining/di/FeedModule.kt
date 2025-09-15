@@ -24,7 +24,6 @@ annotation class EnglishApiService
 @Module
 @InstallIn(SingletonComponent::class)
 object FeedModule {
-
     // HttpLoggingInterceptor를 제공하는 함수 추가
     @Provides
     @Singleton
@@ -50,7 +49,6 @@ object FeedModule {
 //            .addConverterFactory(GsonConverterFactory.create())
 //            .build()
 //    }
-
 
     @Provides
     @Singleton
@@ -84,14 +82,18 @@ object FeedModule {
     @Provides
     @Singleton
     @KoreanApiService
-    fun provideKorApiService(@KoreanApiService retrofit: Retrofit): FeedApiService {
+    fun provideKorApiService(
+        @KoreanApiService retrofit: Retrofit,
+    ): FeedApiService {
         return retrofit.create(FeedApiService::class.java)
     }
 
     @Provides
     @Singleton
     @EnglishApiService
-    fun provideEngApiService(@EnglishApiService retrofit: Retrofit): FeedApiService {
+    fun provideEngApiService(
+        @EnglishApiService retrofit: Retrofit,
+    ): FeedApiService {
         return retrofit.create(FeedApiService::class.java)
     }
 

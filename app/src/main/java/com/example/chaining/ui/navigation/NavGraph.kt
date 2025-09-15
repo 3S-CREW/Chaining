@@ -21,7 +21,6 @@ import com.example.chaining.ui.screen.CommunityScreen
 import com.example.chaining.ui.screen.CreatePostScreen
 import com.example.chaining.ui.screen.ENQuizScreen
 import com.example.chaining.ui.screen.FeedScreen
-import com.example.chaining.ui.screen.HomeScreen
 import com.example.chaining.ui.screen.JoinPostScreen
 import com.example.chaining.ui.screen.KRQuizScreen
 import com.example.chaining.ui.screen.MainHomeScreen
@@ -33,13 +32,16 @@ import com.example.chaining.ui.screen.ViewPostScreen
 import com.example.chaining.viewmodel.QuizViewModel
 import com.google.gson.Gson
 
+@Suppress("FunctionName")
 @Composable
-fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
-
+fun NavGraph(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+) {
     NavHost(
         navController = navController,
         startDestination = Screen.Splash.route,
-        modifier = modifier
+        modifier = modifier,
     ) {
         composable(Screen.Splash.route) {
             SplashScreen(navController)
@@ -47,7 +49,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(Screen.Login.route) {
             LoginScreen(
                 onLoginSuccess = {
-                    navController.navigate("home") {
+                    navController.navigate(route = Screen.MainHome.route) {
                         popUpTo("login") { inclusive = true }
                     }
                 },
@@ -57,16 +59,17 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 },
                 onNavigateToTerms = { uid, nickname ->
                     navController.navigate("terms/$uid/$nickname")
-                }
+                },
             )
         }
 
         composable(
             route = Screen.Term.route,
-            arguments = listOf(
-                navArgument("uid") { type = NavType.StringType },
-                navArgument("nickname") { type = NavType.StringType }
-            )
+            arguments =
+                listOf(
+                    navArgument("uid") { type = NavType.StringType },
+                    navArgument("nickname") { type = NavType.StringType },
+                ),
         ) { backStackEntry ->
             val uid = backStackEntry.arguments?.getString("uid") ?: ""
             val nickname = backStackEntry.arguments?.getString("nickname") ?: ""
@@ -75,30 +78,24 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 uid = uid,
                 nickname = nickname,
                 onSuccess = {
-                    navController.navigate(Screen.MainHome.route) {
+                    navController.navigate(route = Screen.MainHome.route) {
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 },
                 onCancel = {
                     navController.popBackStack()
-                }
+                },
             )
         }
-
 
         composable(Screen.AdminLogin.route) {
             AdminLoginScreen(
                 onBackClick = { navController.popBackStack() },
                 onAdminLoginSuccess = {
-                    navController.navigate("home") {
+                    navController.navigate(route = Screen.MainHome.route) {
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
-                }
-            )
-        }
-        composable(Screen.Home.route) {
-            HomeScreen(
-                onMainHomeClick = { navController.navigate("mainHome") }
+                },
             )
         }
 
@@ -114,12 +111,12 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     navController.navigate("login") {
                         popUpTo(0) { inclusive = true }
                     }
-                })
+                },
+            )
         }
 
         composable(Screen.MainHome.route) {
             MainHomeScreen(
-                onBackClick = { navController.navigate("mainHome") },
                 onMainHomeClick = { navController.navigate("mainHome") },
                 onMyPageClick = { navController.navigate("myPage") },
                 onCommunityClick = { navController.navigate("community") },
@@ -129,18 +126,25 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     navController.navigate(
                         Screen.Apply.createRoute(
                             type = "Owner",
-                            applicationId = applicationId
-                        )
+                            applicationId = applicationId,
+                        ),
                     )
                 },
             )
         }
         composable(
             route = Screen.CreatePost.route,
-            arguments = listOf(
-                navArgument("type") { type = NavType.StringType; defaultValue = "생성" },
-                navArgument("postId") { type = NavType.StringType; defaultValue = "" }
-            )
+            arguments =
+                listOf(
+                    navArgument("type") {
+                        type = NavType.StringType
+                        defaultValue = "생성"
+                    },
+                    navArgument("postId") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                ),
         ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type") ?: "생성"
             val postId = backStackEntry.arguments?.getString("postId")
@@ -149,7 +153,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 type = type,
                 postId = postId,
                 onBackClick = { navController.popBackStack() },
-                onPostCreated = { navController.popBackStack() }
+                onPostCreated = { navController.popBackStack() },
             )
         }
 
@@ -161,7 +165,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 },
                 onCreatePostClick = {
                     navController.navigate(
-                        Screen.CreatePost.createRoute(type = "생성")
+                        Screen.CreatePost.createRoute(type = "생성"),
                     )
                 },
             )
@@ -169,7 +173,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
         composable(
             route = Screen.ViewPost.route,
-            arguments = listOf(navArgument("postId") { type = NavType.StringType })
+            arguments = listOf(navArgument("postId") { type = NavType.StringType }),
         ) {
             ViewPostScreen(
                 onJoinPostClick = { post ->
@@ -180,28 +184,28 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     navController.navigate(
                         Screen.CreatePost.createRoute(
                             type = "수정",
-                            postId = postId
-                        )
+                            postId = postId,
+                        ),
                     )
                 },
                 onApplicationListClick = { postId ->
                     navController.navigate(
                         Screen.Applications.createRoute(
                             type = "Owner",
-                            postId = postId
-                        )
+                            postId = postId,
+                        ),
                     )
                 },
                 onMainHomeClick = { navController.navigate("mainHome") },
                 onCommunityClick = { navController.navigate("community") },
                 onFeedClick = { navController.navigate("feed") },
-                onNotificationClick = { navController.navigate(route = Screen.Notification.route) }
+                onNotificationClick = { navController.navigate(route = Screen.Notification.route) },
             )
         }
 
         composable(
             route = Screen.JoinPost.route,
-            arguments = listOf(navArgument("post") { type = NavType.StringType })
+            arguments = listOf(navArgument("post") { type = NavType.StringType }),
         ) { backStackEntry ->
             val json = backStackEntry.arguments?.getString("post")
             json?.let {
@@ -214,14 +218,16 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     },
                     onViewMyApplications = {
                         navController.navigate(Screen.Applications.createRoute(type = "My"))
-                    }
+                    },
                 )
             }
         }
 
         navigation(
-            startDestination = "enQuiz", // 이 그룹의 시작 화면
-            route = "quiz_flow"           // 이 그룹의 고유한 이름(경로)
+            // 이 그룹의 시작 화면
+            startDestination = "enQuiz",
+            // 이 그룹의 고유한 이름(경로)
+            route = "quiz_flow",
         ) {
             composable("enQuiz") {
                 // 부모 그래프("quiz_flow")의 BackStackEntry를 가져옵니다.
@@ -235,7 +241,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                         navController.navigate("quizResult") {
                             popUpTo("enQuiz") { inclusive = true }
                         }
-                    }
+                    },
                 )
             }
 
@@ -251,7 +257,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                             // 퀴즈 화면은 뒤로가기 기록에서 제거
                             popUpTo("krQuiz") { inclusive = true }
                         }
-                    }
+                    },
                 )
             }
 
@@ -268,28 +274,29 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                             restoreState = true
                             popUpTo("quiz_flow") { inclusive = true }
                         }
-                    }
+                    },
                 )
             }
         }
 
         composable(
             route = Screen.Apply.route,
-            arguments = listOf(
-                navArgument("type") {
-                    type = NavType.StringType
-                    defaultValue = "My"
-                })
+            arguments =
+                listOf(
+                    navArgument("type") {
+                        type = NavType.StringType
+                        defaultValue = "My"
+                    },
+                ),
         ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type") ?: "My"
             val applicationId =
                 backStackEntry.arguments?.getString("applicationId") ?: return@composable
 
-
             ApplyScreen(
                 onBackClick = { navController.popBackStack() },
                 type = type,
-                applicationId = applicationId
+                applicationId = applicationId,
             )
         }
 
@@ -299,29 +306,31 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                 onMainHomeClick = { navController.navigate("mainHome") },
                 onCommunityClick = { navController.navigate("community") },
                 onFeedClick = { navController.navigate("feed") },
-                onNotificationClick = { navController.navigate(route = Screen.Notification.route) }
-
+                onNotificationClick = { navController.navigate(route = Screen.Notification.route) },
             )
         }
 
         composable(route = Screen.MyPosts.route) {
             MyPostsScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
             )
         }
         composable(
             route = Screen.Applications.route,
-            arguments = listOf(
-                navArgument("type") {
-                    type = NavType.StringType
-                    defaultValue = "My"
-                },
-                navArgument("postId") {
-                    type = NavType.StringType
-                    nullable = true // postId는 선택사항이므로 nullable
-                    defaultValue = null // 기본값은 null
-                }
-            )
+            arguments =
+                listOf(
+                    navArgument("type") {
+                        type = NavType.StringType
+                        defaultValue = "My"
+                    },
+                    navArgument("postId") {
+                        type = NavType.StringType
+                        // postId는 선택사항이므로 nullable
+                        nullable = true
+                        // 기본값은 null
+                        defaultValue = null
+                    },
+                ),
         ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type") ?: "My"
             val postId = backStackEntry.arguments?.getString("postId")
@@ -334,8 +343,8 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     navController.navigate(
                         Screen.Apply.createRoute(
                             type = type,
-                            applicationId = applicationId
-                        )
+                            applicationId = applicationId,
+                        ),
                     )
                 },
             )
@@ -347,10 +356,10 @@ fun NavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
                     navController.navigate(
                         Screen.Apply.createRoute(
                             type = "Owner",
-                            applicationId = applicationId
-                        )
+                            applicationId = applicationId,
+                        ),
                     )
-                }
+                },
             )
         }
     }

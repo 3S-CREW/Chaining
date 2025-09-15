@@ -44,6 +44,7 @@ import com.example.chaining.ui.component.CardItem
 import com.example.chaining.ui.component.formatRemainingTime
 import com.example.chaining.viewmodel.UserViewModel
 
+@Suppress("FunctionName")
 @Composable
 fun MyPostsScreen(
     onBackClick: () -> Unit = {},
@@ -57,28 +58,30 @@ fun MyPostsScreen(
 
     var showOnlyOpenPosts by remember { mutableStateOf(false) }
 
-    val filteredPosts = if (showOnlyOpenPosts) {
-        myPosts.filter { post -> !post.value.isDeleted && post.value.closeAt > System.currentTimeMillis() }
-    } else {
-        myPosts.filter { post -> !post.value.isDeleted } // 삭제된 글은 항상 제외
-    }
+    val filteredPosts =
+        if (showOnlyOpenPosts) {
+            myPosts.filter { post -> !post.value.isDeleted && post.value.closeAt > System.currentTimeMillis() }
+        } else {
+            myPosts.filter { post -> !post.value.isDeleted } // 삭제된 글은 항상 제외
+        }
 
     Scaffold(
         topBar = {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                    .background(Color(0xFF4A526A)),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                        .background(Color(0xFF4A526A)),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "뒤로 가기",
                         modifier = Modifier.size(20.dp),
-                        tint = Color.White
+                        tint = Color.White,
                     )
                 }
 
@@ -88,46 +91,53 @@ fun MyPostsScreen(
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
                 Spacer(modifier = Modifier.width(48.dp))
             }
         },
-        containerColor = Color(0xFFF3F6FF)
+        containerColor = Color(0xFFF3F6FF),
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 // 새로 만든 CommunityActionButton 호출
                 ActionButton(
                     modifier = Modifier.weight(1f),
                     iconRes = R.drawable.post,
-                    text = if (showOnlyOpenPosts) stringResource(id = R.string.mypost_all_post)
-                    else stringResource(id = R.string.mypost_filter_open),
+                    text =
+                        if (showOnlyOpenPosts) {
+                            stringResource(id = R.string.mypost_all_post)
+                        } else {
+                            stringResource(id = R.string.mypost_filter_open)
+                        },
                     onClick = {
                         showOnlyOpenPosts = !showOnlyOpenPosts
-                    }
+                    },
                 )
             }
             if (filteredPosts.isEmpty()) {
                 // 데이터가 없을 때
                 Text(
                     text = stringResource(id = R.string.mypost_nothing),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 50.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 50.dp),
                     color = Color.Gray,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             } else {
                 // 모집글 목록 표시
@@ -136,10 +146,11 @@ fun MyPostsScreen(
                         onClick = { onViewPostClick(post.value.postId) },
                         type = "모집글",
                         recruitPost = post.value,
-                        remainingTime = formatRemainingTime(
-                            context,
-                            post.value.closeAt - System.currentTimeMillis()
-                        ),
+                        remainingTime =
+                            formatRemainingTime(
+                                context,
+                                post.value.closeAt - System.currentTimeMillis(),
+                            ),
                     )
                 }
             }
@@ -147,32 +158,33 @@ fun MyPostsScreen(
     }
 }
 
+@Suppress("FunctionName")
 @Composable
 fun ActionButton(
     modifier: Modifier = Modifier,
     iconRes: Int,
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
         modifier = modifier,
         shape = RoundedCornerShape(30.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7282B4)),
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 6.dp)
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 6.dp),
     ) {
         Icon(
             painter = painterResource(id = iconRes),
             contentDescription = text,
             tint = Color.White,
-            modifier = Modifier.size(22.dp)
+            modifier = Modifier.size(22.dp),
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = text,
             color = Color.White,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp
+            fontSize = 16.sp,
         )
     }
 }

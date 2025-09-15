@@ -40,11 +40,12 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+@Suppress("FunctionName")
 @Composable
 fun DatePickerFieldToModal(
     modifier: Modifier = Modifier,
     selectedDate: Long?,
-    onDateSelected: (Long?) -> Unit
+    onDateSelected: (Long?) -> Unit,
 ) {
     var showModal by remember { mutableStateOf(false) }
 
@@ -52,41 +53,49 @@ fun DatePickerFieldToModal(
     val formattedDate = selectedDate?.let { convertMillisToDate(it) } ?: ""
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .border(
-                width = 1.dp,
-                color = if (showModal) Color(0xFF4285F4)
-                else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                shape = RoundedCornerShape(16.dp)
-            )
-            .clickable { showModal = true }
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .border(
+                    width = 1.dp,
+                    color =
+                        if (showModal) {
+                            Color(0xFF4285F4)
+                        } else {
+                            MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        },
+                    shape = RoundedCornerShape(16.dp),
+                )
+                .clickable { showModal = true }
+                .padding(horizontal = 16.dp, vertical = 14.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column {
                 Text(
                     text = "DOB",
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                    )
+                    style =
+                        MaterialTheme.typography.labelMedium.copy(
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        ),
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = if (formattedDate.isEmpty()) "YYYY/MM/DD" else formattedDate,
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        color = if (formattedDate.isEmpty()) {
-                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-                        } else {
-                            MaterialTheme.colorScheme.onSurface
-                        }
-                    )
+                    style =
+                        MaterialTheme.typography.bodyLarge.copy(
+                            color =
+                                if (formattedDate.isEmpty()) {
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface
+                                },
+                        ),
                 )
             }
 
@@ -94,7 +103,7 @@ fun DatePickerFieldToModal(
                 imageVector = Icons.Default.DateRange,
                 contentDescription = "Select date",
                 tint = Color(0xFF4285F4),
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
             )
         }
     }
@@ -105,30 +114,33 @@ fun DatePickerFieldToModal(
             onDateSelected = {
                 onDateSelected(it)
             },
-            onDismiss = { showModal = false }
+            onDismiss = { showModal = false },
         )
     }
 }
 
+@Suppress("FunctionName")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerModal(
     onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     val datePickerState = rememberDatePickerState()
 
     DatePickerDialog(
         onDismissRequest = onDismiss,
-        colors = DatePickerDefaults.colors(
-            containerColor = Color(0xFFFEFEFE),
-        ),
+        colors =
+            DatePickerDefaults.colors(
+                containerColor = Color(0xFFFEFEFE),
+            ),
         confirmButton = {
             TextButton(
                 onClick = {
                     onDateSelected(datePickerState.selectedDateMillis)
                     onDismiss()
-                }) {
+                },
+            ) {
                 Text(text = stringResource(id = R.string.choose), color = Color(0xFF4285F4))
             }
         },
@@ -139,16 +151,17 @@ fun DatePickerModal(
         },
     ) {
         DatePicker(
-            colors = DatePickerDefaults.colors(
-                containerColor = Color(0xFFFEFEFE),
-                selectedDayContainerColor = Color(0xFF4285F4),
-                selectedDayContentColor = Color.White,
-                todayDateBorderColor = Color(0xFF4285F4),
-                todayContentColor = Color(0xFF4285F4),
-                dayContentColor = Color.Black,
-                weekdayContentColor = Color.Gray
-            ),
-            state = datePickerState
+            colors =
+                DatePickerDefaults.colors(
+                    containerColor = Color(0xFFFEFEFE),
+                    selectedDayContainerColor = Color(0xFF4285F4),
+                    selectedDayContentColor = Color.White,
+                    todayDateBorderColor = Color(0xFF4285F4),
+                    todayContentColor = Color(0xFF4285F4),
+                    dayContentColor = Color.Black,
+                    weekdayContentColor = Color.Gray,
+                ),
+            state = datePickerState,
         )
     }
 }

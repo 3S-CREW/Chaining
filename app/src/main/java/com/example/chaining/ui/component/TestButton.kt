@@ -39,11 +39,12 @@ import com.example.chaining.domain.model.LanguagePref
 import com.example.chaining.ui.screen.BorderColor
 import kotlinx.coroutines.launch
 
+@Suppress("FunctionName")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TestButton(
     preferredLanguages: Map<String, LanguagePref>,
-    onTestClick: (String) -> Unit
+    onTestClick: (String) -> Unit,
 ) {
     val languageText = stringResource(id = R.string.mypage_quiz_result)
 
@@ -55,21 +56,24 @@ fun TestButton(
         onClick = { isSheetOpen = true },
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(width = 1.dp, color = BorderColor),
-        modifier = Modifier
-            .fillMaxWidth(),
-        contentPadding = PaddingValues(
-            vertical = 14.dp,
-            horizontal = 12.dp
-        ),
-        colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+        modifier =
+            Modifier
+                .fillMaxWidth(),
+        contentPadding =
+            PaddingValues(
+                vertical = 14.dp,
+                horizontal = 12.dp,
+            ),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
     ) {
         Icon(
             painter = painterResource(id = R.drawable.voice_recognition),
             contentDescription = null,
             tint = Color.Unspecified,
-            modifier = Modifier
-                .height(24.dp)
-                .width(24.dp)
+            modifier =
+                Modifier
+                    .height(24.dp)
+                    .width(24.dp),
         )
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -78,9 +82,10 @@ fun TestButton(
             text = languageText,
             color = Color(0xFF637387),
             fontSize = 14.sp,
-            modifier = Modifier
-                .weight(1f),
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            modifier =
+                Modifier
+                    .weight(1f),
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
         )
     }
 
@@ -89,30 +94,36 @@ fun TestButton(
             onDismissRequest = { isSheetOpen = false },
             sheetState = sheetState,
             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            containerColor = Color.White
+            containerColor = Color.White,
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Text(
                     text = stringResource(id = R.string.mypage_quiz_status),
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color.Black
+                    color = Color.Black,
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                val supportedLanguages = listOf(stringResource(id = R.string.mypage_korean), stringResource(id = R.string.mypage_english))
+                val supportedLanguages =
+                    listOf(
+                        stringResource(id = R.string.mypage_korean),
+                        stringResource(id = R.string.mypage_english),
+                    )
 
                 supportedLanguages.forEach { language ->
-                    val dataLanguage = when (language) {
-                        "한국어" -> "KOREAN"
-                        "영어" -> "ENGLISH"
-                        else -> ""
-                    }
+                    val dataLanguage =
+                        when (language) {
+                            "한국어" -> "KOREAN"
+                            "영어" -> "ENGLISH"
+                            else -> ""
+                        }
                     val pref = preferredLanguages[dataLanguage]
                     LanguageTestItem(
                         language = language,
@@ -123,7 +134,7 @@ fun TestButton(
                                 isSheetOpen = false
                             }
                             onTestClick(language)
-                        }
+                        },
                     )
                 }
 
@@ -133,24 +144,25 @@ fun TestButton(
     }
 }
 
+@Suppress("FunctionName")
 @Composable
 fun LanguageTestItem(
     language: String,
     level: Int?,
-    onTestClick: () -> Unit
+    onTestClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         ) {
             Text(
                 text = language,
                 color = Color(0xFF637387),
-                fontSize = 16.sp
+                fontSize = 16.sp,
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -158,12 +170,13 @@ fun LanguageTestItem(
             if (level != null) {
                 LinearProgressIndicator(
                     progress = { level / 10f },
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .height(8.dp)
-                        .clip(RoundedCornerShape(4.dp)),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(0.9f)
+                            .height(8.dp)
+                            .clip(RoundedCornerShape(4.dp)),
                     color = Color(0xFF637387),
-                    trackColor = Color(0xFFE0E0E0)
+                    trackColor = Color(0xFFE0E0E0),
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -171,13 +184,13 @@ fun LanguageTestItem(
                 Text(
                     text = "Lv.$level / 10",
                     fontSize = 12.sp,
-                    color = Color.Gray
+                    color = Color.Gray,
                 )
             } else {
                 Text(
                     text = stringResource(id = R.string.mypage_quiz_incomplete),
                     fontSize = 12.sp,
-                    color = Color.Gray
+                    color = Color.Gray,
                 )
             }
         }
@@ -187,17 +200,30 @@ fun LanguageTestItem(
         Button(
             onClick = onTestClick,
             shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (level != null) Color(0xFF637387) else Color(
-                    0xFF4CAF50
-                )
-            ),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor =
+                        if (level != null) {
+                            Color(0xFF637387)
+                        } else {
+                            Color(
+                                0xFF4CAF50,
+                            )
+                        },
+                ),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         ) {
             Text(
-                text = if (level != null) stringResource(id = R.string.mypage_quiz_retry) else stringResource(id = R.string.mypage_quiz_start),
+                text =
+                    if (level != null) {
+                        stringResource(id = R.string.mypage_quiz_retry)
+                    } else {
+                        stringResource(
+                            id = R.string.mypage_quiz_start,
+                        )
+                    },
                 color = Color.White,
-                fontSize = 14.sp
+                fontSize = 14.sp,
             )
         }
     }

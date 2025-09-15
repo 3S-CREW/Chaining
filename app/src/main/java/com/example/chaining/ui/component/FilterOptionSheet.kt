@@ -1,6 +1,5 @@
 package com.example.chaining.ui.component
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,12 +44,13 @@ import com.example.chaining.data.model.FilterState
 import com.example.chaining.viewmodel.AreaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Suppress("FunctionName")
 @Composable
 fun FilterOptionsSheet(
     currentFilterState: FilterState,
     onApplyFilters: (FilterState) -> Unit,
     onClose: () -> Unit,
-    areaViewModel: AreaViewModel = hiltViewModel()
+    areaViewModel: AreaViewModel = hiltViewModel(),
 ) {
     val areaEntities by areaViewModel.areaCodes.collectAsState()
     var selectedTravelStyle by remember { mutableStateOf(currentFilterState.travelStyle) }
@@ -67,49 +67,55 @@ fun FilterOptionsSheet(
     var expandedSortBy by remember { mutableStateOf(false) }
 
     // 드롭다운 옵션 목록
-    val travelStyles = listOf(
-        stringResource(id = R.string.travel_style_mountain),
-        stringResource(id = R.string.travel_style_sea),
-        stringResource(id = R.string.travel_style_city),
-        stringResource(id = R.string.travel_style_activity),
-        stringResource(id = R.string.travel_style_rest),
-        stringResource(id = R.string.travel_style_culture)
-    )
-    val travelLocations = remember(areaEntities) {
-        areaEntities
-            .map { it.regionName }
-    }
-    val languages = listOf(
-        stringResource(id = R.string.language_korean),
-        stringResource(id = R.string.language_english)
-    )
+    val travelStyles =
+        listOf(
+            stringResource(id = R.string.travel_style_mountain),
+            stringResource(id = R.string.travel_style_sea),
+            stringResource(id = R.string.travel_style_city),
+            stringResource(id = R.string.travel_style_activity),
+            stringResource(id = R.string.travel_style_rest),
+            stringResource(id = R.string.travel_style_culture),
+        )
+    val travelLocations =
+        remember(areaEntities) {
+            areaEntities
+                .map { it.regionName }
+        }
+    val languages =
+        listOf(
+            stringResource(id = R.string.language_korean),
+            stringResource(id = R.string.language_english),
+        )
     val languageLevels = (1..10).toList()
-    val sortByOptions = mapOf(
-        "latest" to stringResource(id = R.string.sort_by_latest),
-        "deadline" to stringResource(id = R.string.sort_by_deadline),
-        // "interest" to "관심순"
-    )
+    val sortByOptions =
+        mapOf(
+            "latest" to stringResource(id = R.string.sort_by_latest),
+            "deadline" to stringResource(id = R.string.sort_by_deadline),
+            // "interest" to "관심순"
+        )
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(16.dp)
-            .background(Color(0xFFF3F6FF))
-            .verticalScroll(rememberScrollState()), // 스크롤 가능하도록 추가
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(16.dp)
+                .background(Color(0xFFF3F6FF))
+                // 스크롤 가능하도록 추가
+                .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         // 헤더 및 닫기 버튼
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
                 text = stringResource(id = R.string.filter_title),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF4A526A)
+                color = Color(0xFF4A526A),
             )
             IconButton(onClick = onClose) {
                 Icon(Icons.Default.Close, contentDescription = "닫기")
@@ -124,7 +130,7 @@ fun FilterOptionsSheet(
             options = travelStyles,
             expanded = expandedTravelStyle,
             onExpandedChange = { expandedTravelStyle = it },
-            onValueChange = { value -> selectedTravelStyle = value }
+            onValueChange = { value -> selectedTravelStyle = value },
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -135,7 +141,7 @@ fun FilterOptionsSheet(
             options = travelLocations,
             expanded = expandedTravelLocation,
             onExpandedChange = { expandedTravelLocation = it },
-            onValueChange = { value -> selectedTravelLocation = value }
+            onValueChange = { value -> selectedTravelLocation = value },
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -146,34 +152,38 @@ fun FilterOptionsSheet(
             options = languages,
             expanded = expandedLanguage,
             onExpandedChange = { expandedLanguage = it },
-            onValueChange = { value -> selectedLanguage = value }
+            onValueChange = { value -> selectedLanguage = value },
         )
         Spacer(modifier = Modifier.height(16.dp))
 
         // 언어 레벨 드롭다운
         FilterDropdown(
             label = stringResource(id = R.string.filter_placeholder_language_level),
-            selectedValue = selectedLanguageLevel?.toString(), // Int? -> String? 변환
-            options = (listOf(stringResource(id = R.string.filter_option_any)) + languageLevels.map { it.toString() }), // "상관 없음" 추가
+            // Int? -> String? 변환
+            selectedValue = selectedLanguageLevel?.toString(),
+            // "상관 없음" 추가
+            options = (listOf(stringResource(id = R.string.filter_option_any)) + languageLevels.map { it.toString() }),
             expanded = expandedLanguageLevel,
             onExpandedChange = { expandedLanguageLevel = it },
             onValueChange = { value ->
                 selectedLanguageLevel = if (value == "상관 없음") null else value?.toIntOrNull()
-            }
+            },
         )
         Spacer(modifier = Modifier.height(16.dp))
 
         // 정렬 방식 드롭다운
         FilterDropdown(
             label = stringResource(id = R.string.filter_placeholder_sort_by),
-            selectedValue = sortByOptions[selectedSortBy], // 맵에서 값 가져오기
-            options = sortByOptions.values.toList(), // 옵션은 표시할 텍스트 리스트
+            // 맵에서 값 가져오기
+            selectedValue = sortByOptions[selectedSortBy],
+            // 옵션은 표시할 텍스트 리스트
+            options = sortByOptions.values.toList(),
             expanded = expandedSortBy,
             onExpandedChange = { expandedSortBy = it },
             onValueChange = { value ->
                 // 표시된 텍스트(value)로 실제 키를 찾아 저장
                 selectedSortBy = sortByOptions.entries.find { it.value == value }?.key ?: "latest"
-            }
+            },
         )
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -186,25 +196,26 @@ fun FilterOptionsSheet(
                         travelLocation = selectedTravelLocation,
                         language = selectedLanguage,
                         languageLevel = selectedLanguageLevel,
-                        sortBy = selectedSortBy
-                    )
+                        sortBy = selectedSortBy,
+                    ),
                 )
             },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4A526A)),
-            contentPadding = PaddingValues(12.dp)
+            contentPadding = PaddingValues(12.dp),
         ) {
             Text(
                 stringResource(id = R.string.filter_apply_button),
                 color = Color.White,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
     }
 }
 
+@Suppress("FunctionName")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterDropdown(
@@ -213,20 +224,20 @@ fun FilterDropdown(
     options: List<String>,
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
-    onValueChange: (String?) -> Unit
+    onValueChange: (String?) -> Unit,
 ) {
     Text(
         label,
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
         color = Color(0xFF4A526A),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     )
     Spacer(modifier = Modifier.height(8.dp))
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = onExpandedChange,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         OutlinedTextField(
             value = selectedValue ?: stringResource(id = R.string.filter_option_none),
@@ -234,24 +245,26 @@ fun FilterDropdown(
             readOnly = true,
             label = { Text(label) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth(),
-            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color(0xFF7282B4),
-                unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f)
-            )
+            modifier =
+                Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
+            colors =
+                ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color(0xFF7282B4),
+                    unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
+                ),
         )
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { onExpandedChange(false) }
+            onDismissRequest = { onExpandedChange(false) },
         ) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.filter_option_none)) },
                 onClick = {
                     onValueChange(null)
                     onExpandedChange(false)
-                }
+                },
             )
             options.forEach { option ->
                 DropdownMenuItem(
@@ -259,7 +272,7 @@ fun FilterDropdown(
                     onClick = {
                         onValueChange(option)
                         onExpandedChange(false)
-                    }
+                    },
                 )
             }
         }

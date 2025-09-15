@@ -6,7 +6,6 @@ import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -81,6 +80,7 @@ val BorderColor = Color(0xFFE0E0E0)
 val White = Color(0xFFFEFEFE)
 val Black = Color.Black
 
+@Suppress("FunctionName")
 @Composable
 fun MyPageScreen(
     userViewModel: UserViewModel = hiltViewModel(),
@@ -89,7 +89,7 @@ fun MyPageScreen(
     onMyPostsClick: () -> Unit,
     onMyApplicationsClick: () -> Unit,
     onLogout: () -> Unit,
-    areaViewModel: AreaViewModel = hiltViewModel()
+    areaViewModel: AreaViewModel = hiltViewModel(),
 ) {
     val areaEntities by areaViewModel.areaCodes.collectAsState()
     val userState by userViewModel.user.collectAsState()
@@ -99,7 +99,7 @@ fun MyPageScreen(
     var residence by remember { mutableStateOf(userState?.residence ?: "") }
     var preferredDestinations by remember {
         mutableStateOf(
-            userState?.preferredDestinations ?: ""
+            userState?.preferredDestinations ?: "",
         )
     }
 
@@ -121,39 +121,46 @@ fun MyPageScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LightGrayBackground)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(LightGrayBackground),
     ) {
         // --- 상단 고정 영역 ---
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp),
-            horizontalArrangement = Arrangement.End
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+            horizontalArrangement = Arrangement.End,
         ) {
             Button(
                 onClick = {
                     FirebaseAuth.getInstance().signOut()
                     onLogout()
                 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PrimaryBlue,
-                    contentColor = White
-                ),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = PrimaryBlue,
+                        contentColor = White,
+                    ),
                 shape = RoundedCornerShape(8.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             ) {
-                Text(stringResource(id = R.string.mypage_logout), style = MaterialTheme.typography.labelLarge)
+                Text(
+                    stringResource(id = R.string.mypage_logout),
+                    style = MaterialTheme.typography.labelLarge,
+                )
             }
         }
 
         // --- 중앙 스크롤 영역 ---
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp),
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -166,7 +173,7 @@ fun MyPageScreen(
                     }
                 },
                 profileImageUrl = userState?.profileImageUrl,
-                userViewModel = userViewModel
+                userViewModel = userViewModel,
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -175,55 +182,60 @@ fun MyPageScreen(
                 text = stringResource(id = R.string.mypage_info),
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 color = Black,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = 12.dp),
             )
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                colors = CardDefaults.cardColors(containerColor = White)
+                colors = CardDefaults.cardColors(containerColor = White),
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     DropDownField(
-                        items = listOf(stringResource(id = R.string.mypage_kr),
-                            stringResource(id = R.string.mypage_us),
-                            stringResource(id = R.string.mypage_jp),
-                            stringResource(id = R.string.mypage_cn),
-                            stringResource(id = R.string.mypage_uk),
-                            stringResource(id = R.string.mypage_gm),
-                            stringResource(id = R.string.mypage_fr)
-                        ),
+                        items =
+                            listOf(
+                                stringResource(id = R.string.mypage_kr),
+                                stringResource(id = R.string.mypage_us),
+                                stringResource(id = R.string.mypage_jp),
+                                stringResource(id = R.string.mypage_cn),
+                                stringResource(id = R.string.mypage_uk),
+                                stringResource(id = R.string.mypage_gm),
+                                stringResource(id = R.string.mypage_fr),
+                            ),
                         selectedItem = country,
                         leadingIconRes = R.drawable.airport,
                         placeholder = stringResource(id = R.string.mypage_country),
-                        onItemSelected = { country = it }
+                        onItemSelected = { country = it },
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    val areaNames = remember(areaEntities) {
-                        areaEntities
-                            .map { it.regionName }
-                    }
+                    val areaNames =
+                        remember(areaEntities) {
+                            areaEntities
+                                .map { it.regionName }
+                        }
                     DropDownField(
                         items = areaNames,
                         selectedItem = residence,
                         leadingIconRes = R.drawable.country,
                         placeholder = stringResource(id = R.string.mypage_location),
-                        onItemSelected = { residence = it }
+                        onItemSelected = { residence = it },
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     DropDownField(
-                        items = listOf(stringResource(id = R.string.travel_style_mountain),
-                            stringResource(id = R.string.travel_style_sea),
-                            stringResource(id = R.string.travel_style_city),
-                            stringResource(id = R.string.travel_style_activity),
-                            stringResource(id = R.string.travel_style_rest),
-                            stringResource(id = R.string.travel_style_culture)
-                        ),
+                        items =
+                            listOf(
+                                stringResource(id = R.string.travel_style_mountain),
+                                stringResource(id = R.string.travel_style_sea),
+                                stringResource(id = R.string.travel_style_city),
+                                stringResource(id = R.string.travel_style_activity),
+                                stringResource(id = R.string.travel_style_rest),
+                                stringResource(id = R.string.travel_style_culture),
+                            ),
                         selectedItem = preferredDestinations,
                         leadingIconRes = R.drawable.forest_path,
                         placeholder = stringResource(id = R.string.mypage_prefstyle),
-                        onItemSelected = { preferredDestinations = it }
+                        onItemSelected = { preferredDestinations = it },
                     )
                 }
             }
@@ -235,7 +247,7 @@ fun MyPageScreen(
                     text = stringResource(id = R.string.mypage_quiz),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = Black,
-                    modifier = Modifier.padding(bottom = 12.dp)
+                    modifier = Modifier.padding(bottom = 12.dp),
                 )
                 TestButton(
                     preferredLanguages = it,
@@ -244,7 +256,7 @@ fun MyPageScreen(
                             koreanText -> onKRQuizClick()
                             englishText -> onENQuizClick()
                         }
-                    }
+                    },
                 )
             }
 
@@ -255,16 +267,17 @@ fun MyPageScreen(
                 onClick = { onMyPostsClick() },
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(vertical = 14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = White,
-                    contentColor = SecondaryTextColor
-                ),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = White,
+                        contentColor = SecondaryTextColor,
+                    ),
                 shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(width = 1.dp, color = BorderColor)
+                border = BorderStroke(width = 1.dp, color = BorderColor),
             ) {
                 Text(
                     text = stringResource(id = R.string.mypage_post),
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold)
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -272,16 +285,17 @@ fun MyPageScreen(
                 onClick = { onMyApplicationsClick() },
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(vertical = 14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = White,
-                    contentColor = SecondaryTextColor
-                ),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = White,
+                        contentColor = SecondaryTextColor,
+                    ),
                 shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(width = 1.dp, color = BorderColor)
+                border = BorderStroke(width = 1.dp, color = BorderColor),
             ) {
                 Text(
                     text = stringResource(id = R.string.mypage_apply),
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold)
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
                 )
             }
             Spacer(modifier = Modifier.height(24.dp)) // 스크롤 영역 하단 여백
@@ -295,106 +309,139 @@ fun MyPageScreen(
                 if (residence.isEmpty()) unselectedFields.add(locationFieldText)
                 if (preferredDestinations.isEmpty()) unselectedFields.add(prefstyleFieldText)
 
-
                 if (unselectedFields.isNotEmpty()) {
-                    val message = context.getString(R.string.validation_select_fields, unselectedFields.joinToString(", "))
+                    val message =
+                        context.getString(
+                            R.string.validation_select_fields,
+                            unselectedFields.joinToString(", "),
+                        )
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 } else {
                     userState?.let { currentUser ->
-                        val updatedUser = currentUser.copy(
-                            nickname = nickname,
-                            country = country,
-                            residence = residence,
-                            preferredDestinations = preferredDestinations
-                        )
+                        val updatedUser =
+                            currentUser.copy(
+                                nickname = nickname,
+                                country = country,
+                                residence = residence,
+                                preferredDestinations = preferredDestinations,
+                            )
                         userViewModel.updateMyUser(updatedUser)
-                        Toast.makeText(context, context.getString(R.string.mypage_profile_save_success), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.mypage_profile_save_success),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                     }
                 }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             contentPadding = PaddingValues(vertical = 16.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = PrimaryBlue,
-                contentColor = White
-            ),
-            shape = RoundedCornerShape(12.dp)
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = PrimaryBlue,
+                    contentColor = White,
+                ),
+            shape = RoundedCornerShape(12.dp),
         ) {
             Text(
                 stringResource(id = R.string.mypage_profile_save),
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
             )
         }
     }
 }
 
+@Suppress("FunctionName")
 @Composable
 fun ProfileSection(
     nickname: String,
     onNicknameChanged: (String) -> Unit,
     profileImageUrl: String?,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
 ) {
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
     var tempNickname by remember { mutableStateOf(nickname) }
 
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        uri?.let {
-            val size = getFileSize(context, uri)
-            if (size > 2 * 1024 * 1024) {
-                Toast.makeText(context, context.getString(R.string.mypage_select_image_under_2mb), Toast.LENGTH_SHORT).show()
-                return@let
-            }
+    val galleryLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+        ) { uri ->
+            uri?.let {
+                val size = getFileSize(context, uri)
+                if (size > 2 * 1024 * 1024) {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.mypage_select_image_under_2mb),
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    return@let
+                }
 
-            val uid = FirebaseAuth.getInstance().currentUser?.uid ?: run {
-                Toast.makeText(context, context.getString(R.string.mypage_login_required), Toast.LENGTH_SHORT).show()
-                return@let
-            }
-            val storageRef = Firebase.storage.reference.child("profileImages/$uid.jpg")
-
-            storageRef.putFile(uri)
-                .addOnSuccessListener {
-                    storageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
-                        userViewModel.updateProfileImage(downloadUrl.toString())
-                        Toast.makeText(context, context.getString(R.string.mypage_profile_image_changed), Toast.LENGTH_SHORT).show()
+                val uid =
+                    FirebaseAuth.getInstance().currentUser?.uid ?: run {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.mypage_login_required),
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                        return@let
                     }
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(context, context.getString(R.string.mypage_image_upload_failed, e.message), Toast.LENGTH_SHORT).show()
-                }
+                val storageRef = Firebase.storage.reference.child("profileImages/$uid.jpg")
+
+                storageRef.putFile(uri)
+                    .addOnSuccessListener {
+                        storageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
+                            userViewModel.updateProfileImage(downloadUrl.toString())
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.mypage_profile_image_changed),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.mypage_image_upload_failed, e.message),
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    }
+            }
         }
-    }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(modifier = Modifier.clickable { galleryLauncher.launch("image/*") }) {
             Image(
-                painter = rememberAsyncImagePainter(
-                    model = profileImageUrl.takeIf { !it.isNullOrEmpty() }
-                        ?: R.drawable.test_profile
-                ),
+                painter =
+                    rememberAsyncImagePainter(
+                        model =
+                            profileImageUrl.takeIf { !it.isNullOrEmpty() }
+                                ?: R.drawable.test_profile,
+                    ),
                 contentDescription = "프로필 이미지",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .border(2.dp, PrimaryBlue, CircleShape)
+                modifier =
+                    Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+                        .border(2.dp, PrimaryBlue, CircleShape),
             )
             Icon(
                 painter = painterResource(id = R.drawable.change),
                 contentDescription = "프로필 변경",
                 tint = Color.Unspecified,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .offset(x = (-8).dp, y = (-8).dp)
-                    .size(20.dp)
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .offset(x = (-8).dp, y = (-8).dp)
+                        .size(20.dp),
             )
         }
 
@@ -402,22 +449,23 @@ fun ProfileSection(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.clickable {
-                tempNickname = nickname
-                showDialog = true
-            }
+            modifier =
+                Modifier.clickable {
+                    tempNickname = nickname
+                    showDialog = true
+                },
         ) {
             Text(
                 text = nickname.ifEmpty { stringResource(id = R.string.mypage_no_nickname) },
                 style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                color = Black
+                color = Black,
             )
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 painter = painterResource(id = R.drawable.pen_squared),
                 contentDescription = stringResource(id = R.string.mypage_edit_nickname),
                 tint = SecondaryTextColor,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
             )
         }
 
@@ -440,7 +488,12 @@ fun ProfileSection(
 
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text(stringResource(id = R.string.mypage_nick_change), style = MaterialTheme.typography.titleLarge) },
+            title = {
+                Text(
+                    stringResource(id = R.string.mypage_nick_change),
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            },
             text = {
                 Column {
                     TextField(
@@ -448,17 +501,23 @@ fun ProfileSection(
                         onValueChange = {
                             tempNickname = it
                         },
-                        label = { Text(stringResource(id = R.string.mypage_new_nick), color = SecondaryTextColor) },
+                        label = {
+                            Text(
+                                stringResource(id = R.string.mypage_new_nick),
+                                color = SecondaryTextColor,
+                            )
+                        },
                         singleLine = true,
                         isError = nicknameErrorResId != null,
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = LightGrayBackground,
-                            unfocusedContainerColor = LightGrayBackground,
-                            focusedIndicatorColor = PrimaryBlue,
-                            unfocusedIndicatorColor = BorderColor,
-                            errorIndicatorColor = MaterialTheme.colorScheme.error
-                        ),
-                        modifier = Modifier.fillMaxWidth()
+                        colors =
+                            TextFieldDefaults.colors(
+                                focusedContainerColor = LightGrayBackground,
+                                unfocusedContainerColor = LightGrayBackground,
+                                focusedIndicatorColor = PrimaryBlue,
+                                unfocusedIndicatorColor = BorderColor,
+                                errorIndicatorColor = MaterialTheme.colorScheme.error,
+                            ),
+                        modifier = Modifier.fillMaxWidth(),
                     )
                     nicknameErrorResId?.let { resId ->
                         Text(
@@ -466,7 +525,7 @@ fun ProfileSection(
                             text = stringResource(id = resId),
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                            modifier = Modifier.padding(start = 16.dp, top = 4.dp),
                         )
                     }
                 }
@@ -480,7 +539,7 @@ fun ProfileSection(
                         }
                     },
                     enabled = validateNickname(tempNickname) == null,
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
+                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue),
                 ) {
                     Text(stringResource(id = R.string.mypage_change), color = White)
                 }
@@ -488,19 +547,20 @@ fun ProfileSection(
             dismissButton = {
                 Button(
                     onClick = { showDialog = false },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = LightGrayBackground,
-                        contentColor = Black
-                    )
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = LightGrayBackground,
+                            contentColor = Black,
+                        ),
                 ) {
                     Text(stringResource(id = R.string.mypage_cancel))
                 }
-            }
+            },
         )
     }
 }
 
-
+@Suppress("FunctionName")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DropDownField(
@@ -508,41 +568,44 @@ fun DropDownField(
     selectedItem: String,
     leadingIconRes: Int,
     placeholder: String,
-    onItemSelected: (String) -> Unit
+    onItemSelected: (String) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
-        animationSpec = tween(durationMillis = 300), label = "dropdownArrowRotation"
+        animationSpec = tween(durationMillis = 300),
+        label = "dropdownArrowRotation",
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded },
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .background(LightGrayBackground)
-                .border(
-                    width = 1.dp,
-                    color = BorderColor,
-                    shape = RoundedCornerShape(12.dp)
-                )
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(LightGrayBackground)
+                    .border(
+                        width = 1.dp,
+                        color = BorderColor,
+                        shape = RoundedCornerShape(12.dp),
+                    ),
         ) {
             Crossfade(
                 targetState = if (selectedItem.isEmpty()) placeholder else selectedItem,
                 animationSpec = tween(300),
-                label = "dropdownCrossfade"
+                label = "dropdownCrossfade",
             ) { animatedItem ->
                 TextField(
                     value = animatedItem,
                     onValueChange = { },
                     readOnly = true,
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Medium,
-                        color = SecondaryTextColor
-                    ),
+                    textStyle =
+                        MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Medium,
+                            color = SecondaryTextColor,
+                        ),
                     label = {
                         Text(
                             placeholder,
@@ -555,8 +618,9 @@ fun DropDownField(
                             painter = painterResource(id = leadingIconRes),
                             contentDescription = null,
                             tint = SecondaryTextColor,
-                            modifier = Modifier
-                                .size(24.dp)
+                            modifier =
+                                Modifier
+                                    .size(24.dp),
                         )
                     },
                     trailingIcon = {
@@ -564,50 +628,54 @@ fun DropDownField(
                             painter = painterResource(id = R.drawable.triangle_arrow),
                             contentDescription = null,
                             tint = SecondaryTextColor,
-                            modifier = Modifier
-                                .size(20.dp)
-                                .rotate(rotation)
+                            modifier =
+                                Modifier
+                                    .size(20.dp)
+                                    .rotate(rotation),
                         )
                     },
-                    colors = TextFieldDefaults.colors(
-                        focusedTextColor = Black,
-                        unfocusedTextColor = Black,
-                        disabledTextColor = Black,
-                        focusedContainerColor = LightGrayBackground,
-                        unfocusedContainerColor = LightGrayBackground,
-                        disabledContainerColor = LightGrayBackground,
-                        cursorColor = PrimaryBlue,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        focusedLabelColor = PrimaryBlue,
-                        unfocusedLabelColor = Color.Gray
-                    ),
-                    modifier = Modifier
-                        .menuAnchor()
-                        .fillMaxWidth()
+                    colors =
+                        TextFieldDefaults.colors(
+                            focusedTextColor = Black,
+                            unfocusedTextColor = Black,
+                            disabledTextColor = Black,
+                            focusedContainerColor = LightGrayBackground,
+                            unfocusedContainerColor = LightGrayBackground,
+                            disabledContainerColor = LightGrayBackground,
+                            cursorColor = PrimaryBlue,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            focusedLabelColor = PrimaryBlue,
+                            unfocusedLabelColor = Color.Gray,
+                        ),
+                    modifier =
+                        Modifier
+                            .menuAnchor()
+                            .fillMaxWidth(),
                 )
 
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
-                    modifier = Modifier
-                        .exposedDropdownSize()
-                        .background(White, RoundedCornerShape(8.dp))
-                        .border(1.dp, BorderColor, RoundedCornerShape(8.dp))
+                    modifier =
+                        Modifier
+                            .exposedDropdownSize()
+                            .background(White, RoundedCornerShape(8.dp))
+                            .border(1.dp, BorderColor, RoundedCornerShape(8.dp)),
                 ) {
                     DropdownMenuItem(
                         text = {
                             Text(
                                 text = placeholder,
                                 color = Color.Gray,
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium,
                             )
                         },
                         onClick = {
                             expanded = false
                             onItemSelected("")
-                        }
+                        },
                     )
 
                     items.forEach { c ->
@@ -617,13 +685,13 @@ fun DropDownField(
                                     text = c,
                                     color = Black,
                                     fontWeight = if (c == selectedItem) FontWeight.Bold else FontWeight.Normal,
-                                    style = MaterialTheme.typography.bodyMedium
+                                    style = MaterialTheme.typography.bodyMedium,
                                 )
                             },
                             onClick = {
                                 expanded = false
                                 onItemSelected(c)
-                            }
+                            },
                         )
                     }
                 }
@@ -632,7 +700,10 @@ fun DropDownField(
     }
 }
 
-private fun getFileSize(context: Context, uri: Uri): Long {
+private fun getFileSize(
+    context: Context,
+    uri: Uri,
+): Long {
     val cursor = context.contentResolver.query(uri, null, null, null, null)
     val sizeIndex = cursor?.getColumnIndex(OpenableColumns.SIZE) ?: -1
     cursor?.moveToFirst()

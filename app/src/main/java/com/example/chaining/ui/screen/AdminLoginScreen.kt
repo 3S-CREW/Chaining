@@ -2,7 +2,6 @@ package com.example.chaining.ui.screen
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,11 +16,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -49,11 +45,12 @@ import com.example.chaining.R
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
+@Suppress("FunctionName")
 @Composable
 fun AdminLoginScreen(
     onBackClick: () -> Unit = {},
     // 로그인 성공 시 호출될 콜백 함수 추가
-    onAdminLoginSuccess: () -> Unit
+    onAdminLoginSuccess: () -> Unit,
 ) {
     // 아이디와 비밀번호 입력을 기억하기 위한 상태 변수
     var id by remember { mutableStateOf("") }
@@ -69,17 +66,18 @@ fun AdminLoginScreen(
         //  topBar에 로그인 제목을 넣습니다.
         topBar = {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(64.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "뒤로 가기",
                         modifier = Modifier.size(20.dp),
-                        tint = Color.Black
+                        tint = Color.Black,
                     )
                 }
                 Text(
@@ -87,51 +85,61 @@ fun AdminLoginScreen(
                     fontSize = 20.sp,
                     color = Color.Black,
                     modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
                 // 제목을 완벽한 중앙에 맞추기 위한 빈 공간
                 Spacer(modifier = Modifier.width(48.dp))
             }
-        }
+        },
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(32.dp))
             Column(
-                modifier = Modifier
-                    .fillMaxWidth() // 가로 꽉 채움
-                    .padding(horizontal = 32.dp), // 좌우 패딩은 유지
+                modifier =
+                    Modifier
+                        // 가로 꽉 채움
+                        .fillMaxWidth()
+                        // 좌우 패딩은 유지
+                        .padding(horizontal = 32.dp),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 Image(
-                painter = painterResource(id = R.drawable.chain),
-                contentDescription = "Chain",
-                modifier = Modifier
-                    .size(90.dp) // 필요하면 조절
-                    .padding(bottom = 18.dp)
-            )
+                    painter = painterResource(id = R.drawable.chain),
+                    contentDescription = "Chain",
+                    modifier =
+                        Modifier
+                            // 필요하면 조절
+                            .size(90.dp)
+                            .padding(bottom = 18.dp),
+                )
 
                 Text(
                     text = "Chaining",
                     fontSize = 50.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             }
-            Spacer(modifier = Modifier.height(48.dp)) // 로고와 입력창 사이 여백
+            // 로고와 입력창 사이 여백
+            Spacer(modifier = Modifier.height(48.dp))
             Column(
-                modifier = Modifier
-                    .fillMaxWidth() // 가로 꽉 채움
-                    .padding(horizontal = 32.dp), // 좌우 패딩은 유지
+                modifier =
+                    Modifier
+                        // 가로 꽉 채움
+                        .fillMaxWidth()
+                        // 좌우 패딩은 유지
+                        .padding(horizontal = 32.dp),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 // 아이디 입력창
                 TextField(
                     value = id,
@@ -140,13 +148,17 @@ fun AdminLoginScreen(
                     placeholder = { Text("아이디") },
                     shape = RoundedCornerShape(12.dp),
                     singleLine = true,
-                    enabled = !isLoading, // 로딩 중에는 입력 비활성화
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color(0xFFF0F2F5),
-                        unfocusedContainerColor = Color(0xFFF0F2F5),
-                        focusedIndicatorColor = Color.Transparent, // 포커스 시 밑줄 제거
-                        unfocusedIndicatorColor = Color.Transparent // 포커스 없을 때 밑줄 제거
-                    )
+                    // 로딩 중에는 입력 비활성화
+                    enabled = !isLoading,
+                    colors =
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color(0xFFF0F2F5),
+                            unfocusedContainerColor = Color(0xFFF0F2F5),
+                            // 포커스 시 밑줄 제거
+                            focusedIndicatorColor = Color.Transparent,
+                            // 포커스 없을 때 밑줄 제거
+                            unfocusedIndicatorColor = Color.Transparent,
+                        ),
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -163,67 +175,82 @@ fun AdminLoginScreen(
                     visualTransformation = PasswordVisualTransformation(),
                     // 키보드 타입을 비밀번호용으로 설정
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    enabled = !isLoading, // 로딩 중에는 입력 비활성화
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color(0xFFF0F2F5),
-                        unfocusedContainerColor = Color(0xFFF0F2F5),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    )
+                    // 로딩 중에는 입력 비활성화
+                    enabled = !isLoading,
+                    colors =
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color(0xFFF0F2F5),
+                            unfocusedContainerColor = Color(0xFFF0F2F5),
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                        ),
                 )
-
             }
-            Spacer(modifier = Modifier.height(80.dp)) // 입력창과 버튼 사이 여백
+            // 입력창과 버튼 사이 여백
+            Spacer(modifier = Modifier.height(80.dp))
             Column(
-                modifier = Modifier
-                    .fillMaxWidth() // 가로 꽉 채움
-                    .padding(horizontal = 32.dp), // 좌우 패딩은 유지
+                modifier =
+                    Modifier
+                        // 가로 꽉 채움
+                        .fillMaxWidth()
+                        // 좌우 패딩은 유지
+                        .padding(horizontal = 32.dp),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 // 4. 로그인 버튼
                 Button(
                     onClick = {
                         // 입력값 검증
                         if (id.isBlank() || password.isBlank()) {
-                            Toast.makeText(context, "아이디와 비밀번호를 모두 입력해주세요.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "아이디와 비밀번호를 모두 입력해주세요.", Toast.LENGTH_SHORT)
+                                .show()
                             return@Button
                         }
-
-                        isLoading = true // 로딩 시작
+                        // 로딩 시작
+                        isLoading = true
 
                         Firebase.auth.signInWithEmailAndPassword(id.trim(), password)
                             .addOnCompleteListener { task ->
-                                isLoading = false // 로딩 종료
+                                // 로딩 종료
+                                isLoading = false
                                 if (task.isSuccessful) {
                                     // 로그인 성공
                                     Toast.makeText(context, "관리자 로그인 성공", Toast.LENGTH_SHORT).show()
-                                    onAdminLoginSuccess() // 성공 콜백 호출
+                                    // 성공 콜백 호출
+                                    onAdminLoginSuccess()
                                 } else {
                                     // 로그인 실패
-                                    Toast.makeText(context, "로그인 실패: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        context,
+                                        "로그인 실패: ${task.exception?.message}",
+                                        Toast.LENGTH_SHORT,
+                                    ).show()
                                 }
                             }
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp)
-                        .shadow(4.dp, RoundedCornerShape(12.dp)),
-                    enabled = !isLoading, // 로딩 중에는 버튼 비활성화
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .shadow(4.dp, RoundedCornerShape(12.dp)),
+                    // 로딩 중에는 버튼 비활성화
+                    enabled = !isLoading,
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF4285F4),
-                        disabledContainerColor = Color.Gray // 비활성화 시 색상
-                    )
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF4285F4),
+                            // 비활성화 시 색상
+                            disabledContainerColor = Color.Gray,
+                        ),
                 ) {
                     // 로딩 상태에 따라 텍스트 변경
                     Text(
                         text = if (isLoading) "로그인 중..." else "관리자 로그인",
-                        fontSize = 18.sp
+                        fontSize = 18.sp,
                     )
                 }
             }
-
         }
     }
 }

@@ -6,7 +6,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-fun formatRemainingTime(context: Context, remainingMillis: Long): String {
+fun formatRemainingTime(
+    context: Context,
+    remainingMillis: Long,
+): String {
     if (remainingMillis <= 0) {
         return context.getString(R.string.time_closed)
     }
@@ -29,7 +32,6 @@ fun formatRemainingTime(context: Context, remainingMillis: Long): String {
     }
 
     return parts.joinToString(" ")
-
 }
 
 fun formatDate(timestamp: Long): String {

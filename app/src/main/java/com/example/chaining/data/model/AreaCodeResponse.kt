@@ -4,13 +4,13 @@ import com.google.gson.annotations.SerializedName
 
 data class AreaCodeResponse(
     @SerializedName("response")
-    val response: AreaCodeResponse
+    val response: AreaCodeResponse,
 ) {
     data class AreaCodeResponse(
         @SerializedName("body")
         val body: AreaCodeBody,
         @SerializedName("header")
-        val header: AreaCodeHeader
+        val header: AreaCodeHeader,
     ) {
         data class AreaCodeBody(
             @SerializedName("items")
@@ -20,11 +20,11 @@ data class AreaCodeResponse(
             @SerializedName("pageNo")
             val pageNo: Int,
             @SerializedName("totalCount")
-            val totalCount: Int
+            val totalCount: Int,
         ) {
             data class AreaCodeItems(
                 @SerializedName("item")
-                val item: List<AreaCodeItem>
+                val item: List<AreaCodeItem>,
             ) {
                 data class AreaCodeItem(
                     @SerializedName("lDongRegnCd")
@@ -36,7 +36,7 @@ data class AreaCodeResponse(
                     @SerializedName("lDongSignguNm")
                     val lDongSignguNm: String,
                     @SerializedName("rnum")
-                    val rnum: Int
+                    val rnum: Int,
                 )
             }
         }
@@ -45,7 +45,7 @@ data class AreaCodeResponse(
             @SerializedName("resultCode")
             val resultCode: String,
             @SerializedName("resultMsg")
-            val resultMsg: String
+            val resultMsg: String,
         )
     }
 }

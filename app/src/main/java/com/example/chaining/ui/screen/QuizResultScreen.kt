@@ -38,11 +38,13 @@ import com.example.chaining.viewmodel.QuizViewModel
 import com.example.chaining.viewmodel.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Suppress("FunctionName")
 @Composable
 fun QuizResultScreen(
-    quizViewModel: QuizViewModel = hiltViewModel(), // 공유되는 ViewModel
+    // 공유되는 ViewModel
+    quizViewModel: QuizViewModel = hiltViewModel(),
     onNavigateToMyPage: () -> Unit,
-    userViewModel: UserViewModel = hiltViewModel()
+    userViewModel: UserViewModel = hiltViewModel(),
 ) {
     val userState by userViewModel.user.collectAsState()
     val finalLevel by quizViewModel.finalLevel
@@ -62,11 +64,12 @@ fun QuizResultScreen(
     var animationPlayed by remember { mutableStateOf(false) }
     val progress by animateFloatAsState(
         targetValue = if (animationPlayed) (finalLevel / 10f) else 0f,
-        animationSpec = tween(
-            durationMillis = 2000,
-            delayMillis = 500,
-            easing = FastOutSlowInEasing
-        )
+        animationSpec =
+            tween(
+                durationMillis = 2000,
+                delayMillis = 500,
+                easing = FastOutSlowInEasing,
+            ),
     )
 
     LaunchedEffect(Unit) {
@@ -76,43 +79,44 @@ fun QuizResultScreen(
     Scaffold(
         topBar = {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                    .background(Color(0xFF4A526A)),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                        .background(Color(0xFF4A526A)),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = "$topBarTitle",
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             }
         },
-        containerColor = Color(0xFFF3F6FF)
+        containerColor = Color(0xFFF3F6FF),
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(mainTitle, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.weight(1f))
 
-
             // 레벨 표시
             Text(
                 "LV. $finalLevel",
                 fontSize = 40.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF4285F4)
+                color = Color(0xFF4285F4),
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -120,12 +124,13 @@ fun QuizResultScreen(
             // 프로그레스 바
             LinearProgressIndicator(
                 progress = { progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(30.dp)
-                    .clip(RoundedCornerShape(15.dp)),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(30.dp)
+                        .clip(RoundedCornerShape(15.dp)),
                 color = Color(0xFF4285F4),
-                trackColor = Color.LightGray
+                trackColor = Color.LightGray,
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -133,7 +138,7 @@ fun QuizResultScreen(
             Text(
                 "$scoreLabel: $totalScore / 45 $scoreUnit",
                 fontSize = 20.sp,
-                color = Color.Gray
+                color = Color.Gray,
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -141,7 +146,7 @@ fun QuizResultScreen(
             Text(
                 descriptionText,
                 fontSize = 12.sp,
-                color = Color.Gray
+                color = Color.Gray,
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -151,12 +156,13 @@ fun QuizResultScreen(
                     quizViewModel.saveTestResult()
                     onNavigateToMyPage()
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp)
-                    .height(50.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp)
+                        .height(50.dp),
                 shape = RoundedCornerShape(30.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4285F4))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4285F4)),
             ) {
                 Text(confirmButtonText, fontSize = 16.sp)
             }

@@ -40,108 +40,126 @@ import com.example.chaining.ui.component.CardItem
 import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
 
+@Suppress("FunctionName")
 @Composable
 fun ApplicationsScreen(
     onBackClick: () -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel(),
     postViewModel: RecruitPostViewModel = hiltViewModel(),
     postId: String?,
-    type: String, // "My" or "Owner"
-    onViewApplyClick: (String) -> Unit
+    // "My" or "Owner"
+    type: String,
+    onViewApplyClick: (String) -> Unit,
 ) {
     val userState by userViewModel.user.collectAsState()
     val myApplications = userState?.applications.orEmpty()
     val post by postViewModel.post.collectAsState()
 
-    val ownerApplications: Map<String, Application> = if (type == "Owner") {
-        post?.applications ?: emptyMap()
-    } else {
-        emptyMap()
-    }
+    val ownerApplications: Map<String, Application> =
+        if (type == "Owner") {
+            post?.applications ?: emptyMap()
+        } else {
+            emptyMap()
+        }
 
     var showOnlyFinishedApplications by remember { mutableStateOf(false) }
 
-    val applications: List<Application> = if (type == "Owner") {
-        ownerApplications.values.toList()
-    } else {
-        myApplications.values.toList()
-    }
+    val applications: List<Application> =
+        if (type == "Owner") {
+            ownerApplications.values.toList()
+        } else {
+            myApplications.values.toList()
+        }
 
-
-    val filteredApplications: List<Application> = if (showOnlyFinishedApplications) {
-        applications.filter { application -> application.status != "PENDING" }
-    } else {
-        applications
-    }
+    val filteredApplications: List<Application> =
+        if (showOnlyFinishedApplications) {
+            applications.filter { application -> application.status != "PENDING" }
+        } else {
+            applications
+        }
 
     Scaffold(
         topBar = {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                    .background(Color(0xFF4A526A)),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                        .background(Color(0xFF4A526A)),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "뒤로 가기",
                         modifier = Modifier.size(20.dp),
-                        tint = Color.White
+                        tint = Color.White,
                     )
                 }
 
                 // 제목
                 Text(
-                    text = if (type == "Owner") stringResource(id = R.string.post_application) else stringResource(
-                        id = R.string.myapply_title
-                    ),
+                    text =
+                        if (type == "Owner") {
+                            stringResource(id = R.string.post_application)
+                        } else {
+                            stringResource(
+                                id = R.string.myapply_title,
+                            )
+                        },
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
                 Spacer(modifier = Modifier.width(48.dp))
             }
         },
-        containerColor = Color(0xFFF3F6FF)
+        containerColor = Color(0xFFF3F6FF),
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 // 새로 만든 CommunityActionButton 호출
                 ActionButton(
                     modifier = Modifier.weight(1f),
                     iconRes = R.drawable.post,
-                    text = if (showOnlyFinishedApplications) stringResource(id = R.string.myapply_all_post) else stringResource(
-                        id = R.string.myapply_filter_open
-                    ),
+                    text =
+                        if (showOnlyFinishedApplications) {
+                            stringResource(id = R.string.myapply_all_post)
+                        } else {
+                            stringResource(
+                                id = R.string.myapply_filter_open,
+                            )
+                        },
                     onClick = {
                         showOnlyFinishedApplications = !showOnlyFinishedApplications
-                    }
+                    },
                 )
             }
             if (filteredApplications.isEmpty()) {
                 // 데이터가 없을 때
                 Text(
                     text = stringResource(id = R.string.myapply_nothing),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 50.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 50.dp),
                     color = Color.Gray,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             } else {
                 // 모집글 목록 표시

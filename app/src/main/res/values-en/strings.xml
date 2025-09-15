@@ -99,8 +99,8 @@
     <string name="post_write_button">Done</string>
     <string name="post_title">Title</string>
     <string name="post_content">Content</string>
-    <string name="post_travel_style">Prefered Travel Style</string>
-    <string name="post_location">Preffered Location</string>
+    <string name="post_travel_style">Preferred Travel Style</string>
+    <string name="post_location">Preferred Location</string>
     <string name="post_tour_date">Tour Date</string>
     <string name="post_close_date">Application Deadline</string>
     <string name="post_car">Car Availability</string>

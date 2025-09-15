@@ -54,6 +54,7 @@ import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
+@Suppress("FunctionName")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunityScreen(
@@ -64,7 +65,7 @@ fun CommunityScreen(
     onCreatePostClick: () -> Unit,
 ) {
     val context = LocalContext.current
-    // ✅ 1. ViewModel로부터 필터링된 posts와 현재 filterState를 직접 구독
+    // 1. ViewModel로부터 필터링된 posts와 현재 filterState를 직접 구독
     val posts by postViewModel.posts.collectAsState()
     val filterState by postViewModel.filterState.collectAsState()
     val userState by userViewModel.user.collectAsState()
@@ -74,7 +75,7 @@ fun CommunityScreen(
     var showBottomSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
-    // ✅ 2. '필터 적용' 함수는 ViewModel의 함수를 호출하는 역할만 함
+    // 2. '필터 적용' 함수는 ViewModel의 함수를 호출하는 역할만 함
     val applyFilters: (FilterState) -> Unit = { newFilterState ->
         postViewModel.applyFilters(newFilterState)
         scope.launch { sheetState.hide() }.invokeOnCompletion {
@@ -88,7 +89,7 @@ fun CommunityScreen(
     if (showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = { showBottomSheet = false },
-            sheetState = sheetState
+            sheetState = sheetState,
         ) {
             FilterOptionsSheet(
                 currentFilterState = filterState,
@@ -99,7 +100,7 @@ fun CommunityScreen(
                             showBottomSheet = false
                         }
                     }
-                }
+                },
             )
         }
     }
@@ -109,12 +110,13 @@ fun CommunityScreen(
     Scaffold(
         topBar = {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                    .background(Color(0xFF4A526A)),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                        .background(Color(0xFF4A526A)),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 // 뒤로가기 버튼
                 IconButton(onClick = onBackClick) {
@@ -122,7 +124,7 @@ fun CommunityScreen(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "뒤로 가기",
                         modifier = Modifier.size(20.dp),
-                        tint = Color.White
+                        tint = Color.White,
                     )
                 }
 
@@ -132,7 +134,7 @@ fun CommunityScreen(
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
 
                 IconButton(onClick = { showBottomSheet = true }) {
@@ -140,31 +142,33 @@ fun CommunityScreen(
                         painter = painterResource(id = R.drawable.filter),
                         contentDescription = "필터",
                         modifier = Modifier.size(20.dp),
-                        tint = Color.White
+                        tint = Color.White,
                     )
                 }
             }
         },
-        containerColor = Color(0xFFF3F6FF)
+        containerColor = Color(0xFFF3F6FF),
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 // 새로 만든 CommunityActionButton 호출
                 CommunityActionButton(
                     modifier = Modifier.weight(1f),
                     iconRes = R.drawable.post,
                     text = stringResource(id = R.string.community_write_post),
-                    onClick = onCreatePostClick
+                    onClick = onCreatePostClick,
                 )
 
                 // 새로 만든 CommunityActionButton 호출
@@ -172,7 +176,7 @@ fun CommunityScreen(
                     modifier = Modifier.weight(1f),
                     iconRes = R.drawable.reload,
                     text = stringResource(id = R.string.community_refresh),
-                    onClick = { postViewModel.refreshPosts() }
+                    onClick = { postViewModel.refreshPosts() },
                 )
             }
             Log.d("hhhh", posts.toString())
@@ -180,11 +184,12 @@ fun CommunityScreen(
                 // 데이터가 없을 때
                 Text(
                     text = stringResource(id = R.string.community_no_posts),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 50.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 50.dp),
                     color = Color.Gray,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             } else {
                 posts.forEach { post ->
@@ -194,12 +199,13 @@ fun CommunityScreen(
                         type = "모집글",
                         recruitPost = post,
                         isLiked = isLiked,
-                        remainingTime = formatRemainingTime(
-                            context,
-                            post.closeAt - System.currentTimeMillis()
-                        ),
+                        remainingTime =
+                            formatRemainingTime(
+                                context,
+                                post.closeAt - System.currentTimeMillis(),
+                            ),
                         onRightButtonClick = { userViewModel.toggleLike(post.postId) },
-                        currentUserId = userState?.id
+                        currentUserId = userState?.id,
                     )
                 }
             }
@@ -207,13 +213,13 @@ fun CommunityScreen(
     }
 }
 
-
+@Suppress("FunctionName")
 @Composable
 fun CommunityActionButton(
     modifier: Modifier = Modifier,
     iconRes: Int,
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
@@ -221,20 +227,20 @@ fun CommunityActionButton(
         shape = RoundedCornerShape(30.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7282B4)),
         // 버튼 내부 컨텐츠의 좌우 여백을 조절
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 6.dp)
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 6.dp),
     ) {
         Icon(
             painter = painterResource(id = iconRes),
             contentDescription = text,
             tint = Color.White,
-            modifier = Modifier.size(22.dp)
+            modifier = Modifier.size(22.dp),
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = text,
             color = Color.White,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp
+            fontSize = 16.sp,
         )
     }
 }

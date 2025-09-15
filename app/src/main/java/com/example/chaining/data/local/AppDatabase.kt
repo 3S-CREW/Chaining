@@ -13,17 +13,18 @@ import com.example.chaining.data.local.entity.UserEntity
 @Database(
     entities = [UserEntity::class, NotificationEntity::class, AreaEntity::class],
     version = 8,
-    exportSchema = false
+    exportSchema = false,
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
+
     abstract fun notificationDao(): NotificationDao
+
     abstract fun areaDao(): AreaDao
 
     companion object {
         @Volatile
-        private var INSTANCE: AppDatabase? = null
-
+        private var instance: AppDatabase? = null
     }
 }

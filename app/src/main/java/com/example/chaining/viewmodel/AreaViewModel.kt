@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:property-naming")
+
 package com.example.chaining.viewmodel
 
 import androidx.lifecycle.ViewModel
@@ -11,22 +13,23 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
-class AreaViewModel @Inject constructor(
-    private val repository: AreaRepository
-) : ViewModel() {
+class AreaViewModel
+    @Inject
+    constructor(
+        private val repository: AreaRepository,
+    ) : ViewModel() {
+        val areaCodes: StateFlow<List<AreaEntity>> =
+            repository.allAreas
+                .stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(5000),
+                    initialValue = emptyList(),
+                )
 
-    val areaCodes: StateFlow<List<AreaEntity>> = repository.allAreas
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
-
-    init {
-        viewModelScope.launch {
-            repository.refreshAreasIfNeeded()
+        init {
+            viewModelScope.launch {
+                repository.refreshAreasIfNeeded()
+            }
         }
     }
-}

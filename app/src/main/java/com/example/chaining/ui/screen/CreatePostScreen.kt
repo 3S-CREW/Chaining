@@ -56,6 +56,7 @@ import kotlinx.coroutines.flow.collectLatest
 private const val MAX_TITLE_LENGTH = 20
 private const val MAX_CONTENT_LENGTH = 300
 
+@Suppress("FunctionName")
 @Composable
 fun CreatePostScreen(
     postId: String? = null,
@@ -63,8 +64,9 @@ fun CreatePostScreen(
     onBackClick: () -> Unit = {},
     onPostCreated: () -> Unit,
     userViewModel: UserViewModel = hiltViewModel(),
-    type: String, // "생성" or "수정"
-    areaViewModel: AreaViewModel = hiltViewModel()
+    // "생성" or "수정"
+    type: String,
+    areaViewModel: AreaViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val areaEntities by areaViewModel.areaCodes.collectAsState()
@@ -78,22 +80,22 @@ fun CreatePostScreen(
         }
     }
 
-
     // ✅ ViewModel의 이벤트를 구독하고 Toast 메시지를 표시
     LaunchedEffect(Unit) {
         postViewModel.postCreationEvent.collectLatest { event ->
-            val message = when (event) {
-                is PostCreationEvent.Success -> {
-                    // 성공 시 strings.xml에서 성공 메시지를 가져옴
-                    context.getString(R.string.post_creation_success)
-                }
+            val message =
+                when (event) {
+                    is PostCreationEvent.Success -> {
+                        // 성공 시 strings.xml에서 성공 메시지를 가져옴
+                        context.getString(R.string.post_creation_success)
+                    }
 
-                is PostCreationEvent.Failure -> {
-                    // 실패 시 strings.xml에서 실패 메시지 형식을 가져와 조합
-                    val errorMessage = event.message ?: context.getString(R.string.unknown_error)
-                    context.getString(R.string.post_creation_failed, errorMessage)
+                    is PostCreationEvent.Failure -> {
+                        // 실패 시 strings.xml에서 실패 메시지 형식을 가져와 조합
+                        val errorMessage = event.message ?: context.getString(R.string.unknown_error)
+                        context.getString(R.string.post_creation_failed, errorMessage)
+                    }
                 }
-            }
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
     }
@@ -104,7 +106,7 @@ fun CreatePostScreen(
     var preferredLocations by remember { mutableStateOf("") }
     var preferredLanguages by remember {
         mutableStateOf(
-            userState?.preferredLanguages ?: emptyMap()
+            userState?.preferredLanguages ?: emptyMap(),
         )
     }
     var hasCar by remember { mutableStateOf("") }
@@ -112,8 +114,12 @@ fun CreatePostScreen(
     var closeAt by remember { mutableStateOf<Long?>(null) }
     var kakaoOpenChatUrl by remember { mutableStateOf("") }
 
-    val buttonText = if (type == "생성") stringResource(id = R.string.post_write_button)
-    else stringResource(id = R.string.post_edit_button)
+    val buttonText =
+        if (type == "생성") {
+            stringResource(id = R.string.post_write_button)
+        } else {
+            stringResource(id = R.string.post_edit_button)
+        }
 
     val fieldTitleText = stringResource(id = R.string.post_title)
     val fieldContentText = stringResource(id = R.string.post_content)
@@ -160,12 +166,13 @@ fun CreatePostScreen(
     Scaffold(
         topBar = {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp) // 원하는 높이로 직접 설정
-                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                    .background(Color(0xFF4A526A)),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(64.dp) // 원하는 높이로 직접 설정
+                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                        .background(Color(0xFF4A526A)),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 // 뒤로가기 아이콘 버튼
                 IconButton(onClick = onBackClick) {
@@ -173,7 +180,7 @@ fun CreatePostScreen(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "뒤로 가기",
                         modifier = Modifier.size(20.dp),
-                        tint = Color.White
+                        tint = Color.White,
                     )
                 }
 
@@ -183,21 +190,23 @@ fun CreatePostScreen(
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
 
                 // 제목을 완벽한 중앙에 맞추기 위한 빈 공간
                 Spacer(modifier = Modifier.width(48.dp))
             }
         },
-        containerColor = Color(0xFFF3F6FF)
+        containerColor = Color(0xFFF3F6FF),
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()) // 스크롤 가능하게 만듦
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                    // 스크롤 가능하게 만듦
+                    .verticalScroll(rememberScrollState()),
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -208,55 +217,57 @@ fun CreatePostScreen(
                 placeholder = { Text(text = stringResource(id = R.string.post_write_enter_title)) },
                 shape = RoundedCornerShape(16.dp),
                 singleLine = true,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    disabledContainerColor = Color.White,
-                    focusedPlaceholderColor = Color.Gray,
-                    unfocusedPlaceholderColor = Color.Gray,
-                    focusedIndicatorColor = Color.LightGray,
-                    unfocusedIndicatorColor = Color.LightGray
-                ),
+                colors =
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        disabledContainerColor = Color.White,
+                        focusedPlaceholderColor = Color.Gray,
+                        unfocusedPlaceholderColor = Color.Gray,
+                        focusedIndicatorColor = Color.LightGray,
+                        unfocusedIndicatorColor = Color.LightGray,
+                    ),
                 supportingText = {
                     Text(
                         text = "${title.length} / $MAX_TITLE_LENGTH",
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.End
+                        textAlign = TextAlign.End,
                     )
-                }
+                },
             )
             Spacer(modifier = Modifier.height(20.dp))
 
             // 여행지 스타일 드롭다운
-            val travelStyles = listOf(
-                stringResource(id = R.string.travel_style_mountain),
-                stringResource(id = R.string.travel_style_sea),
-                stringResource(id = R.string.travel_style_city),
-                stringResource(id = R.string.travel_style_activity),
-                stringResource(id = R.string.travel_style_rest),
-                stringResource(id = R.string.travel_style_culture)
-            )
+            val travelStyles =
+                listOf(
+                    stringResource(id = R.string.travel_style_mountain),
+                    stringResource(id = R.string.travel_style_sea),
+                    stringResource(id = R.string.travel_style_city),
+                    stringResource(id = R.string.travel_style_activity),
+                    stringResource(id = R.string.travel_style_rest),
+                    stringResource(id = R.string.travel_style_culture),
+                )
             PreferenceSelector(
                 options = travelStyles,
                 placeholderText = stringResource(id = R.string.post_write_style),
                 selectedOption = preferredDestinations,
-                onOptionSelected = { preferredDestinations = it }
+                onOptionSelected = { preferredDestinations = it },
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-
             // 여행 지역 드롭다운
-            val areaNames = remember(areaEntities) {
-                areaEntities
-                    .map { it.regionName }
-            }
+            val areaNames =
+                remember(areaEntities) {
+                    areaEntities
+                        .map { it.regionName }
+                }
             PreferenceSelector(
                 options = areaNames,
                 placeholderText = stringResource(id = R.string.post_write_location),
                 selectedOption = preferredLocations,
                 onOptionSelected = { selectedName ->
                     preferredLocations = selectedName
-                }
+                },
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -264,7 +275,7 @@ fun CreatePostScreen(
             DatePickerFieldToModal(
                 modifier = Modifier.fillMaxWidth(),
                 selectedDate = tourAt,
-                onDateSelected = { tourAt = it }
+                onDateSelected = { tourAt = it },
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -272,19 +283,20 @@ fun CreatePostScreen(
             DatePickerFieldToModal(
                 modifier = Modifier.fillMaxWidth(),
                 selectedDate = closeAt,
-                onDateSelected = { closeAt = it }
+                onDateSelected = { closeAt = it },
             )
             Spacer(modifier = Modifier.height(16.dp))
             SingleDropdown(
                 label = stringResource(id = R.string.post_write_car),
-                options = listOf(
-                    stringResource(id = R.string.post_write_car_six),
-                    stringResource(id = R.string.post_write_car_four),
-                    stringResource(id = R.string.post_write_car_two),
-                    stringResource(id = R.string.post_write_no)
-                ),
+                options =
+                    listOf(
+                        stringResource(id = R.string.post_write_car_six),
+                        stringResource(id = R.string.post_write_car_four),
+                        stringResource(id = R.string.post_write_car_two),
+                        stringResource(id = R.string.post_write_no),
+                    ),
                 selectedOption = hasCar,
-                onOptionSelected = { hasCar = it }
+                onOptionSelected = { hasCar = it },
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -292,19 +304,21 @@ fun CreatePostScreen(
             OutlinedTextField(
                 value = kakaoOpenChatUrl,
                 onValueChange = { kakaoOpenChatUrl = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(60.dp),
                 placeholder = { Text(stringResource(id = R.string.post_write_kakao)) },
                 shape = RoundedCornerShape(16.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedPlaceholderColor = Color.Gray,
-                    unfocusedPlaceholderColor = Color.Gray,
-                    focusedIndicatorColor = Color.LightGray,
-                    unfocusedIndicatorColor = Color.LightGray
-                )
+                colors =
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        focusedPlaceholderColor = Color.Gray,
+                        unfocusedPlaceholderColor = Color.Gray,
+                        focusedIndicatorColor = Color.LightGray,
+                        unfocusedIndicatorColor = Color.LightGray,
+                    ),
             )
             Spacer(modifier = Modifier.height(36.dp))
 
@@ -312,26 +326,28 @@ fun CreatePostScreen(
             OutlinedTextField(
                 value = content,
                 onValueChange = { if (it.length <= MAX_CONTENT_LENGTH) content = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
                 placeholder = { Text(stringResource(id = R.string.post_write)) },
                 shape = RoundedCornerShape(16.dp),
                 supportingText = {
                     Text(
                         text = "${content.length} / $MAX_CONTENT_LENGTH",
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.End
+                        textAlign = TextAlign.End,
                     )
                 },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedPlaceholderColor = Color.Gray,
-                    unfocusedPlaceholderColor = Color.Gray,
-                    focusedIndicatorColor = Color.LightGray,
-                    unfocusedIndicatorColor = Color.LightGray
-                )
+                colors =
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        focusedPlaceholderColor = Color.Gray,
+                        unfocusedPlaceholderColor = Color.Gray,
+                        focusedIndicatorColor = Color.LightGray,
+                        unfocusedIndicatorColor = Color.LightGray,
+                    ),
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -353,7 +369,7 @@ fun CreatePostScreen(
                         Toast.makeText(
                             context,
                             validationInvalidKakaoLinkText,
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_LONG,
                         ).show()
                         return@SaveButton
                     }
@@ -364,28 +380,30 @@ fun CreatePostScreen(
                         Toast.makeText(
                             context,
                             String.format(validationPleaseEnterText, missingFieldsString),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_LONG,
                         ).show()
                     } else {
                         // 모든 항목 유효
-                        val newPost = RecruitPost(
-                            postId = postId ?: "",
-                            title = title,
-                            content = content,
-                            preferredDestinations = preferredDestinations,
-                            preferredLocations = preferredLocations,
-                            tourAt = tourAt!!,
-                            closeAt = closeAt!!,
-                            hasCar = hasCar,
-                            preferredLanguages = preferredLanguages,
-                            kakaoOpenChatUrl = kakaoOpenChatUrl,
-                            createdAt = System.currentTimeMillis(),
-                            owner = UserSummary(
-                                id = userState?.id ?: "",
-                                nickname = userState?.nickname ?: "",
-                                profileImageUrl = userState?.profileImageUrl ?: ""
+                        val newPost =
+                            RecruitPost(
+                                postId = postId ?: "",
+                                title = title,
+                                content = content,
+                                preferredDestinations = preferredDestinations,
+                                preferredLocations = preferredLocations,
+                                tourAt = tourAt!!,
+                                closeAt = closeAt!!,
+                                hasCar = hasCar,
+                                preferredLanguages = preferredLanguages,
+                                kakaoOpenChatUrl = kakaoOpenChatUrl,
+                                createdAt = System.currentTimeMillis(),
+                                owner =
+                                    UserSummary(
+                                        id = userState?.id ?: "",
+                                        nickname = userState?.nickname ?: "",
+                                        profileImageUrl = userState?.profileImageUrl ?: "",
+                                    ),
                             )
-                        )
                         if (type == "생성") {
                             postViewModel.createPost(newPost)
                         } else {
@@ -394,26 +412,27 @@ fun CreatePostScreen(
                         }
                     }
                 },
-                text = buttonText
+                text = buttonText,
             )
         }
     }
 }
 
+@Suppress("FunctionName")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SingleDropdown(
     label: String,
     options: List<String>,
     selectedOption: String,
-    onOptionSelected: (String) -> Unit
+    onOptionSelected: (String) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var displayText by remember { mutableStateOf(selectedOption) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
+        onExpandedChange = { expanded = !expanded },
     ) {
         OutlinedTextField(
             value = displayText,
@@ -421,47 +440,52 @@ fun SingleDropdown(
             readOnly = true,
             label = { Text(label) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .menuAnchor() // 중요: 메뉴 위치 잡아줌
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    // 중요: 메뉴 위치 잡아줌
+                    .menuAnchor(),
         )
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
                     text = { Text(option) },
                     onClick = {
-                        displayText = option // TextField에 바로 반영
-                        onOptionSelected(option) // 부모 상태 반영
+                        // TextField에 바로 반영
+                        displayText = option
+                        // 부모 상태 반영
+                        onOptionSelected(option)
                         expanded = false
-                    }
+                    },
                 )
             }
         }
     }
 }
 
-
+@Suppress("FunctionName")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreferenceSelector(
     options: List<String>,
     placeholderText: String,
     selectedOption: String,
-    onOptionSelected: (String) -> Unit
+    onOptionSelected: (String) -> Unit,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = isExpanded,
-        onExpandedChange = { isExpanded = !isExpanded }
+        onExpandedChange = { isExpanded = !isExpanded },
     ) {
         OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .menuAnchor(),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(),
             readOnly = true,
             value = selectedOption,
             onValueChange = {},
@@ -470,7 +494,7 @@ fun PreferenceSelector(
                 Icon(
                     painter = painterResource(id = R.drawable.favorite_spot),
                     contentDescription = null,
-                    tint = Color(0xFF4285F4)
+                    tint = Color(0xFF4285F4),
                 )
             },
             trailingIcon = {
@@ -478,26 +502,27 @@ fun PreferenceSelector(
                     painter = painterResource(id = R.drawable.down_arrow),
                     contentDescription = "드롭다운 메뉴 열기",
                     modifier = Modifier.size(16.dp),
-                    tint = Color.LightGray
-
+                    tint = Color.LightGray,
                 )
             },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedPlaceholderColor = Color.Gray,
-                unfocusedPlaceholderColor = Color.LightGray,
-                focusedIndicatorColor = Color.LightGray,
-                unfocusedIndicatorColor = Color.LightGray
-            ),
-            shape = RoundedCornerShape(16.dp)
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedPlaceholderColor = Color.Gray,
+                    unfocusedPlaceholderColor = Color.LightGray,
+                    focusedIndicatorColor = Color.LightGray,
+                    unfocusedIndicatorColor = Color.LightGray,
+                ),
+            shape = RoundedCornerShape(16.dp),
         )
         ExposedDropdownMenu(
             expanded = isExpanded,
             onDismissRequest = { isExpanded = false },
-            modifier = Modifier
-                .exposedDropdownSize()
-                .background(Color.White)
+            modifier =
+                Modifier
+                    .exposedDropdownSize()
+                    .background(Color.White),
         ) {
             options.forEach { selectionOption ->
                 DropdownMenuItem(
@@ -506,7 +531,7 @@ fun PreferenceSelector(
                         onOptionSelected(selectionOption)
                         isExpanded = false
                     },
-                    modifier = Modifier.background(Color.White)
+                    modifier = Modifier.background(Color.White),
                 )
             }
         }

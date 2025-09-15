@@ -9,14 +9,21 @@ import retrofit2.http.Query
 interface AreaService {
     @GET("ldongCode2")
     suspend fun getAreaCodes(
-        @Query("serviceKey", encoded = true) serviceKey: String, // API 키
-        @Query("lDongRegnCd") lDongRegnCd: Int = 11, // 지역 코드
-        @Query("pageNo") PageNo: Int = 1, // 불러올 페이지 수
-        @Query("numOfRows") numOfRows: Int = 1000, // 불러올 행의 수
-        @Query("lDongListYn") lDongListYn: String = "Y", // 목록조회 여부
-        @Query("MobileOS") mobileOS: String = "AND", // OS 종류
-        @Query("MobileApp") mobileAPP: String = "Chaining",  // 앱 명
-        @Query("_type") type: String = "json" // 데이터 타입
+        // API 키
+        @Query("serviceKey", encoded = true) serviceKey: String,
+        // 지역 코드
+        @Query("lDongRegnCd") lDongRegnCd: Int = 11,
+        // 불러올 페이지 수
+        @Query("pageNo") PageNo: Int = 1,
+        // 불러올 행의 수
+        @Query("numOfRows") numOfRows: Int = 1000,
+        // 목록조회 여부
+        @Query("lDongListYn") lDongListYn: String = "Y",
+        // OS 종류
+        @Query("MobileOS") mobileOS: String = "AND",
+        // 앱 명
+        @Query("MobileApp") mobileAPP: String = "Chaining",
+        // 데이터 타입
+        @Query("_type") type: String = "json",
     ): AreaCodeResponse
-
 }

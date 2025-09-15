@@ -23,14 +23,17 @@ private val LightColorScheme =
         primary = Purple40,
         secondary = PurpleGrey40,
         tertiary = Pink40,
-        background = Color.White, // 원하는 색상 (#FFFFBF)
-        surface = Color.White,    // Scaffold, Surface 등 표면도 같은 색상
+        // 원하는 색상 (#FFFFBF)
+        background = Color.White,
+        // Scaffold, Surface 등 표면도 같은 색상
+        surface = Color.White,
         onBackground = Color.Black,
-        onSurface = Color.Black
+        onSurface = Color.Black,
     )
 
+@Suppress("FunctionName")
 @Composable
-fun chainingTheme(
+fun ChainingTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,

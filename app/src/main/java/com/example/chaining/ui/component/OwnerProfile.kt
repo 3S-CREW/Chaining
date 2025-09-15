@@ -32,44 +32,50 @@ import com.example.chaining.R
 import com.example.chaining.domain.model.UserSummary
 import com.example.chaining.viewmodel.UserViewModel
 
+@Suppress("FunctionName")
 @Composable
-fun ownerProfile(
+fun OwnerProfile(
     owner: UserSummary,
-    where: String, // 카드뷰, 모집글 상세보기, 지원서
+    // 카드뷰, 모집글 상세보기, 지원서
+    where: String,
     userViewModel: UserViewModel = hiltViewModel(),
-    type: String? = "" // "상세 보기"
+    // "상세 보기"
+    type: String? = "",
 ) {
     val userState by userViewModel.user.collectAsState()
-    val nicknameInfo = when (where) {
-        "카드뷰" -> 18.sp to 0xFF4A526A
-        "모집글 상세보기" -> 14.sp to 0xFFFFFFFF
-        "지원서" -> 14.sp to 0xFF4A526A
-        else -> 14.sp to 0xFF4A526A
-    }
+    val nicknameInfo =
+        when (where) {
+            "카드뷰" -> 18.sp to 0xFF4A526A
+            "모집글 상세보기" -> 14.sp to 0xFFFFFFFF
+            "지원서" -> 14.sp to 0xFF4A526A
+            else -> 14.sp to 0xFF4A526A
+        }
 
-    val countryInfo = when (where) {
-        "카드뷰" -> 14.sp to 0xFF7282B4
-        "모집글 상세보기" -> 12.sp to 0xCCFFFFFF
-        "지원서" -> 12.sp to 0xFF4A526A
-        else -> 12.sp to 0xFF4A526A
-    }
+    val countryInfo =
+        when (where) {
+            "카드뷰" -> 14.sp to 0xFF7282B4
+            "모집글 상세보기" -> 12.sp to 0xCCFFFFFF
+            "지원서" -> 12.sp to 0xFF4A526A
+            else -> 12.sp to 0xFF4A526A
+        }
 
-    val imageSize = when (where) {
-        "카드뷰" -> 50.dp
-        else -> 40.dp
-    }
+    val imageSize =
+        when (where) {
+            "카드뷰" -> 50.dp
+            else -> 40.dp
+        }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-
-        ) {
+    ) {
         AsyncImage(
             model = if (owner.profileImageUrl.isNotBlank()) owner.profileImageUrl else R.drawable.test_profile,
             contentDescription = "작성자 프로필 사진",
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(imageSize)
-                .clip(RoundedCornerShape(16.dp))
+            modifier =
+                Modifier
+                    .size(imageSize)
+                    .clip(RoundedCornerShape(16.dp)),
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -79,38 +85,40 @@ fun ownerProfile(
                 text = owner.nickname,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = nicknameInfo.first,
-                color = Color(nicknameInfo.second)
+                color = Color(nicknameInfo.second),
             )
             Text(
                 text = owner.country,
                 fontSize = countryInfo.first,
-                color = Color(countryInfo.second)
+                color = Color(countryInfo.second),
             )
         }
         if (type == "상세 보기") {
             Box(
-                modifier = Modifier
-                    .size(30.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFF3ECDFF))
-                    .border(2.dp, Color.White, CircleShape)
-                    .padding(3.dp)
-                    .clickable {
-                        val currentUserSummary = UserSummary(
-                            id = userState?.id ?: "",
-                            nickname = userState?.nickname ?: "",
-                            profileImageUrl = userState?.profileImageUrl ?: "",
-                            country = userState?.country ?: ""
-                        )
-                        userViewModel.toggleFollow(currentUserSummary, owner)
-                    },
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .size(30.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFF3ECDFF))
+                        .border(2.dp, Color.White, CircleShape)
+                        .padding(3.dp)
+                        .clickable {
+                            val currentUserSummary =
+                                UserSummary(
+                                    id = userState?.id ?: "",
+                                    nickname = userState?.nickname ?: "",
+                                    profileImageUrl = userState?.profileImageUrl ?: "",
+                                    country = userState?.country ?: "",
+                                )
+                            userViewModel.toggleFollow(currentUserSummary, owner)
+                        },
+                contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.follow),
                     contentDescription = "친구 추가",
                     tint = Color.White,
-                    modifier = Modifier.size(12.dp)
+                    modifier = Modifier.size(12.dp),
                 )
             }
         }

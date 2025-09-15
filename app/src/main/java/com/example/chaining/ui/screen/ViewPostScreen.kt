@@ -37,12 +37,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
 import com.example.chaining.domain.model.RecruitPost
+import com.example.chaining.ui.component.OwnerProfile
 import com.example.chaining.ui.component.SaveButton
 import com.example.chaining.ui.component.formatDate
-import com.example.chaining.ui.component.ownerProfile
 import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
 
+@Suppress("FunctionName")
 @Composable
 fun ViewPostScreen(
     userViewModel: UserViewModel = hiltViewModel(),
@@ -54,7 +55,7 @@ fun ViewPostScreen(
     onMainHomeClick: () -> Unit,
     onCommunityClick: () -> Unit,
     onFeedClick: () -> Unit,
-    onNotificationClick: () -> Unit
+    onNotificationClick: () -> Unit,
 ) {
     val userState by userViewModel.user.collectAsState()
     val post by postViewModel.post.collectAsState()
@@ -63,11 +64,12 @@ fun ViewPostScreen(
     // post가 null이면 로딩 UI 표시
     if (currentPost == null) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(30.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             Text("Loading...", fontSize = 18.sp)
         }
@@ -77,23 +79,24 @@ fun ViewPostScreen(
     Scaffold(
         topBar = {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                    .background(Color(0xFF4A526A)),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                        .background(Color(0xFF4A526A)),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "뒤로 가기",
                         modifier = Modifier.size(20.dp),
-                        tint = Color.White
+                        tint = Color.White,
                     )
                 }
 
-                ownerProfile(owner = currentPost.owner, where = "모집글 상세보기", type = "상세 보기")
+                OwnerProfile(owner = currentPost.owner, where = "모집글 상세보기", type = "상세 보기")
 
                 // 제목을 완벽한 중앙에 맞추기 위한 빈 공간
                 Spacer(modifier = Modifier.width(48.dp))
@@ -109,28 +112,31 @@ fun ViewPostScreen(
                 }
             })
         },
-        containerColor = Color(0xFFF3F6FF)
+        containerColor = Color(0xFFF3F6FF),
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(start = 10.dp, end = 10.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(start = 10.dp, end = 10.dp),
         ) {
             // 스크롤이 필요한 콘텐츠 영역 (Card)
             Card(
                 // weight(1f)를 주어 남는 공간을 모두 차지하게 함
-                modifier = Modifier
-                    .padding(12.dp)
-                    .weight(1f),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFF3F6FF))
+                modifier =
+                    Modifier
+                        .padding(12.dp)
+                        .weight(1f),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFF3F6FF)),
             ) {
                 // 카드 내부는 이전과 동일하게 스크롤 가능
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .verticalScroll(rememberScrollState())
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .verticalScroll(rememberScrollState()),
                 ) {
                     Spacer(modifier = Modifier.height(30.dp))
 
@@ -138,59 +144,59 @@ fun ViewPostScreen(
                         text = currentPost.title,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF4A526A)
+                        color = Color(0xFF4A526A),
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
 
                     HorizontalDivider(
                         thickness = 1.dp,
-                        color = Color.LightGray
+                        color = Color.LightGray,
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    setInfo(
+                    SetInfo(
                         icon = R.drawable.global,
                         title = stringResource(id = R.string.post_style),
-                        content = currentPost.preferredDestinations
+                        content = currentPost.preferredDestinations,
                     )
 
-                    setInfo(
+                    SetInfo(
                         icon = R.drawable.calendar,
                         title = stringResource(id = R.string.post_date),
-                        content = formatDate(currentPost.tourAt)
+                        content = formatDate(currentPost.tourAt),
                     )
 
-                    setInfo(
+                    SetInfo(
                         icon = R.drawable.car,
                         title = stringResource(id = R.string.post_car),
-                        content = currentPost.hasCar
+                        content = currentPost.hasCar,
                     )
 
-                    setInfo(
+                    SetInfo(
                         icon = R.drawable.timer,
                         title = stringResource(id = R.string.post_finish),
-                        content = formatDate(currentPost.closeAt)
+                        content = formatDate(currentPost.closeAt),
                     )
 
-                    setInfo(
+                    SetInfo(
                         icon = R.drawable.language,
                         title = stringResource(id = R.string.post_lang),
-                        content = currentPost.preferredLanguages.values.joinToString { it.language }
+                        content = currentPost.preferredLanguages.values.joinToString { it.language },
                     )
 
-                    setInfo(
+                    SetInfo(
                         icon = R.drawable.level,
                         title = stringResource(id = R.string.post_lang_level),
-                        content = currentPost.preferredLanguages.values.joinToString { it.level.toString() }
+                        content = currentPost.preferredLanguages.values.joinToString { it.level.toString() },
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
 
                     HorizontalDivider(
                         thickness = 1.dp,
-                        color = Color.LightGray
+                        color = Color.LightGray,
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -199,64 +205,67 @@ fun ViewPostScreen(
                         text = currentPost.content,
                         fontSize = 16.sp,
                         lineHeight = 22.sp,
-                        color = Color(0xFF4A526A)
+                        color = Color(0xFF4A526A),
                     )
                 }
             }
 
-
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 10.dp),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (userState?.id == currentPost.owner.id) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         SaveButton(
                             onSave = { onEditClick(currentPost.postId) },
                             text = stringResource(id = R.string.post_edit),
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
                         SaveButton(
                             onSave = { onApplicationListClick(currentPost.postId) },
                             text = stringResource(id = R.string.post_look),
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
                     }
 
                     //                SaveButton(onSave = { /*TODO*/ }, text = "삭제")
                 } else {
-                    SaveButton(onSave = { onJoinPostClick(currentPost) }, text = stringResource(id = R.string.post_button))
+                    SaveButton(
+                        onSave = { onJoinPostClick(currentPost) },
+                        text = stringResource(id = R.string.post_button),
+                    )
                     //                SaveButton(onSave = { /*TODO*/ }, text = "숨김")
-
                 }
             }
-
         }
     }
 }
 
+@Suppress("FunctionName")
 @Composable
-fun setInfo(
+fun SetInfo(
     icon: Int,
     title: String,
-    content: String
+    content: String,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             painter = painterResource(id = icon),
             contentDescription = "정보 아이콘",
             modifier = Modifier.size(25.dp),
-            tint = Color(0xFF4A526A)
+            tint = Color(0xFF4A526A),
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -266,7 +275,7 @@ fun setInfo(
             modifier = Modifier.weight(2f),
             color = Color(0xFF4A526A),
             fontSize = 14.sp,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -276,7 +285,7 @@ fun setInfo(
             modifier = Modifier.weight(1f),
             color = Color(0xFF4A526A),
             fontSize = 14.sp,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }

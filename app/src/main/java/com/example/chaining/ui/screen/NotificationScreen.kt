@@ -28,7 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -55,10 +55,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+@Suppress("FunctionName")
 @Composable
 fun NotificationScreen(
     viewModel: NotificationViewModel = hiltViewModel(),
-    onViewApplyClick: (String) -> Unit
+    onViewApplyClick: (String) -> Unit,
 ) {
     val notifications by viewModel.notifications.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -67,11 +68,12 @@ fun NotificationScreen(
     val eventFlow = viewModel.event
     val context = LocalContext.current
 
-    var selectedTabIndex by remember { mutableStateOf(0) }
-    val tabTitles = listOf(
-        stringResource(id = R.string.alarm_follow),
-        stringResource(id = R.string.alarm_apply)
-    )
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val tabTitles =
+        listOf(
+            stringResource(id = R.string.alarm_follow),
+            stringResource(id = R.string.alarm_apply),
+        )
 
     LaunchedEffect(Unit) {
         eventFlow.collect { event ->
@@ -92,29 +94,31 @@ fun NotificationScreen(
     }
 
     // 알림 타입별 필터링
-    val filteredNotifications = when (selectedTabIndex) {
-        0 -> notifications.filter { it.type.equals("follow", ignoreCase = true) }
-        1 -> notifications.filter { it.type.equals("application", ignoreCase = true) }
-        else -> emptyList()
-    }
+    val filteredNotifications =
+        when (selectedTabIndex) {
+            0 -> notifications.filter { it.type.equals("follow", ignoreCase = true) }
+            1 -> notifications.filter { it.type.equals("application", ignoreCase = true) }
+            else -> emptyList()
+        }
 
     Scaffold(
         containerColor = LightGrayBackground,
         topBar = {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(LightGrayBackground)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .background(LightGrayBackground),
             ) {
                 Text(
                     text = stringResource(id = R.string.alarm_title),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    textAlign = TextAlign.Center
-
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    textAlign = TextAlign.Center,
                 )
 
                 TabRow(
@@ -125,9 +129,9 @@ fun NotificationScreen(
                     indicator = { tabPositions ->
                         TabRowDefaults.Indicator(
                             Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
-                            color = PrimaryBlue
+                            color = PrimaryBlue,
                         )
-                    }
+                    },
                 ) {
                     tabTitles.forEachIndexed { index, title ->
                         Tab(
@@ -135,23 +139,24 @@ fun NotificationScreen(
                             onClick = { selectedTabIndex = index },
                             text = { Text(title, fontSize = 14.sp) },
                             selectedContentColor = PrimaryBlue,
-                            unselectedContentColor = Color.Gray
+                            unselectedContentColor = Color.Gray,
                         )
                     }
                 }
             }
-        }
+        },
     ) { innerPadding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(LightGrayBackground)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(LightGrayBackground),
         ) {
             when {
                 isLoading -> {
                     CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
                     )
                 }
 
@@ -159,7 +164,7 @@ fun NotificationScreen(
                     Text(
                         text = "오류 발생: $errorMessage",
                         color = Color.Red,
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
                     )
                 }
 
@@ -167,15 +172,16 @@ fun NotificationScreen(
                     Text(
                         text = stringResource(id = R.string.alarm_apply_text_two),
                         modifier = Modifier.align(Alignment.Center),
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
                     )
                 }
 
                 else -> {
                     LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
                     ) {
                         items(filteredNotifications) { notification ->
                             NotificationItem(
@@ -189,6 +195,7 @@ fun NotificationScreen(
     }
 }
 
+@Suppress("FunctionName")
 @Composable
 fun NotificationItem(
     notification: Notification,
@@ -196,18 +203,20 @@ fun NotificationItem(
     applicationViewModel: ApplicationViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val formattedDate = remember(notification.createdAt) {
-        val date = Date(notification.createdAt)
-        SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault()).format(date)
-    }
+    val formattedDate =
+        remember(notification.createdAt) {
+            val date = Date(notification.createdAt)
+            SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault()).format(date)
+        }
 
     when (notification.type) {
         "follow" -> {
             FollowNotificationItem(
-                name = notification.sender?.nickname
-                    ?: stringResource(id = R.string.community_unknown),
+                name =
+                    notification.sender?.nickname
+                        ?: stringResource(id = R.string.community_unknown),
                 timestamp = formattedDate,
-                imageUrl = notification.sender?.profileImageUrl?.takeIf { it.isNotEmpty() } ?: ""
+                imageUrl = notification.sender?.profileImageUrl?.takeIf { it.isNotEmpty() } ?: "",
             )
         }
 
@@ -227,62 +236,82 @@ fun NotificationItem(
                     }
                 },
                 type = "지원서",
-                application = application, // Notification -> Application 매핑 필요
-                remainingTime = formatRemainingTime(
-                    context,
-                    notification.closeAt?.minus(System.currentTimeMillis()) ?: 0L
-                ),
-                onLeftButtonClick = { /* 수락 클릭 */ },
-                onRightButtonClick = { /* 거절 클릭 */ }
+                // Notification -> Application 매핑 필요
+                application = application,
+                remainingTime =
+                    formatRemainingTime(
+                        context,
+                        notification.closeAt?.minus(System.currentTimeMillis()) ?: 0L,
+                    ),
+                onLeftButtonClick = {
+                    application?.let { apply ->
+                        applicationViewModel.updateStatus(
+                            application = apply,
+                            value = "승인",
+                        )
+                    }
+                },
+                onRightButtonClick = {
+                    application?.let { apply ->
+                        applicationViewModel.updateStatus(
+                            application = apply,
+                            value = "거절",
+                        )
+                    }
+                },
             )
         }
 
         else -> {
             // 기타 알림 처리
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 6.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = if (notification.isRead)
-                        MaterialTheme.colorScheme.surface
-                    else
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
-                ),
-                elevation = CardDefaults.cardElevation(2.dp)
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor =
+                            if (notification.isRead) {
+                                MaterialTheme.colorScheme.surface
+                            } else {
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
+                            },
+                    ),
+                elevation = CardDefaults.cardElevation(2.dp),
             ) {
                 Column(modifier = Modifier.padding(14.dp)) {
                     Text(
                         text = "알림",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "알림을 확인하세요.",
                         fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
                             text = "${stringResource(id = R.string.post_writer)}: ${
                                 notification.sender ?: stringResource(
-                                    id = R.string.community_unknown
+                                    id = R.string.community_unknown,
                                 )
                             }",
                             fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
                             text = formattedDate,
                             fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }

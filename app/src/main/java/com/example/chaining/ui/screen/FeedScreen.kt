@@ -37,6 +37,7 @@ import com.example.chaining.R
 import com.example.chaining.ui.component.FeedItem
 import com.example.chaining.viewmodel.FeedViewModel
 
+@Suppress("FunctionName")
 @Composable
 fun FeedScreen(
     onBackClick: () -> Unit,
@@ -44,14 +45,15 @@ fun FeedScreen(
     onFeedClick: () -> Unit,
     onCommunityClick: () -> Unit,
     onNotificationClick: () -> Unit,
-    feedViewModel: FeedViewModel = hiltViewModel()
+    feedViewModel: FeedViewModel = hiltViewModel(),
 ) {
     // ViewModel의 randomizedFeedItems 상태를 구독하여 UI에 자동 반영
     val feedItems by feedViewModel.randomizedFeedItems.collectAsState()
 
     // 화면이 처음 로드될 때 API를 통해 관광 정보를 가져옵니다.
     LaunchedEffect(Unit) {
-        feedViewModel.fetchTourItems() // 전국 데이터 로드
+        // 전국 데이터 로드
+        feedViewModel.fetchTourItems()
     }
     BackHandler(enabled = true) {
         onBackClick()
@@ -60,19 +62,20 @@ fun FeedScreen(
         //  topBar에 로그인 제목을 넣습니다.
         topBar = {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                    .background(Color(0xFF4A526A)),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                        .background(Color(0xFF4A526A)),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "뒤로 가기",
                         modifier = Modifier.size(20.dp),
-                        tint = Color.White
+                        tint = Color.White,
                     )
                 }
                 Text(
@@ -80,14 +83,14 @@ fun FeedScreen(
                     fontSize = 20.sp,
                     color = Color.White,
                     modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
                 IconButton(onClick = { feedViewModel.randomizeFeedItems() }) {
                     Icon(
                         painter = painterResource(id = R.drawable.reload),
                         contentDescription = "새로고침",
                         modifier = Modifier.size(20.dp),
-                        tint = Color.White
+                        tint = Color.White,
                     )
                 }
             }
@@ -102,37 +105,38 @@ fun FeedScreen(
                 }
             })
         },
-        containerColor = Color(0xFFF3F6FF)
+        containerColor = Color(0xFFF3F6FF),
     ) { innerPadding ->
         // feedItems의 상태에 따라 다른 UI 표시
         if (feedItems.isEmpty()) {
             // 데이터 로딩 중이거나 데이터가 없을 때
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator() // 로딩 인디케이터
             }
         } else {
             // LazyColumn을 사용하여 랜덤 3개의 피드를 표시
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
                 contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 items(feedItems) { item ->
-                    // Log.d("FeedScreen", "Title: ${item.title}, Image URL: ${item.imageUrl}")
-                    println("호식이" + feedItems)
                     FeedItem(
                         region = item.address.split(" ").getOrNull(0) ?: "지역",
                         place = item.title,
                         address = item.address,
-                        imageUrl = item.imageUrl
-                            ?: "https://your-placeholder-image-url.com/default.jpg",
+                        imageUrl =
+                            item.imageUrl
+                                ?: "https://your-placeholder-image-url.com/default.jpg",
                     )
                 }
             }

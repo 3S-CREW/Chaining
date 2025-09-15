@@ -28,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,13 +53,14 @@ private val PrimaryBlue = Color(0xFF3387E5)
 private val LightGrayBackground = Color(0xFFF3F6FF)
 private val BorderColor = Color(0xFFE0E0E0)
 
+@Suppress("FunctionName")
 @Composable
 fun TermsScreen(
     uid: String,
     nickname: String,
     onSuccess: () -> Unit,
     onCancel: () -> Unit,
-    userViewModel: UserViewModel = hiltViewModel()
+    userViewModel: UserViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
 
@@ -72,7 +74,10 @@ fun TermsScreen(
         }
     }
 
-    TermsScreenLifecycleHandler(onCancel = onCancel)
+    TermsScreenLifecycleHandler(
+        termsAgreed = termsOfServiceChecked && privacyPolicyChecked,
+        onCancel = onCancel,
+    )
 
     // 뒤로가기 버튼 처리 (비동의)
     BackHandler {
@@ -82,7 +87,7 @@ fun TermsScreen(
                 Toast.makeText(
                     context,
                     context.getString(R.string.terms_agreement_required),
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
                 onCancel()
             } else {
@@ -90,7 +95,7 @@ fun TermsScreen(
                 Toast.makeText(
                     context,
                     context.getString(R.string.fail_to_sign_up),
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
                 onCancel()
             }
@@ -101,44 +106,50 @@ fun TermsScreen(
         bottomBar = {
             Button(
                 onClick = {
-                    userViewModel.addUser(User(id = uid, nickname = nickname))
-                    onSuccess()
+                    userViewModel.addUser(
+                        user = User(id = uid, nickname = nickname),
+                        onComplete = onSuccess,
+                    )
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .height(52.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .height(52.dp),
                 enabled = termsOfServiceChecked && privacyPolicyChecked,
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PrimaryBlue,
-                    contentColor = Color.White,
-                    disabledContainerColor = Color.Gray,
-                    disabledContentColor = Color.White
-                )
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = PrimaryBlue,
+                        contentColor = Color.White,
+                        disabledContainerColor = Color.Gray,
+                        disabledContentColor = Color.White,
+                    ),
             ) {
                 Text(stringResource(id = R.string.agree_and_start), fontSize = 18.sp)
             }
-        }
+        },
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp),
         ) {
             Text(
                 text = stringResource(id = R.string.terms_of_service_title),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(vertical = 24.dp)
+                modifier = Modifier.padding(vertical = 24.dp),
             )
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Checkbox(
                     checked = allChecked,
@@ -147,12 +158,12 @@ fun TermsScreen(
                         termsOfServiceChecked = isChecked
                         privacyPolicyChecked = isChecked
                     },
-                    colors = CheckboxDefaults.colors(checkedColor = PrimaryBlue)
+                    colors = CheckboxDefaults.colors(checkedColor = PrimaryBlue),
                 )
                 Text(
                     text = stringResource(id = R.string.agree_all),
                     fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
+                    fontSize = 18.sp,
                 )
             }
 
@@ -162,67 +173,76 @@ fun TermsScreen(
                 checked = termsOfServiceChecked,
                 onCheckedChange = { termsOfServiceChecked = it },
                 title = stringResource(id = R.string.agree_terms_of_service_required),
-                content = stringResource(id = R.string.terms_of_service_content)
+                content = stringResource(id = R.string.terms_of_service_content),
             )
 
             CheckboxWithDetails(
                 checked = privacyPolicyChecked,
                 onCheckedChange = { privacyPolicyChecked = it },
                 title = stringResource(id = R.string.agree_privacy_policy_required),
-                content = stringResource(id = R.string.privacy_policy_content)
+                content = stringResource(id = R.string.privacy_policy_content),
             )
         }
     }
 }
 
+@Suppress("FunctionName")
 @Composable
 private fun CheckboxWithDetails(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     title: String,
-    content: String
+    content: String,
 ) {
     Column(modifier = Modifier.padding(vertical = 8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
-                colors = CheckboxDefaults.colors(checkedColor = PrimaryBlue)
+                colors = CheckboxDefaults.colors(checkedColor = PrimaryBlue),
             )
             Text(title, modifier = Modifier.weight(1f))
         }
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(120.dp)
-                .background(LightGrayBackground, RoundedCornerShape(8.dp))
-                .border(1.dp, BorderColor, RoundedCornerShape(8.dp))
-                .padding(8.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .background(LightGrayBackground, RoundedCornerShape(8.dp))
+                    .border(1.dp, BorderColor, RoundedCornerShape(8.dp))
+                    .padding(8.dp),
         ) {
             Text(
                 text = content,
                 style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
             )
         }
     }
 }
 
+@Suppress("FunctionName")
 @Composable
-fun TermsScreenLifecycleHandler(onCancel: () -> Unit) {
+fun TermsScreenLifecycleHandler(
+    termsAgreed: Boolean,
+    onCancel: () -> Unit,
+) {
     val lifecycleOwner = LocalLifecycleOwner.current
+    val currentTermsAgreed by rememberUpdatedState(newValue = termsAgreed)
 
     DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_STOP) {
-                val user = Firebase.auth.currentUser
-                user?.delete()?.addOnCompleteListener {
-                    onCancel()
+        val observer =
+            LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_STOP && !currentTermsAgreed) {
+                    val user = Firebase.auth.currentUser
+                    user?.delete()?.addOnCompleteListener {
+                        onCancel()
+                    }
                 }
             }
-        }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }

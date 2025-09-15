@@ -21,21 +21,28 @@ import androidx.compose.ui.unit.sp
 import com.example.chaining.R
 import com.example.chaining.ui.screen.ProfileImageWithStatus
 
+@Suppress("FunctionName")
 @Composable
-fun FollowNotificationItem(name: String, timestamp: String, imageUrl: String?) {
+fun FollowNotificationItem(
+    name: String,
+    timestamp: String,
+    imageUrl: String?,
+) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp)
-            .padding(horizontal = 24.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+                .padding(horizontal = 24.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor = Color.White,
+            ),
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             ProfileImageWithStatus(model = imageUrl, onMyPageClick = {}, isOnline = true)
 
@@ -45,12 +52,12 @@ fun FollowNotificationItem(name: String, timestamp: String, imageUrl: String?) {
                 Text(
                     text = stringResource(id = R.string.follow_message, name),
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
+                    color = Color.Black,
                 )
                 Text(
                     text = timestamp,
                     fontSize = 12.sp,
-                    color = Color.Gray
+                    color = Color.Gray,
                 )
             }
         }
