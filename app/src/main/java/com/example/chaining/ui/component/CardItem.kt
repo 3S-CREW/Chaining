@@ -60,7 +60,7 @@ fun CardItem(
             "모집글" -> recruitPost?.title ?: stringResource(id = R.string.community_no_title)
             "지원서" -> application?.recruitPostTitle ?: stringResource(id = R.string.community_no_title)
             else -> stringResource(id = R.string.community_no_title)
-        }
+        }.replace("+", " ")
 
     val remainingTimeText = remainingTime ?: stringResource(id = R.string.community_unknown)
 
