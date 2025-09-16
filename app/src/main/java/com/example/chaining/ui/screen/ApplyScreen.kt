@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -277,7 +278,7 @@ fun ApplyScreen(
                     Spacer(modifier = Modifier.height(100.dp))
 
                     if (type == "Owner") {
-                        Row {
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                             // 수락 버튼
                             Button(
                                 onClick = {
@@ -290,9 +291,8 @@ fun ApplyScreen(
                                 },
                                 modifier =
                                     Modifier
-                                        .weight(1f)
-                                        .height(50.dp)
-                                        .width(200.dp),
+                                        .weight(1.5f)
+                                        .height(50.dp),
                                 shape = RoundedCornerShape(20.dp),
                                 colors =
                                     ButtonDefaults.buttonColors(
@@ -316,8 +316,7 @@ fun ApplyScreen(
                                 modifier =
                                     Modifier
                                         .weight(1f)
-                                        .height(50.dp)
-                                        .width(120.dp),
+                                        .height(50.dp),
                                 shape = RoundedCornerShape(20.dp),
                                 colors =
                                     ButtonDefaults.buttonColors(
