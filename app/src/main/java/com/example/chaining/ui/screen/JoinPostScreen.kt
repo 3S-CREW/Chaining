@@ -87,16 +87,8 @@ fun JoinPostScreen(
         }
         // 토스트 메시지 이벤트 처리
         launch {
-            applicationViewModel.toastEvent.collectLatest { eventKey ->
-                val message =
-                    when (eventKey) {
-                        "application_success" -> context.getString(R.string.application_submit_success)
-                        "application_failed" -> context.getString(R.string.application_submit_failed)
-                        else -> null
-                    }
-                message?.let {
-                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                }
+            applicationViewModel.toastEvent.collectLatest { message ->
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
         }
     }
