@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -128,7 +129,7 @@ fun ApplyScreen(
                 Text(
                     text =
                         if (type == "Owner") {
-                            stringResource(id = R.string.view_application)
+                            stringResource(id = R.string.view_application_two)
                         } else {
                             stringResource(id = R.string.apply_mine)
                         },
@@ -277,7 +278,7 @@ fun ApplyScreen(
                     Spacer(modifier = Modifier.height(100.dp))
 
                     if (type == "Owner") {
-                        Row {
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                             // 수락 버튼
                             Button(
                                 onClick = {
@@ -290,9 +291,8 @@ fun ApplyScreen(
                                 },
                                 modifier =
                                     Modifier
-                                        .weight(1f)
-                                        .height(50.dp)
-                                        .width(200.dp),
+                                        .weight(1.5f)
+                                        .height(50.dp),
                                 shape = RoundedCornerShape(20.dp),
                                 colors =
                                     ButtonDefaults.buttonColors(
@@ -316,8 +316,7 @@ fun ApplyScreen(
                                 modifier =
                                     Modifier
                                         .weight(1f)
-                                        .height(50.dp)
-                                        .width(120.dp),
+                                        .height(50.dp),
                                 shape = RoundedCornerShape(20.dp),
                                 colors =
                                     ButtonDefaults.buttonColors(
@@ -442,17 +441,23 @@ fun ApplyScreen(
                         .padding(top = 100.dp, start = 60.dp),
                 verticalAlignment = Alignment.Bottom,
             ) {
-                // 프로필 사진
-                AsyncImage(
-                    model = application?.applicant?.profileImageUrl,
-                    contentDescription = "프로필 사진",
-                    contentScale = ContentScale.Crop,
-                    modifier =
-                        Modifier
-                            .size(80.dp)
-                            .clip(RoundedCornerShape(20.dp))
-                            .border(3.dp, Color.White, RoundedCornerShape(20.dp)),
-                )
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(Color.White)
+                        .border(3.dp, Color.White, RoundedCornerShape(20.dp))
+                ) {
+                    // 프로필 사진
+                    AsyncImage(
+                        model = application?.applicant?.profileImageUrl,
+                        placeholder = painterResource(id = R.drawable.chain),
+                        error = painterResource(id = R.drawable.chain),
+                        contentDescription = "프로필 사진",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
 
                 Spacer(modifier = Modifier.width(20.dp))
 
