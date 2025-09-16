@@ -130,7 +130,7 @@ fun MyPageScreen(
                 Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp),
-            horizontalArrangement = Arrangement.End,
+            horizontalArrangement = Arrangement.Start,
         ) {
             Button(
                 onClick = {

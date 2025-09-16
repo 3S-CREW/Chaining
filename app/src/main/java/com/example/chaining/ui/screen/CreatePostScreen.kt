@@ -3,6 +3,7 @@ package com.example.chaining.ui.screen
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,7 +37,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -74,6 +78,9 @@ fun CreatePostScreen(
     val userState by userViewModel.user.collectAsState()
     val postState by postViewModel.post.collectAsState()
     val postCreationSuccess by postViewModel.postCreationSuccess.collectAsState()
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(key1 = type, key2 = postId) {
         if (type == "수정" && postId != null) {
@@ -173,7 +180,13 @@ fun CreatePostScreen(
                         .fillMaxWidth()
                         .height(64.dp) // 원하는 높이로 직접 설정
                         .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                        .background(Color(0xFF4A526A)),
+                        .background(Color(0xFF4A526A))
+                        .pointerInput(Unit) {
+                            detectTapGestures(onTap = {
+                                focusManager.clearFocus() // 현재 포커스 해제
+                                keyboardController?.hide() // 키보드 숨기기
+                            })
+                        },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 // 뒤로가기 아이콘 버튼
@@ -208,7 +221,13 @@ fun CreatePostScreen(
                     .padding(innerPadding)
                     .padding(16.dp)
                     // 스크롤 가능하게 만듦
-                    .verticalScroll(rememberScrollState()),
+                    .verticalScroll(rememberScrollState())
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            focusManager.clearFocus() // 현재 포커스 해제
+                            keyboardController?.hide() // 키보드 숨기기
+                        })
+                    }
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 

@@ -97,6 +97,8 @@ fun JoinPostScreen(
         }
     }
 
+    val decodedTitle = post.title.replace("+", " ")
+
     Scaffold(
         topBar = {
             Row(
@@ -157,7 +159,7 @@ fun JoinPostScreen(
 
             // 게시글 제목
             Text(
-                text = post.title,
+                text = decodedTitle,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF4A526A),
