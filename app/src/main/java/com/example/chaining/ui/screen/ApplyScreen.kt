@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -116,11 +117,11 @@ fun ApplyScreen(
         topBar = {
             Row(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    // 상단바의 기본 높이
-                    .height(64.dp)
-                    .background(Color(0xFF4285F4)),
+                    Modifier
+                        .fillMaxWidth()
+                        // 상단바의 기본 높이
+                        .height(64.dp)
+                        .background(Color(0xFF4285F4)),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = onBackClick) {
@@ -134,11 +135,11 @@ fun ApplyScreen(
 
                 Text(
                     text =
-                    if (type == "Owner") {
-                        stringResource(id = R.string.view_application)
-                    } else {
-                        stringResource(id = R.string.apply_mine)
-                    },
+                        if (type == "Owner") {
+                            stringResource(id = R.string.view_application)
+                        } else {
+                            stringResource(id = R.string.apply_mine)
+                        },
                     fontSize = 20.sp,
                     color = Color.White,
                     modifier = Modifier.weight(1f),
@@ -154,26 +155,26 @@ fun ApplyScreen(
         // Box를 사용해 파란 헤더와 흰색 콘텐츠를 겹치게 합니다.
         Box(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
         ) {
             // 곡선 효과가 있는 파란색 헤더
             Box(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .clip(RoundedCornerShape(bottomEndPercent = 50))
-                    .background(Color(0xFF4285F4)),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .clip(RoundedCornerShape(bottomEndPercent = 50))
+                        .background(Color(0xFF4285F4)),
             ) {
                 // 타이머 텍스트를 담을 Column 추가
                 Column(
                     modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        // 상단바와의 간격
-                        .padding(top = 16.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            // 상단바와의 간격
+                            .padding(top = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
@@ -194,9 +195,9 @@ fun ApplyScreen(
             // 스크롤되는 흰색 콘텐츠 영역
             Column(
                 modifier =
-                Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
             ) {
                 // 프로필 사진에 내용이 가려지지 않도록 공간 확보
                 Spacer(modifier = Modifier.height(200.dp))
@@ -207,24 +208,25 @@ fun ApplyScreen(
                     horizontalAlignment = Alignment.Start,
                 ) {
                     Text(
-                        text = if (type == "Owner") {
-                            application?.applicant?.nickname
-                                ?: stringResource(id = R.string.community_unknown)
-                        } else {
-                            userState?.nickname ?: stringResource(id = R.string.community_unknown)
-                        },
+                        text =
+                            if (type == "Owner") {
+                                application?.applicant?.nickname
+                                    ?: stringResource(id = R.string.community_unknown)
+                            } else {
+                                userState?.nickname ?: stringResource(id = R.string.community_unknown)
+                            },
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF4A526A),
                     )
                     Text(
-                        text = if (type == "Owner") {
-                            application?.applicant?.country
-                                ?: stringResource(id = R.string.community_unknown)
-                        } else {
-                            userState?.country ?: stringResource(id = R.string.community_unknown)
-                        },
-
+                        text =
+                            if (type == "Owner") {
+                                application?.applicant?.country
+                                    ?: stringResource(id = R.string.community_unknown)
+                            } else {
+                                userState?.country ?: stringResource(id = R.string.community_unknown)
+                            },
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF7282B4),
@@ -240,43 +242,45 @@ fun ApplyScreen(
                         horizontalAlignment = Alignment.Start,
                     ) {
                         Text(
-                            text = if (type == "Owner") {
-                                val korean =
-                                    application?.applicant?.preferredLanguages?.get("KOREAN")
-                                if (korean != null) {
-                                    "${korean.language} 수준 : ${korean.level} / 10"
+                            text =
+                                if (type == "Owner") {
+                                    val korean =
+                                        application?.applicant?.preferredLanguages?.get("KOREAN")
+                                    if (korean != null) {
+                                        "${korean.language} 수준 : ${korean.level} / 10"
+                                    } else {
+                                        "알 수 없음"
+                                    }
                                 } else {
-                                    "알 수 없음"
-                                }
-                            } else {
-                                val korean = userState?.preferredLanguages?.get("KOREAN")
-                                if (korean != null) {
-                                    "${korean.language} 수준 : ${korean.level} / 10"
-                                } else {
-                                    "알 수 없음"
-                                }
-                            },
+                                    val korean = userState?.preferredLanguages?.get("KOREAN")
+                                    if (korean != null) {
+                                        "${korean.language} 수준 : ${korean.level} / 10"
+                                    } else {
+                                        "알 수 없음"
+                                    }
+                                },
 //                            text = stringResource(id = R.string.community_unknown),
                             color = Color(0xFF4A526A),
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = if (type == "Owner") {
-                                val english =
-                                    application?.applicant?.preferredLanguages?.get("ENGLISH")
-                                if (english != null) {
-                                    "${english.language} 수준 : ${english.level} / 10"
+                            text =
+                                if (type == "Owner") {
+                                    val english =
+                                        application?.applicant?.preferredLanguages?.get("ENGLISH")
+                                    if (english != null) {
+                                        "${english.language} 수준 : ${english.level} / 10"
+                                    } else {
+                                        "알 수 없음"
+                                    }
                                 } else {
-                                    "알 수 없음"
-                                }
-                            } else {
-                                val english = userState?.preferredLanguages?.get("ENGLISH")
-                                if (english != null) {
-                                    "${english.language} 수준 : ${english.level} / 10"
-                                } else {
-                                    "알 수 없음"
-                                }
-                            },
+                                    val english = userState?.preferredLanguages?.get("ENGLISH")
+                                    if (english != null) {
+                                        "${english.language} 수준 : ${english.level} / 10"
+                                    } else {
+                                        "알 수 없음"
+                                    }
+                                },
 //                            text = stringResource(id = R.string.community_unknown),
                             color = Color(0xFF4A526A),
                         )
@@ -297,13 +301,13 @@ fun ApplyScreen(
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text =
-                            if (type == "Owner") {
-                                application?.introduction
-                                    ?: stringResource(id = R.string.community_unknown)
-                            } else {
-                                introduction
-                                    ?: stringResource(id = R.string.community_unknown)
-                            },
+                                if (type == "Owner") {
+                                    application?.introduction
+                                        ?: stringResource(id = R.string.community_unknown)
+                                } else {
+                                    introduction
+                                        ?: stringResource(id = R.string.community_unknown)
+                                },
                             color = Color(0xFF4A526A),
                         )
                     }
@@ -311,7 +315,7 @@ fun ApplyScreen(
                     Spacer(modifier = Modifier.height(100.dp))
 
                     if (type == "Owner") {
-                        Row {
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                             // 수락 버튼
                             Button(
                                 onClick = {
@@ -323,20 +327,19 @@ fun ApplyScreen(
                                     }
                                 },
                                 modifier =
-                                Modifier
-                                    .weight(1f)
-                                    .height(50.dp)
-                                    .width(200.dp),
+                                    Modifier
+                                        .weight(1.5f)
+                                        .height(50.dp),
                                 shape = RoundedCornerShape(20.dp),
                                 colors =
-                                ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF2C80FF),
-                                    contentColor = Color.White,
-                                ),
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFF2C80FF),
+                                        contentColor = Color.White,
+                                    ),
                             ) {
                                 Text(
                                     text = stringResource(id = R.string.application_yes),
-                                    fontSize = 16.sp
+                                    fontSize = 16.sp,
                                 )
                             }
 
@@ -351,20 +354,19 @@ fun ApplyScreen(
                                     }
                                 },
                                 modifier =
-                                Modifier
-                                    .weight(1f)
-                                    .height(50.dp)
-                                    .width(120.dp),
+                                    Modifier
+                                        .weight(1f)
+                                        .height(50.dp),
                                 shape = RoundedCornerShape(20.dp),
                                 colors =
-                                ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFFF0F2F5),
-                                    contentColor = Color.DarkGray,
-                                ),
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFFF0F2F5),
+                                        contentColor = Color.DarkGray,
+                                    ),
                             ) {
                                 Text(
                                     text = stringResource(id = R.string.application_no),
-                                    fontSize = 16.sp
+                                    fontSize = 16.sp,
                                 )
                             }
                         }
@@ -373,27 +375,27 @@ fun ApplyScreen(
                         Button(
                             onClick = { showResultDialog = true },
                             modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .height(50.dp),
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
                             shape = RoundedCornerShape(20.dp),
                             enabled = application?.status != "PENDING",
                             colors =
-                            ButtonDefaults.buttonColors(
-                                containerColor =
-                                if (application?.status == "PENDING") {
-                                    Color(
-                                        0xFFF0F2F5,
-                                    )
-                                } else {
-                                    Color(0xFF2C80FF)
-                                },
-                                contentColor = Color.White,
-                            ),
+                                ButtonDefaults.buttonColors(
+                                    containerColor =
+                                        if (application?.status == "PENDING") {
+                                            Color(
+                                                0xFFF0F2F5,
+                                            )
+                                        } else {
+                                            Color(0xFF2C80FF)
+                                        },
+                                    contentColor = Color.White,
+                                ),
                         ) {
                             Text(
                                 text = stringResource(id = R.string.myapply_filter_open),
-                                fontSize = 16.sp
+                                fontSize = 16.sp,
                             )
                         }
                     }
@@ -409,22 +411,22 @@ fun ApplyScreen(
                     title = {
                         Text(
                             text =
-                            when (application?.status) {
-                                "APPROVED" -> "축하합니다! 🎉"
-                                "REJECTED" -> "아쉽지만 다음 기회에!"
-                                else -> "결과 대기 중"
-                            },
+                                when (application?.status) {
+                                    "APPROVED" -> "축하합니다! 🎉"
+                                    "REJECTED" -> "아쉽지만 다음 기회에!"
+                                    else -> "결과 대기 중"
+                                },
                             fontWeight = FontWeight.Bold,
                         )
                     },
                     text = {
                         Text(
                             text =
-                            when (application?.status) {
-                                "APPROVED" -> "지원하신 모집에 합격하셨습니다.\n카카오 오픈채팅으로 바로 이동할 수 있어요."
-                                "REJECTED" -> "아쉽게도 이번에는 합격하지 못했어요.\n다른 멋진 모집글을 찾아보세요!"
-                                else -> "결과가 아직 나오지 않았습니다."
-                            },
+                                when (application?.status) {
+                                    "APPROVED" -> "지원하신 모집에 합격하셨습니다.\n카카오 오픈채팅으로 바로 이동할 수 있어요."
+                                    "REJECTED" -> "아쉽게도 이번에는 합격하지 못했어요.\n다른 멋진 모집글을 찾아보세요!"
+                                    else -> "결과가 아직 나오지 않았습니다."
+                                },
                         )
                     },
                     confirmButton = {
@@ -480,27 +482,35 @@ fun ApplyScreen(
             }
             Row(
                 modifier =
-                Modifier
-                    .align(Alignment.TopStart)
-                    .padding(top = 100.dp, start = 60.dp),
+                    Modifier
+                        .align(Alignment.TopStart)
+                        .padding(top = 100.dp, start = 60.dp),
                 verticalAlignment = Alignment.Bottom,
             ) {
-                // 프로필 사진
-                AsyncImage(
-                    model = if (type == "Owner") {
-                        application?.applicant?.profileImageUrl
-                            ?: ""
-                    } else {
-                        userState?.profileImageUrl ?: ""
-                    },
-                    contentDescription = "프로필 사진",
-                    contentScale = ContentScale.Crop,
+                Box(
                     modifier =
-                    Modifier
-                        .size(80.dp)
-                        .clip(RoundedCornerShape(20.dp))
-                        .border(3.dp, Color.White, RoundedCornerShape(20.dp)),
-                )
+                        Modifier
+                            .size(80.dp)
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(Color.White)
+                            .border(3.dp, Color.White, RoundedCornerShape(20.dp)),
+                ) {
+                    // 프로필 사진
+                    AsyncImage(
+                        model =
+                            if (type == "Owner") {
+                                application?.applicant?.profileImageUrl
+                                    ?: ""
+                            } else {
+                                userState?.profileImageUrl ?: ""
+                            },
+                        placeholder = painterResource(id = R.drawable.chain),
+                        error = painterResource(id = R.drawable.chain),
+                        contentDescription = "프로필 사진",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
 
                 Spacer(modifier = Modifier.width(20.dp))
 
@@ -508,49 +518,45 @@ fun ApplyScreen(
                 if (type == "Owner") {
                     Box(
                         modifier =
-                        Modifier
-                            .size(60.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFF3ECDFF))
-                            .border(3.dp, Color.White, CircleShape)
-                            .padding(4.dp)
-                            .clickable {
-                                val currentUser = userState
-                                val currentApplication = application
-                                if (currentUser != null && currentApplication != null) {
-                                    val myInfo =
-                                        UserSummary(
-                                            id = currentUser.id,
-                                            nickname = currentUser.nickname,
-                                            profileImageUrl = currentUser.profileImageUrl,
-                                            country = currentUser.country,
+                            Modifier
+                                .size(60.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFF3ECDFF))
+                                .border(3.dp, Color.White, CircleShape)
+                                .padding(4.dp)
+                                .clickable {
+                                    val currentUser = userState
+                                    val currentApplication = application
+                                    if (currentUser != null && currentApplication != null) {
+                                        val myInfo =
+                                            UserSummary(
+                                                id = currentUser.id,
+                                                nickname = currentUser.nickname,
+                                                profileImageUrl = currentUser.profileImageUrl,
+                                                country = currentUser.country,
+                                            )
+                                        userViewModel.toggleFollow(
+                                            myInfo,
+                                            UserSummary(
+                                                id = currentApplication.applicant.id,
+                                                nickname = currentApplication.applicant.nickname,
+                                                profileImageUrl = currentApplication.applicant.profileImageUrl,
+                                                country = currentApplication.applicant.country,
+                                            ),
                                         )
-                                    userViewModel.toggleFollow(
-                                        myInfo,
-                                        UserSummary(
-                                            id = currentApplication.applicant.id,
-                                            nickname = currentApplication.applicant.nickname,
-                                            profileImageUrl = currentApplication.applicant.profileImageUrl,
-                                            country = currentApplication.applicant.country
-                                        ),
-                                    )
-                                }
-                            },
-
+                                    }
+                                },
                         contentAlignment = Alignment.Center,
                     ) {
-
                         Icon(
                             painter = painterResource(id = R.drawable.follow),
                             contentDescription = "친구 추가",
                             tint = Color.White,
                             modifier =
-                            Modifier
-                                .size(16.dp)
-
+                                Modifier
+                                    .size(16.dp),
                         )
                     }
-
                 }
             }
         }

@@ -100,13 +100,13 @@ fun FilterOptionsSheet(
 
     Column(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(16.dp)
-            .background(Color(0xFFF3F6FF))
-            // 스크롤 가능하도록 추가
-            .verticalScroll(rememberScrollState()),
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(16.dp)
+                .background(Color(0xFFF3F6FF))
+                // 스크롤 가능하도록 추가
+                .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         // 헤더 및 닫기 버튼
@@ -260,24 +260,24 @@ fun FilterDropdown(
             },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier =
-            Modifier
-                .menuAnchor()
-                .fillMaxWidth(),
+                Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
             colors =
-            ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                focusedLabelColor = PrimaryBlue,
-                unfocusedLabelColor = Color.Gray,
-                focusedBorderColor = Color(0xFF7282B4),
-                unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
-            ),
+                ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                    focusedLabelColor = PrimaryBlue,
+                    unfocusedLabelColor = Color.Gray,
+                    focusedBorderColor = Color(0xFF7282B4),
+                    unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
+                ),
         )
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { onExpandedChange(false) },
             modifier =
-            Modifier
-                .exposedDropdownSize()
-                .background(Color.White),
+                Modifier
+                    .exposedDropdownSize()
+                    .background(Color.White),
         ) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = R.string.filter_option_none)) },

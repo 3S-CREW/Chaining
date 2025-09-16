@@ -84,11 +84,11 @@ fun ApplicationsScreen(
         topBar = {
             Row(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                    .background(Color(0xFF4A526A)),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                        .background(Color(0xFF4A526A)),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = onBackClick) {
@@ -103,13 +103,13 @@ fun ApplicationsScreen(
                 // 제목
                 Text(
                     text =
-                    if (type == "Owner") {
-                        stringResource(id = R.string.post_application)
-                    } else {
-                        stringResource(
-                            id = R.string.myapply_title,
-                        )
-                    },
+                        if (type == "Owner") {
+                            stringResource(id = R.string.post_application)
+                        } else {
+                            stringResource(
+                                id = R.string.myapply_title,
+                            )
+                        },
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
@@ -122,17 +122,17 @@ fun ApplicationsScreen(
     ) { innerPadding ->
         Column(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
         ) {
             Row(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 // 새로 만든 CommunityActionButton 호출
@@ -140,13 +140,13 @@ fun ApplicationsScreen(
                     modifier = Modifier.weight(1f),
                     iconRes = R.drawable.post,
                     text =
-                    if (showOnlyFinishedApplications) {
-                        stringResource(id = R.string.myapply_all_post)
-                    } else {
-                        stringResource(
-                            id = R.string.myapply_filter_open,
-                        )
-                    },
+                        if (showOnlyFinishedApplications) {
+                            stringResource(id = R.string.myapply_all_post)
+                        } else {
+                            stringResource(
+                                id = R.string.myapply_filter_open,
+                            )
+                        },
                     onClick = {
                         showOnlyFinishedApplications = !showOnlyFinishedApplications
                     },
@@ -157,9 +157,9 @@ fun ApplicationsScreen(
                 Text(
                     text = stringResource(id = R.string.myapply_nothing),
                     modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 50.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 50.dp),
                     color = Color.Gray,
                     textAlign = TextAlign.Center,
                 )
@@ -187,7 +187,7 @@ fun ApplicationsScreen(
                                     value = "APPROVED",
                                 )
                             }
-                        }
+                        },
                     )
                 }
             }

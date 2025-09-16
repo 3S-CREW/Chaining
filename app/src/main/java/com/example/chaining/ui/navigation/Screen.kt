@@ -55,7 +55,7 @@ sealed class Screen(val route: String) {
         ): String {
             return "apply?type=$type&applicationId=${applicationId ?: ""}&closeAt=$closeAt&introduction=${
                 Uri.encode(
-                    introduction
+                    introduction,
                 )
             }"
         }

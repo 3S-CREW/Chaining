@@ -42,7 +42,7 @@ fun OwnerProfile(
     // "상세 보기"
     type: String? = "",
     showFollowButton: Boolean = false,
-    ) {
+) {
     val userState by userViewModel.user.collectAsState()
     val nicknameInfo =
         when (where) {

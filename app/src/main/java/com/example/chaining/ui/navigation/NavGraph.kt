@@ -67,10 +67,10 @@ fun NavGraph(
         composable(
             route = Screen.Term.route,
             arguments =
-            listOf(
-                navArgument("uid") { type = NavType.StringType },
-                navArgument("nickname") { type = NavType.StringType },
-            ),
+                listOf(
+                    navArgument("uid") { type = NavType.StringType },
+                    navArgument("nickname") { type = NavType.StringType },
+                ),
         ) { backStackEntry ->
             val uid = backStackEntry.arguments?.getString("uid") ?: ""
             val nickname = backStackEntry.arguments?.getString("nickname") ?: ""
@@ -138,16 +138,16 @@ fun NavGraph(
         composable(
             route = Screen.CreatePost.route,
             arguments =
-            listOf(
-                navArgument("type") {
-                    type = NavType.StringType
-                    defaultValue = "생성"
-                },
-                navArgument("postId") {
-                    type = NavType.StringType
-                    defaultValue = ""
-                },
-            ),
+                listOf(
+                    navArgument("type") {
+                        type = NavType.StringType
+                        defaultValue = "생성"
+                    },
+                    navArgument("postId") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                ),
         ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type") ?: "생성"
             val postId = backStackEntry.arguments?.getString("postId")
@@ -233,7 +233,7 @@ fun NavGraph(
                                 closeAt = post.closeAt,
                                 introduction = introduction,
                                 applicationId = null,
-                            )
+                            ),
                         )
                     },
                 )
@@ -299,14 +299,22 @@ fun NavGraph(
         composable(
             route = Screen.Apply.route,
             arguments =
-            listOf(
-                navArgument("type") { type = NavType.StringType },
-                navArgument("closeAt") { type = NavType.LongType; defaultValue = 0L },
-                navArgument("introduction") { type = NavType.StringType; defaultValue = "" },
-                navArgument("applicationId") {
-                    type = NavType.StringType; nullable = true; defaultValue = ""
-                }
-            ),
+                listOf(
+                    navArgument("type") { type = NavType.StringType },
+                    navArgument("closeAt") {
+                        type = NavType.LongType
+                        defaultValue = 0L
+                    },
+                    navArgument("introduction") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                    navArgument("applicationId") {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = ""
+                    },
+                ),
         ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type") ?: "My"
             val closeAt = backStackEntry.arguments?.getLong("closeAt") ?: 0L
@@ -323,10 +331,11 @@ fun NavGraph(
                         ?.set("introduction", introduction)
 
                     navController.popBackStack()
-                }, type = type,
+                },
+                type = type,
                 applicationId = applicationId,
                 introduction = introduction,
-                closeAt = closeAt
+                closeAt = closeAt,
             )
         }
 
@@ -343,24 +352,27 @@ fun NavGraph(
         composable(route = Screen.MyPosts.route) {
             MyPostsScreen(
                 onBackClick = { navController.popBackStack() },
+                onViewPostClick = { postId ->
+                    navController.navigate(Screen.ViewPost.createRoute(postId))
+                },
             )
         }
         composable(
             route = Screen.Applications.route,
             arguments =
-            listOf(
-                navArgument("type") {
-                    type = NavType.StringType
-                    defaultValue = "My"
-                },
-                navArgument("postId") {
-                    type = NavType.StringType
-                    // postId는 선택사항이므로 nullable
-                    nullable = true
-                    // 기본값은 null
-                    defaultValue = null
-                },
-            ),
+                listOf(
+                    navArgument("type") {
+                        type = NavType.StringType
+                        defaultValue = "My"
+                    },
+                    navArgument("postId") {
+                        type = NavType.StringType
+                        // postId는 선택사항이므로 nullable
+                        nullable = true
+                        // 기본값은 null
+                        defaultValue = null
+                    },
+                ),
         ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type") ?: "My"
             val postId = backStackEntry.arguments?.getString("postId")

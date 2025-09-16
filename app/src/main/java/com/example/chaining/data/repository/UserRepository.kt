@@ -27,85 +27,85 @@ import javax.inject.Singleton
 
 @Singleton
 class UserRepository
-@Inject
-constructor(
-    private val auth: FirebaseAuth,
-    private val rootRef: DatabaseReference,
-    private val userDao: UserDao,
-) {
-    private fun uidOrThrow(): String = auth.currentUser?.uid ?: error("로그인이 필요합니다.")
+    @Inject
+    constructor(
+        private val auth: FirebaseAuth,
+        private val rootRef: DatabaseReference,
+        private val userDao: UserDao,
+    ) {
+        private fun uidOrThrow(): String = auth.currentUser?.uid ?: error("로그인이 필요합니다.")
 
-    private fun usersRef(): DatabaseReference = rootRef.child("users")
+        private fun usersRef(): DatabaseReference = rootRef.child("users")
 
-    /** Create (신규 유저 추가) */
-    suspend fun addUser(user: User): String {
-        val uid = uidOrThrow()
-        val newUser =
-            user.copy(
-                id = uid,
-                createdAt = System.currentTimeMillis(),
-            )
-        usersRef().child(uid).setValue(newUser).await()
-        // Room에도 저장
-        userDao.insertUser(newUser.toEntity())
-        return uid
-    }
+        /** Create (신규 유저 추가) */
+        suspend fun addUser(user: User): String {
+            val uid = uidOrThrow()
+            val newUser =
+                user.copy(
+                    id = uid,
+                    createdAt = System.currentTimeMillis(),
+                )
+            usersRef().child(uid).setValue(newUser).await()
+            // Room에도 저장
+            userDao.insertUser(newUser.toEntity())
+            return uid
+        }
 
-    suspend fun checkUserExists(uid: String): Boolean {
-        val snapshot = usersRef().child(uid).get().await()
-        return snapshot.exists()
-    }
+        suspend fun checkUserExists(uid: String): Boolean {
+            val snapshot = usersRef().child(uid).get().await()
+            return snapshot.exists()
+        }
 
-    /** 1. Firebase → Room 동기화 후 Flow 제공, Read (실시간 구독 - 내 계정, 변경사항이 있을 때마다 계속 가져오기) */
-    fun observeMyUser(): Flow<User?> =
-        callbackFlow {
-            var valueEventListener: ValueEventListener? = null
-            var userRef: DatabaseReference? = null
+        /** 1. Firebase → Room 동기화 후 Flow 제공, Read (실시간 구독 - 내 계정, 변경사항이 있을 때마다 계속 가져오기) */
+        fun observeMyUser(): Flow<User?> =
+            callbackFlow {
+                var valueEventListener: ValueEventListener? = null
+                var userRef: DatabaseReference? = null
 
-            val authStateListener =
-                FirebaseAuth.AuthStateListener { firebaseAuth ->
-                    valueEventListener?.let { userRef?.removeEventListener(it) }
+                val authStateListener =
+                    FirebaseAuth.AuthStateListener { firebaseAuth ->
+                        valueEventListener?.let { userRef?.removeEventListener(it) }
 
-                    val currentUser = firebaseAuth.currentUser
-                    if (currentUser == null) {
-                        trySend(null)
-                    } else {
-                        val uid = currentUser.uid
-                        userRef = usersRef().child(uid)
+                        val currentUser = firebaseAuth.currentUser
+                        if (currentUser == null) {
+                            trySend(null)
+                        } else {
+                            val uid = currentUser.uid
+                            userRef = usersRef().child(uid)
 
-                        valueEventListener =
-                            object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    val user = snapshot.getValue(User::class.java)?.copy(id = uid)
+                            valueEventListener =
+                                object : ValueEventListener {
+                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                        val user = snapshot.getValue(User::class.java)?.copy(id = uid)
 
-                                    trySend(user)
+                                        trySend(user)
 
-                                    user?.let {
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            userDao.insertUser(it.toEntity())
+                                        user?.let {
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                userDao.insertUser(it.toEntity())
+                                            }
                                         }
                                     }
-                                }
 
-                                override fun onCancelled(error: DatabaseError) {
-                                    // 실제 에러가 발생하면 Flow를 닫음
-                                    close(error.toException())
+                                    override fun onCancelled(error: DatabaseError) {
+                                        // 실제 에러가 발생하면 Flow를 닫음
+                                        close(error.toException())
+                                    }
                                 }
-                            }
-                        // 새로 생성한 ValueEventListener를 등록
-                        userRef?.addValueEventListener(valueEventListener!!)
+                            // 새로 생성한 ValueEventListener를 등록
+                            userRef?.addValueEventListener(valueEventListener!!)
+                        }
                     }
+
+                // AuthStateListener 등록
+                auth.addAuthStateListener(authStateListener)
+
+                // 4. Flow의 관찰(collect)이 중단되면 모든 리스너를 제거
+                awaitClose {
+                    valueEventListener?.let { userRef?.removeEventListener(it) }
+                    auth.removeAuthStateListener(authStateListener)
                 }
-
-            // AuthStateListener 등록
-            auth.addAuthStateListener(authStateListener)
-
-            // 4. Flow의 관찰(collect)이 중단되면 모든 리스너를 제거
-            awaitClose {
-                valueEventListener?.let { userRef?.removeEventListener(it) }
-                auth.removeAuthStateListener(authStateListener)
             }
-        }
 //    fun observeMyUser(): Flow<User?> = callbackFlow {
 //        val uid = uidOrThrow()
 //        val ref = usersRef().child(uid)
@@ -144,215 +144,215 @@ constructor(
 //        }
 //    }
 
-    /** Update (관심글 추가 / 삭제) */
-    suspend fun toggleLikedPost(
-        uid: String,
-        postId: String,
-    ) {
-        val likedRef = usersRef().child(uid).child("likedPosts").child(postId)
-        val snapshot = likedRef.get().await()
-        val isCurrentlyLiked = snapshot.exists()
-
-        val updates = hashMapOf<String, Any?>()
-
-        if (isCurrentlyLiked) {
-            // 좋아요 해제
-            updates["/users/$uid/likedPosts/$postId"] = null
-            updates["/posts/$postId/whoLiked/$uid"] = null
-        } else {
-            // 좋아요 추가
-            updates["/users/$uid/likedPosts/$postId"] = true
-            updates["/posts/$postId/whoLiked/$uid"] = true
-        }
-
-        // 원자적 업데이트 수행
-        rootRef.updateChildren(updates).await()
-
-        // Room DB에도 반영 (copyWith 사용)
-        val current = userDao.getUser(uid).firstOrNull() ?: return
-        val newLikedPosts = current.likedPosts.toMutableMap()
-        if (isCurrentlyLiked) newLikedPosts.remove(postId) else newLikedPosts[postId] = true
-
-        val updatedEntity = current.copyWith(mapOf("likedPosts" to newLikedPosts))
-        userDao.updateUser(updatedEntity)
-    }
-
-    /** 프로필 사진 변경 */
-    suspend fun updateProfileImage(newUrl: String) {
-        val uid = uidOrThrow()
-        usersRef().child(uid).child("profileImageUrl").setValue(newUrl).await()
-
-        val current = userDao.getUser(uid).firstOrNull() ?: return
-        val updatedEntity = current.copy(profileImageUrl = newUrl)
-        userDao.updateUser(updatedEntity)
-    }
-
-    /** 테스트 결과 변경 */
-    suspend fun updateTestResult(languagePref: LanguagePref) {
-        val uid = uidOrThrow()
-
-        usersRef().child(uid)
-            .child("preferredLanguages")
-            .child(languagePref.language)
-            .setValue(languagePref)
-            .await()
-
-        val currentEntity = userDao.getUser(uid).firstOrNull() ?: return
-        val updatedMap =
-            currentEntity.preferredLanguages.toMutableMap().apply {
-                this[languagePref.language] = languagePref
-            }
-        val updatedEntity = currentEntity.copy(preferredLanguages = updatedMap)
-        userDao.updateUser(updatedEntity)
-    }
-
-    /** Update (팔로우 추가 / 삭제) */
-    suspend fun toggleFollow(
-        myInfo: UserSummary,
-        otherInfo: UserSummary,
-    ): Result<Unit> {
-        return try {
-            val followedRef = usersRef().child(myInfo.id).child("following").child(otherInfo.id)
-            val snapshot = followedRef.get().await()
-            val isCurrentlyFollowed = snapshot.exists()
+        /** Update (관심글 추가 / 삭제) */
+        suspend fun toggleLikedPost(
+            uid: String,
+            postId: String,
+        ) {
+            val likedRef = usersRef().child(uid).child("likedPosts").child(postId)
+            val snapshot = likedRef.get().await()
+            val isCurrentlyLiked = snapshot.exists()
 
             val updates = hashMapOf<String, Any?>()
 
-            if (isCurrentlyFollowed) {
-                // 팔로우 해제
-                updates["/users/${myInfo.id}/following/${otherInfo.id}"] = null
-                updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = null
+            if (isCurrentlyLiked) {
+                // 좋아요 해제
+                updates["/users/$uid/likedPosts/$postId"] = null
+                updates["/posts/$postId/whoLiked/$uid"] = null
             } else {
-                // 팔로우 추가
-                updates["/users/${myInfo.id}/following/${otherInfo.id}"] = otherInfo
-                updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = myInfo
-
-                val newNotificationKey =
-                    rootRef.child("notifications")
-                        .child(otherInfo.id).push().key ?: error("알림 ID 생성 실패")
-                val notification =
-                    Notification(
-                        id = newNotificationKey,
-                        type = "follow",
-                        sender = myInfo,
-                        createdAt = System.currentTimeMillis(),
-                        isRead = false,
-                        uid = otherInfo.id,
-                    )
-
-                updates["/notifications/${otherInfo.id}/$newNotificationKey"] = notification
+                // 좋아요 추가
+                updates["/users/$uid/likedPosts/$postId"] = true
+                updates["/posts/$postId/whoLiked/$uid"] = true
             }
 
             // 원자적 업데이트 수행
             rootRef.updateChildren(updates).await()
 
             // Room DB에도 반영 (copyWith 사용)
-            val current =
-                userDao.getUser(myInfo.id).firstOrNull() ?: return Result.failure(
-                    Exception("로컬 DB에 사용자 정보가 없어 팔로우 상태를 업데이트할 수 없습니다."),
-                )
-            val newFollowing = current.following.toMutableMap()
-            if (isCurrentlyFollowed) {
-                newFollowing.remove(otherInfo.id)
-            } else {
-                newFollowing[otherInfo.id] =
-                    otherInfo
-            }
+            val current = userDao.getUser(uid).firstOrNull() ?: return
+            val newLikedPosts = current.likedPosts.toMutableMap()
+            if (isCurrentlyLiked) newLikedPosts.remove(postId) else newLikedPosts[postId] = true
 
-            val updatedEntity = current.copyWith(mapOf("following" to newFollowing))
+            val updatedEntity = current.copyWith(mapOf("likedPosts" to newLikedPosts))
             userDao.updateUser(updatedEntity)
+        }
 
-            Result.success(Unit)
-        } catch (e: DatabaseException) {
-            Result.failure(Exception("데이터베이스 오류가 발생했습니다."))
-        } catch (e: Exception) {
-            Result.failure(e)
+        /** 프로필 사진 변경 */
+        suspend fun updateProfileImage(newUrl: String) {
+            val uid = uidOrThrow()
+            usersRef().child(uid).child("profileImageUrl").setValue(newUrl).await()
+
+            val current = userDao.getUser(uid).firstOrNull() ?: return
+            val updatedEntity = current.copy(profileImageUrl = newUrl)
+            userDao.updateUser(updatedEntity)
+        }
+
+        /** 테스트 결과 변경 */
+        suspend fun updateTestResult(languagePref: LanguagePref) {
+            val uid = uidOrThrow()
+
+            usersRef().child(uid)
+                .child("preferredLanguages")
+                .child(languagePref.language)
+                .setValue(languagePref)
+                .await()
+
+            val currentEntity = userDao.getUser(uid).firstOrNull() ?: return
+            val updatedMap =
+                currentEntity.preferredLanguages.toMutableMap().apply {
+                    this[languagePref.language] = languagePref
+                }
+            val updatedEntity = currentEntity.copy(preferredLanguages = updatedMap)
+            userDao.updateUser(updatedEntity)
+        }
+
+        /** Update (팔로우 추가 / 삭제) */
+        suspend fun toggleFollow(
+            myInfo: UserSummary,
+            otherInfo: UserSummary,
+        ): Result<Unit> {
+            return try {
+                val followedRef = usersRef().child(myInfo.id).child("following").child(otherInfo.id)
+                val snapshot = followedRef.get().await()
+                val isCurrentlyFollowed = snapshot.exists()
+
+                val updates = hashMapOf<String, Any?>()
+
+                if (isCurrentlyFollowed) {
+                    // 팔로우 해제
+                    updates["/users/${myInfo.id}/following/${otherInfo.id}"] = null
+                    updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = null
+                } else {
+                    // 팔로우 추가
+                    updates["/users/${myInfo.id}/following/${otherInfo.id}"] = otherInfo
+                    updates["/users/${otherInfo.id}/follower/${myInfo.id}"] = myInfo
+
+                    val newNotificationKey =
+                        rootRef.child("notifications")
+                            .child(otherInfo.id).push().key ?: error("알림 ID 생성 실패")
+                    val notification =
+                        Notification(
+                            id = newNotificationKey,
+                            type = "follow",
+                            sender = myInfo,
+                            createdAt = System.currentTimeMillis(),
+                            isRead = false,
+                            uid = otherInfo.id,
+                        )
+
+                    updates["/notifications/${otherInfo.id}/$newNotificationKey"] = notification
+                }
+
+                // 원자적 업데이트 수행
+                rootRef.updateChildren(updates).await()
+
+                // Room DB에도 반영 (copyWith 사용)
+                val current =
+                    userDao.getUser(myInfo.id).firstOrNull() ?: return Result.failure(
+                        Exception("로컬 DB에 사용자 정보가 없어 팔로우 상태를 업데이트할 수 없습니다."),
+                    )
+                val newFollowing = current.following.toMutableMap()
+                if (isCurrentlyFollowed) {
+                    newFollowing.remove(otherInfo.id)
+                } else {
+                    newFollowing[otherInfo.id] =
+                        otherInfo
+                }
+
+                val updatedEntity = current.copyWith(mapOf("following" to newFollowing))
+                userDao.updateUser(updatedEntity)
+
+                Result.success(Unit)
+            } catch (e: DatabaseException) {
+                Result.failure(Exception("데이터베이스 오류가 발생했습니다."))
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+        /** 전체 User 객체 저장 */
+        suspend fun updateMyUser(user: User) {
+            val uid = uidOrThrow()
+
+            // Firebase에 전체 User 저장
+            usersRef().child(uid).setValue(user).await()
+
+            // Room에도 전체 User 저장
+            userDao.insertUser(user.toEntity())
+        }
+
+        /** Delete (Soft Delete) */
+        suspend fun deleteMyUser() {
+            val uid = uidOrThrow()
+            val updates = mapOf("isDeleted" to true)
+            usersRef().child(uid).updateChildren(updates).await()
+            // Room에서도 Soft Delete 반영
+            val current = userDao.getUser(uid).firstOrNull() ?: return
+            userDao.updateUser(current.copy(isDeleted = true))
+        }
+
+        /** 3. User → UserEntity 변환 함수 */
+        private fun User.toEntity(): UserEntity {
+            return UserEntity(
+                id = id,
+                nickname = nickname,
+                profileImageUrl = profileImageUrl,
+                country = country,
+                residence = residence,
+                preferredDestinations = preferredDestinations,
+                preferredLanguages = preferredLanguages,
+                isPublic = isPublic,
+                recruitPosts = recruitPosts,
+                applications = applications,
+                createdAt = createdAt,
+                isDeleted = isDeleted,
+                likedPosts = likedPosts,
+                following = following,
+                follower = follower,
+            )
+        }
+
+        /** 4. UserEntity → User 변환 함수 */
+        private fun UserEntity.toUser(): User {
+            return User(
+                id = id,
+                nickname = nickname,
+                profileImageUrl = profileImageUrl,
+                country = country,
+                residence = residence,
+                preferredDestinations = preferredDestinations,
+                preferredLanguages = preferredLanguages,
+                isPublic = isPublic,
+                recruitPosts = recruitPosts,
+                applications = applications,
+                createdAt = createdAt,
+                isDeleted = isDeleted,
+                likedPosts = likedPosts,
+                following = following,
+                follower = follower,
+            )
+        }
+
+        /** 5. Room UserEntity를 업데이트할 수 있는 복사 함수 */
+        private fun UserEntity.copyWith(updates: Map<String, Any?>): UserEntity {
+            return this.copy(
+                nickname = updates["nickname"] as? String ?: nickname,
+                profileImageUrl = updates["profileImageUrl"] as? String ?: profileImageUrl,
+                country = updates["country"] as? String ?: country,
+                residence = updates["residence"] as? String ?: residence,
+                preferredDestinations =
+                    updates["preferredDestinations"] as? String
+                        ?: preferredDestinations,
+                isPublic = updates["isPublic"] as? Boolean ?: isPublic,
+                // 필요시 나머지 필드도 추가
+                likedPosts = updates["likedPosts"] as? Map<String, Boolean> ?: likedPosts,
+                preferredLanguages =
+                    updates["preferredLanguages"] as? Map<String, LanguagePref>
+                        ?: preferredLanguages,
+                recruitPosts = updates["recruitPosts"] as? Map<String, RecruitPost> ?: recruitPosts,
+                applications = updates["applications"] as? Map<String, Application> ?: applications,
+                following = updates["following"] as? Map<String, UserSummary> ?: following,
+                follower = updates["follower"] as? Map<String, UserSummary> ?: follower,
+            )
         }
     }
-
-    /** 전체 User 객체 저장 */
-    suspend fun updateMyUser(user: User) {
-        val uid = uidOrThrow()
-
-        // Firebase에 전체 User 저장
-        usersRef().child(uid).setValue(user).await()
-
-        // Room에도 전체 User 저장
-        userDao.insertUser(user.toEntity())
-    }
-
-    /** Delete (Soft Delete) */
-    suspend fun deleteMyUser() {
-        val uid = uidOrThrow()
-        val updates = mapOf("isDeleted" to true)
-        usersRef().child(uid).updateChildren(updates).await()
-        // Room에서도 Soft Delete 반영
-        val current = userDao.getUser(uid).firstOrNull() ?: return
-        userDao.updateUser(current.copy(isDeleted = true))
-    }
-
-    /** 3. User → UserEntity 변환 함수 */
-    private fun User.toEntity(): UserEntity {
-        return UserEntity(
-            id = id,
-            nickname = nickname,
-            profileImageUrl = profileImageUrl,
-            country = country,
-            residence = residence,
-            preferredDestinations = preferredDestinations,
-            preferredLanguages = preferredLanguages,
-            isPublic = isPublic,
-            recruitPosts = recruitPosts,
-            applications = applications,
-            createdAt = createdAt,
-            isDeleted = isDeleted,
-            likedPosts = likedPosts,
-            following = following,
-            follower = follower,
-        )
-    }
-
-    /** 4. UserEntity → User 변환 함수 */
-    private fun UserEntity.toUser(): User {
-        return User(
-            id = id,
-            nickname = nickname,
-            profileImageUrl = profileImageUrl,
-            country = country,
-            residence = residence,
-            preferredDestinations = preferredDestinations,
-            preferredLanguages = preferredLanguages,
-            isPublic = isPublic,
-            recruitPosts = recruitPosts,
-            applications = applications,
-            createdAt = createdAt,
-            isDeleted = isDeleted,
-            likedPosts = likedPosts,
-            following = following,
-            follower = follower,
-        )
-    }
-
-    /** 5. Room UserEntity를 업데이트할 수 있는 복사 함수 */
-    private fun UserEntity.copyWith(updates: Map<String, Any?>): UserEntity {
-        return this.copy(
-            nickname = updates["nickname"] as? String ?: nickname,
-            profileImageUrl = updates["profileImageUrl"] as? String ?: profileImageUrl,
-            country = updates["country"] as? String ?: country,
-            residence = updates["residence"] as? String ?: residence,
-            preferredDestinations =
-            updates["preferredDestinations"] as? String
-                ?: preferredDestinations,
-            isPublic = updates["isPublic"] as? Boolean ?: isPublic,
-            // 필요시 나머지 필드도 추가
-            likedPosts = updates["likedPosts"] as? Map<String, Boolean> ?: likedPosts,
-            preferredLanguages =
-            updates["preferredLanguages"] as? Map<String, LanguagePref>
-                ?: preferredLanguages,
-            recruitPosts = updates["recruitPosts"] as? Map<String, RecruitPost> ?: recruitPosts,
-            applications = updates["applications"] as? Map<String, Application> ?: applications,
-            following = updates["following"] as? Map<String, UserSummary> ?: following,
-            follower = updates["follower"] as? Map<String, UserSummary> ?: follower,
-        )
-    }
-}

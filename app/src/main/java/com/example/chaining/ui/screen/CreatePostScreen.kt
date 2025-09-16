@@ -186,17 +186,17 @@ fun CreatePostScreen(
         topBar = {
             Row(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                    .background(Color(0xFF4A526A))
-                    .pointerInput(Unit) {
-                        detectTapGestures(onTap = {
-                            focusManager.clearFocus()
-                            keyboardController?.hide()
-                        })
-                    },
+                    Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                        .background(Color(0xFF4A526A))
+                        .pointerInput(Unit) {
+                            detectTapGestures(onTap = {
+                                focusManager.clearFocus()
+                                keyboardController?.hide()
+                            })
+                        },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 // 뒤로가기 아이콘 버튼
@@ -226,19 +226,19 @@ fun CreatePostScreen(
     ) { innerPadding ->
         Column(
             modifier =
-            Modifier
-                .fillMaxSize()
-                // 스크롤 가능하게 만듦
-                .padding(top = innerPadding.calculateTopPadding())
-                .padding(bottom = 0.dp)
-                .padding(horizontal = horizontalPaddingValue)
-                .verticalScroll(rememberScrollState())
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        focusManager.clearFocus()
-                        keyboardController?.hide()
-                    })
-                }
+                Modifier
+                    .fillMaxSize()
+                    // 스크롤 가능하게 만듦
+                    .padding(top = innerPadding.calculateTopPadding())
+                    .padding(bottom = 0.dp)
+                    .padding(horizontal = horizontalPaddingValue)
+                    .verticalScroll(rememberScrollState())
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            focusManager.clearFocus()
+                            keyboardController?.hide()
+                        })
+                    },
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -246,8 +246,8 @@ fun CreatePostScreen(
                 value = title,
                 onValueChange = { if (it.length <= MAX_TITLE_LENGTH) title = it },
                 modifier =
-                Modifier
-                    .fillMaxWidth(),
+                    Modifier
+                        .fillMaxWidth(),
                 placeholder = {
                     Text(
                         text = stringResource(id = R.string.post_write_enter_title),
@@ -257,15 +257,15 @@ fun CreatePostScreen(
                 shape = RoundedCornerShape(16.dp),
                 singleLine = true,
                 colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    disabledContainerColor = Color.White,
-                    focusedPlaceholderColor = Color.Gray,
-                    unfocusedPlaceholderColor = Color.Gray,
-                    focusedIndicatorColor = Color.LightGray,
-                    unfocusedIndicatorColor = Color.LightGray,
-                ),
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        disabledContainerColor = Color.White,
+                        focusedPlaceholderColor = Color.Gray,
+                        unfocusedPlaceholderColor = Color.Gray,
+                        focusedIndicatorColor = Color.LightGray,
+                        unfocusedIndicatorColor = Color.LightGray,
+                    ),
                 supportingText = {
                     Text(
                         text = "${title.length} / $MAX_TITLE_LENGTH",
@@ -333,12 +333,12 @@ fun CreatePostScreen(
                 label = stringResource(id = R.string.post_write_car),
                 leadingIconRes = R.drawable.car,
                 options =
-                listOf(
-                    stringResource(id = R.string.post_write_car_six),
-                    stringResource(id = R.string.post_write_car_four),
-                    stringResource(id = R.string.post_write_car_two),
-                    stringResource(id = R.string.post_write_no),
-                ),
+                    listOf(
+                        stringResource(id = R.string.post_write_car_six),
+                        stringResource(id = R.string.post_write_car_four),
+                        stringResource(id = R.string.post_write_car_two),
+                        stringResource(id = R.string.post_write_no),
+                    ),
                 selectedOption = hasCar,
                 onOptionSelected = { hasCar = it },
             )
@@ -349,8 +349,8 @@ fun CreatePostScreen(
                 value = kakaoOpenChatUrl,
                 onValueChange = { kakaoOpenChatUrl = it },
                 modifier =
-                Modifier
-                    .fillMaxWidth(),
+                    Modifier
+                        .fillMaxWidth(),
                 placeholder = {
                     Text(
                         text = stringResource(id = R.string.post_write_kakao),
@@ -359,14 +359,14 @@ fun CreatePostScreen(
                 },
                 shape = RoundedCornerShape(16.dp),
                 colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedPlaceholderColor = Color.Gray,
-                    unfocusedPlaceholderColor = Color.Gray,
-                    focusedIndicatorColor = Color.LightGray,
-                    unfocusedIndicatorColor = Color.LightGray,
-                ),
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        focusedPlaceholderColor = Color.Gray,
+                        unfocusedPlaceholderColor = Color.Gray,
+                        focusedIndicatorColor = Color.LightGray,
+                        unfocusedIndicatorColor = Color.LightGray,
+                    ),
             )
             Spacer(modifier = Modifier.height(30.dp))
 
@@ -375,9 +375,9 @@ fun CreatePostScreen(
                 value = content,
                 onValueChange = { if (it.length <= MAX_CONTENT_LENGTH) content = it },
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
                 placeholder = {
                     Text(
                         text = stringResource(id = R.string.post_write),
@@ -393,14 +393,14 @@ fun CreatePostScreen(
                     )
                 },
                 colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedPlaceholderColor = Color.Gray,
-                    unfocusedPlaceholderColor = Color.Gray,
-                    focusedIndicatorColor = Color.LightGray,
-                    unfocusedIndicatorColor = Color.LightGray,
-                ),
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        focusedPlaceholderColor = Color.Gray,
+                        unfocusedPlaceholderColor = Color.Gray,
+                        focusedIndicatorColor = Color.LightGray,
+                        unfocusedIndicatorColor = Color.LightGray,
+                    ),
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -451,11 +451,11 @@ fun CreatePostScreen(
                                 kakaoOpenChatUrl = kakaoOpenChatUrl,
                                 createdAt = System.currentTimeMillis(),
                                 owner =
-                                UserSummary(
-                                    id = userState?.id ?: "",
-                                    nickname = userState?.nickname ?: "",
-                                    profileImageUrl = userState?.profileImageUrl ?: "",
-                                ),
+                                    UserSummary(
+                                        id = userState?.id ?: "",
+                                        nickname = userState?.nickname ?: "",
+                                        profileImageUrl = userState?.profileImageUrl ?: "",
+                                    ),
                             )
 
                         if (type == "생성") {
@@ -507,20 +507,20 @@ fun SingleDropdown(
             },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .menuAnchor(),
+                Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(),
             colors =
-            ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                focusedContainerColor = Color(0xFFF3F6FF),
-                unfocusedContainerColor = Color(0xFFF3F6FF),
-                focusedPlaceholderColor = Color.Gray,
-                unfocusedPlaceholderColor = Color.LightGray,
-                focusedLabelColor = PrimaryBlue,
-                unfocusedLabelColor = Color.Gray,
-                focusedBorderColor = Color(0xFF7282B4),
-                unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
-            ),
+                ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                    focusedContainerColor = Color(0xFFF3F6FF),
+                    unfocusedContainerColor = Color(0xFFF3F6FF),
+                    focusedPlaceholderColor = Color.Gray,
+                    unfocusedPlaceholderColor = Color.LightGray,
+                    focusedLabelColor = PrimaryBlue,
+                    unfocusedLabelColor = Color.Gray,
+                    focusedBorderColor = Color(0xFF7282B4),
+                    unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
+                ),
             shape = RoundedCornerShape(4.dp),
         )
         ExposedDropdownMenu(
@@ -559,9 +559,9 @@ fun PreferenceSelector(
     ) {
         OutlinedTextField(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .menuAnchor(),
+                Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(),
             readOnly = true,
             value = selectedOption,
             onValueChange = {},
@@ -576,25 +576,25 @@ fun PreferenceSelector(
             },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
             colors =
-            ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                focusedContainerColor = Color(0xFFF3F6FF),
-                unfocusedContainerColor = Color(0xFFF3F6FF),
-                focusedPlaceholderColor = Color.Gray,
-                unfocusedPlaceholderColor = Color.LightGray,
-                focusedLabelColor = PrimaryBlue,
-                unfocusedLabelColor = Color.Gray,
-                focusedBorderColor = Color(0xFF7282B4),
-                unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
-            ),
+                ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                    focusedContainerColor = Color(0xFFF3F6FF),
+                    unfocusedContainerColor = Color(0xFFF3F6FF),
+                    focusedPlaceholderColor = Color.Gray,
+                    unfocusedPlaceholderColor = Color.LightGray,
+                    focusedLabelColor = PrimaryBlue,
+                    unfocusedLabelColor = Color.Gray,
+                    focusedBorderColor = Color(0xFF7282B4),
+                    unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
+                ),
             shape = RoundedCornerShape(4.dp),
         )
         ExposedDropdownMenu(
             expanded = isExpanded,
             onDismissRequest = { isExpanded = false },
             modifier =
-            Modifier
-                .exposedDropdownSize()
-                .background(Color.White),
+                Modifier
+                    .exposedDropdownSize()
+                    .background(Color.White),
         ) {
             options.forEach { selectionOption ->
                 DropdownMenuItem(
