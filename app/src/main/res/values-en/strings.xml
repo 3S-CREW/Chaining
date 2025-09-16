@@ -5,6 +5,7 @@
     <string name="login_button">Login with Google Account</string>
     <string name="login_in_progress">Logging in...</string>
     <string name="login_admin_button">Admin Login</string>
+    <string name="introduction_self">Introduction:</string>
 
     <string name="welcome_message">Welcome, %1$s.</string>
     <string name="recent_apply">Recent Applications</string>

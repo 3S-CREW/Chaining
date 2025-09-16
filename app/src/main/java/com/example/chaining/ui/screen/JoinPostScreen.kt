@@ -26,7 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.chaining.R
 import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.RecruitPost
@@ -61,11 +62,14 @@ fun JoinPostScreen(
     onSubmitSuccess: () -> Unit,
     userViewModel: UserViewModel = hiltViewModel(),
     post: RecruitPost,
-    onViewMyApplications: () -> Unit,
+    onViewMyApplyClick: (String) -> Unit,
+    navController: NavController,
 ) {
+    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+
+    var introduction by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
     val userState by userViewModel.user.collectAsState()
-    var introduction by remember { mutableStateOf("") }
 
     val isSubmitSuccess by applicationViewModel.isSubmitSuccess.collectAsState()
 
@@ -97,18 +101,29 @@ fun JoinPostScreen(
         }
     }
 
+    LaunchedEffect(savedStateHandle) {
+        savedStateHandle?.getStateFlow("introduction", "")
+            ?.collect { restored ->
+                if (restored.isNotEmpty()) {
+                    introduction = restored
+                    savedStateHandle.remove<String>("introduction")
+                }
+            }
+    }
+
+
     val decodedTitle = post.title.replace("+", " ")
 
     Scaffold(
         topBar = {
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        // 원하는 높이로 직접 설정
-                        .height(64.dp)
-                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                        .background(Color(0xFF4A526A)),
+                Modifier
+                    .fillMaxWidth()
+                    // 원하는 높이로 직접 설정
+                    .height(64.dp)
+                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                    .background(Color(0xFF4A526A)),
                 // 내부 요소들을 세로 중앙에 정렬
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -148,10 +163,10 @@ fun JoinPostScreen(
         // 스크롤 영역과 하단 고정 영역을 나누기 위한 부모 Column
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(30.dp),
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(30.dp),
         ) {
             // 게시글 정보 섹션 추가
             // 상단바와의 간격
@@ -196,9 +211,9 @@ fun JoinPostScreen(
                     value = introduction,
                     onValueChange = { if (it.length <= MAX_CONTENT_LENGTH) introduction = it },
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(150.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(150.dp),
                     placeholder = {
                         Text(
                             stringResource(id = R.string.apply_write),
@@ -215,22 +230,22 @@ fun JoinPostScreen(
                         )
                     },
                     colors =
-                        TextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                            focusedIndicatorColor = Color.LightGray,
-                            unfocusedIndicatorColor = Color.LightGray,
-                            focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black,
-                        ),
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        focusedIndicatorColor = Color.LightGray,
+                        unfocusedIndicatorColor = Color.LightGray,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                    ),
                 )
                 Text(
                     text = stringResource(id = R.string.apply_text_one),
                     modifier =
-                        Modifier
-                            .padding(top = 8.dp)
-                            // 오른쪽 정렬
-                            .align(Alignment.End),
+                    Modifier
+                        .padding(top = 8.dp)
+                        // 오른쪽 정렬
+                        .align(Alignment.End),
                     fontSize = 10.sp,
                     color = Color.Gray,
                 )
@@ -249,17 +264,17 @@ fun JoinPostScreen(
 
             // '내 지원서 보기' 버튼 (보조 버튼)
             Button(
-                onClick = { onViewMyApplications() },
+                onClick = { onViewMyApplyClick(introduction) },
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFD9DDE9),
-                        contentColor = Color(0xFF7282B4),
-                    ),
+                ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFD9DDE9),
+                    contentColor = Color(0xFF7282B4),
+                ),
             ) {
                 Text(stringResource(id = R.string.apply_mine), fontSize = 16.sp)
             }
@@ -283,11 +298,11 @@ fun JoinPostScreen(
                             recruitPostTitle = post.title,
                             introduction = introduction,
                             applicant =
-                                UserSummary(
-                                    id = userState?.id ?: "",
-                                    nickname = userState?.nickname ?: "",
-                                    profileImageUrl = userState?.profileImageUrl ?: "",
-                                ),
+                            UserSummary(
+                                id = userState?.id ?: "",
+                                nickname = userState?.nickname ?: "",
+                                profileImageUrl = userState?.profileImageUrl ?: "",
+                            ),
                         )
                     applicationViewModel.submitApplication(newApplication)
                 }

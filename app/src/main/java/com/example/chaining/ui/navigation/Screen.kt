@@ -1,5 +1,6 @@
 package com.example.chaining.ui.navigation
 
+import android.net.Uri
 import com.example.chaining.domain.model.RecruitPost
 import com.google.gson.Gson
 
@@ -44,12 +45,19 @@ sealed class Screen(val route: String) {
     object KRQuiz : Screen("krQuiz")
     object ENQuiz : Screen("enQuiz")
     object QuizResult : Screen("quizResult")
-    object Apply : Screen("apply?type={type}&applicationId={applicationId}") {
+    object Apply :
+        Screen("apply?type={type}&applicationId={applicationId}&closeAt={closeAt}&introduction={introduction}") {
         fun createRoute(
             type: String,
+            closeAt: Long,
+            introduction: String,
             applicationId: String? = "",
         ): String {
-            return "apply?type=$type&applicationId=${applicationId ?: ""}"
+            return "apply?type=$type&applicationId=${applicationId ?: ""}&closeAt=$closeAt&introduction=${
+                Uri.encode(
+                    introduction
+                )
+            }"
         }
     }
 

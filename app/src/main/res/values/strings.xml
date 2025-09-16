@@ -11,6 +11,7 @@
     <string name="no_recent_apply">최근 지원서가 없습니다.</string>
     <string name="recent_follow">최근 팔로우 목록</string>
     <string name="follow_message">%1$s님께서 팔로우를 하셨습니다.</string>
+    <string name="introduction_self">자기소개:</string>
     <string name="view_application">지원서 보기></string>
     <!--    커뮤니티 화면-->
     <string name="community_title">커뮤니티</string>
