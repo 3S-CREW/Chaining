@@ -206,6 +206,8 @@ fun CommunityScreen(
             } else {
                 posts.forEach { post ->
                     val isLiked = userState?.likedPosts?.get(post.postId) == true
+                    val hasApplied =
+                        userState?.applications?.values?.any { it.postId == post.postId } == true
                     CardItem(
                         onClick = { onViewPostClick(post.postId) },
                         type = "모집글",
@@ -219,6 +221,7 @@ fun CommunityScreen(
                         onLeftButtonClick = { onJoinPostClick(post) },
                         onRightButtonClick = { userViewModel.toggleLike(post.postId) },
                         currentUserId = userState?.id,
+                        hasApplied = hasApplied,
                     )
                 }
             }

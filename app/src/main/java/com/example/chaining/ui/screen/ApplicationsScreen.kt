@@ -37,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
 import com.example.chaining.domain.model.Application
 import com.example.chaining.ui.component.CardItem
+import com.example.chaining.viewmodel.ApplicationViewModel
 import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
 
@@ -46,6 +47,7 @@ fun ApplicationsScreen(
     onBackClick: () -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel(),
     postViewModel: RecruitPostViewModel = hiltViewModel(),
+    applicationViewModel: ApplicationViewModel = hiltViewModel(),
     postId: String?,
     // "My" or "Owner"
     type: String,
@@ -82,11 +84,11 @@ fun ApplicationsScreen(
         topBar = {
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                        .background(Color(0xFF4A526A)),
+                Modifier
+                    .fillMaxWidth()
+                    .height(64.dp)
+                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                    .background(Color(0xFF4A526A)),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = onBackClick) {
@@ -101,13 +103,13 @@ fun ApplicationsScreen(
                 // 제목
                 Text(
                     text =
-                        if (type == "Owner") {
-                            stringResource(id = R.string.post_application)
-                        } else {
-                            stringResource(
-                                id = R.string.myapply_title,
-                            )
-                        },
+                    if (type == "Owner") {
+                        stringResource(id = R.string.post_application)
+                    } else {
+                        stringResource(
+                            id = R.string.myapply_title,
+                        )
+                    },
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     fontSize = 20.sp,
@@ -120,17 +122,17 @@ fun ApplicationsScreen(
     ) { innerPadding ->
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
         ) {
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 // 새로 만든 CommunityActionButton 호출
@@ -138,13 +140,13 @@ fun ApplicationsScreen(
                     modifier = Modifier.weight(1f),
                     iconRes = R.drawable.post,
                     text =
-                        if (showOnlyFinishedApplications) {
-                            stringResource(id = R.string.myapply_all_post)
-                        } else {
-                            stringResource(
-                                id = R.string.myapply_filter_open,
-                            )
-                        },
+                    if (showOnlyFinishedApplications) {
+                        stringResource(id = R.string.myapply_all_post)
+                    } else {
+                        stringResource(
+                            id = R.string.myapply_filter_open,
+                        )
+                    },
                     onClick = {
                         showOnlyFinishedApplications = !showOnlyFinishedApplications
                     },
@@ -155,9 +157,9 @@ fun ApplicationsScreen(
                 Text(
                     text = stringResource(id = R.string.myapply_nothing),
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = 50.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 50.dp),
                     color = Color.Gray,
                     textAlign = TextAlign.Center,
                 )
@@ -170,6 +172,22 @@ fun ApplicationsScreen(
                         },
                         type = "지원서",
                         application = application,
+                        onLeftButtonClick = {
+                            application.let { apply ->
+                                applicationViewModel.updateStatus(
+                                    application = apply,
+                                    value = "APPROVED",
+                                )
+                            }
+                        },
+                        onRightButtonClick = {
+                            application.let { apply ->
+                                applicationViewModel.updateStatus(
+                                    application = apply,
+                                    value = "APPROVED",
+                                )
+                            }
+                        }
                     )
                 }
             }

@@ -241,7 +241,13 @@ fun ApplyScreen(
                     ) {
                         Text(
                             text = if (type == "Owner") {
-                                "${application?.applicationId ?: "알 수 없음"} 수정 필요"
+                                val korean =
+                                    application?.applicant?.preferredLanguages?.get("KOREAN")
+                                if (korean != null) {
+                                    "${korean.language} 수준 : ${korean.level} / 10"
+                                } else {
+                                    "알 수 없음"
+                                }
                             } else {
                                 val korean = userState?.preferredLanguages?.get("KOREAN")
                                 if (korean != null) {
@@ -256,7 +262,13 @@ fun ApplyScreen(
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = if (type == "Owner") {
-                                "${application?.applicationId ?: "알 수 없음"} 수정 필요"
+                                val english =
+                                    application?.applicant?.preferredLanguages?.get("ENGLISH")
+                                if (english != null) {
+                                    "${english.language} 수준 : ${english.level} / 10"
+                                } else {
+                                    "알 수 없음"
+                                }
                             } else {
                                 val english = userState?.preferredLanguages?.get("ENGLISH")
                                 if (english != null) {
@@ -306,7 +318,7 @@ fun ApplyScreen(
                                     application?.let { apply ->
                                         applicationViewModel.updateStatus(
                                             application = apply,
-                                            value = "승인",
+                                            value = "APPROVED",
                                         )
                                     }
                                 },
@@ -334,7 +346,7 @@ fun ApplyScreen(
                                     application?.let { apply ->
                                         applicationViewModel.updateStatus(
                                             application = apply,
-                                            value = "거절",
+                                            value = "REJECTED",
                                         )
                                     }
                                 },
@@ -398,8 +410,8 @@ fun ApplyScreen(
                         Text(
                             text =
                             when (application?.status) {
-                                "승인" -> "축하합니다! 🎉"
-                                "거절" -> "아쉽지만 다음 기회에!"
+                                "APPROVED" -> "축하합니다! 🎉"
+                                "REJECTED" -> "아쉽지만 다음 기회에!"
                                 else -> "결과 대기 중"
                             },
                             fontWeight = FontWeight.Bold,
@@ -409,15 +421,15 @@ fun ApplyScreen(
                         Text(
                             text =
                             when (application?.status) {
-                                "승인" -> "지원하신 모집에 합격하셨습니다.\n카카오 오픈채팅으로 바로 이동할 수 있어요."
-                                "거절" -> "아쉽게도 이번에는 합격하지 못했어요.\n다른 멋진 모집글을 찾아보세요!"
+                                "APPROVED" -> "지원하신 모집에 합격하셨습니다.\n카카오 오픈채팅으로 바로 이동할 수 있어요."
+                                "REJECTED" -> "아쉽게도 이번에는 합격하지 못했어요.\n다른 멋진 모집글을 찾아보세요!"
                                 else -> "결과가 아직 나오지 않았습니다."
                             },
                         )
                     },
                     confirmButton = {
                         when (application?.status) {
-                            "승인" -> {
+                            "APPROVED" -> {
                                 TextButton(
                                     onClick = {
                                         showResultDialog = false
@@ -441,7 +453,7 @@ fun ApplyScreen(
                                 }
                             }
 
-                            "거절" -> {
+                            "REJECTED" -> {
                                 TextButton(
                                     onClick = {
                                         showResultDialog = false
@@ -501,7 +513,30 @@ fun ApplyScreen(
                             .clip(CircleShape)
                             .background(Color(0xFF3ECDFF))
                             .border(3.dp, Color.White, CircleShape)
-                            .padding(4.dp),
+                            .padding(4.dp)
+                            .clickable {
+                                val currentUser = userState
+                                val currentApplication = application
+                                if (currentUser != null && currentApplication != null) {
+                                    val myInfo =
+                                        UserSummary(
+                                            id = currentUser.id,
+                                            nickname = currentUser.nickname,
+                                            profileImageUrl = currentUser.profileImageUrl,
+                                            country = currentUser.country,
+                                        )
+                                    userViewModel.toggleFollow(
+                                        myInfo,
+                                        UserSummary(
+                                            id = currentApplication.applicant.id,
+                                            nickname = currentApplication.applicant.nickname,
+                                            profileImageUrl = currentApplication.applicant.profileImageUrl,
+                                            country = currentApplication.applicant.country
+                                        ),
+                                    )
+                                }
+                            },
+
                         contentAlignment = Alignment.Center,
                     ) {
 
@@ -512,24 +547,7 @@ fun ApplyScreen(
                             modifier =
                             Modifier
                                 .size(16.dp)
-                                .clickable {
-                                    val currentUser = userState
-                                    val currentApplication = application
 
-                                    if (currentUser != null && currentApplication != null) {
-                                        val myInfo =
-                                            UserSummary(
-                                                id = currentUser.id,
-                                                nickname = currentUser.nickname,
-                                                profileImageUrl = currentUser.profileImageUrl,
-                                                country = currentUser.country,
-                                            )
-                                        userViewModel.toggleFollow(
-                                            myInfo,
-                                            currentApplication.applicant,
-                                        )
-                                    }
-                                },
                         )
                     }
 

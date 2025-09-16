@@ -44,7 +44,6 @@ import androidx.navigation.NavController
 import com.example.chaining.R
 import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.RecruitPost
-import com.example.chaining.domain.model.UserSummary
 import com.example.chaining.ui.component.OwnerProfile
 import com.example.chaining.ui.component.SaveButton
 import com.example.chaining.viewmodel.ApplicationViewModel
@@ -283,20 +282,19 @@ fun JoinPostScreen(
                     ).show()
                 } else {
                     val newApplication =
-                        Application(
-                            applicationId = "",
-                            postId = post.postId,
-                            owner = post.owner,
-                            recruitPostTitle = post.title,
-                            introduction = introduction,
-                            applicant =
-                            UserSummary(
-                                id = userState?.id ?: "",
-                                nickname = userState?.nickname ?: "",
-                                profileImageUrl = userState?.profileImageUrl ?: "",
-                            ),
-                        )
-                    applicationViewModel.submitApplication(newApplication)
+                        userState?.let {
+                            Application(
+                                applicationId = "",
+                                postId = post.postId,
+                                owner = post.owner,
+                                recruitPostTitle = post.title,
+                                introduction = introduction,
+                                applicant = it,
+                            )
+                        }
+                    if (newApplication != null) {
+                        applicationViewModel.submitApplication(newApplication)
+                    }
                 }
             }, text = stringResource(id = R.string.apply_button))
 

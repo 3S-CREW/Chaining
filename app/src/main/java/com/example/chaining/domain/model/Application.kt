@@ -12,7 +12,7 @@ data class Application(
     // 모집글 제목 (캐싱)
     val recruitPostTitle: String = "",
     // 지원자 간단 프로필
-    val applicant: UserSummary = UserSummary(),
+    val applicant: User = User(),
     // 자기 소개
     val introduction: String = "",
     val createdAt: Long = 0L,
