@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -53,6 +54,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.chaining.R
 import com.example.chaining.domain.model.UserSummary
+import com.example.chaining.ui.component.formatRemainingTime
 import com.example.chaining.viewmodel.ApplicationViewModel
 import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
@@ -66,7 +68,9 @@ fun ApplyScreen(
     userViewModel: UserViewModel = hiltViewModel(),
     // My, Owner
     type: String,
-    applicationId: String,
+    closeAt: Long,
+    introduction: String?,
+    applicationId: String?,
     applicationViewModel: ApplicationViewModel = hiltViewModel(),
     postViewModel: RecruitPostViewModel = hiltViewModel(),
     onNavigateHome: () -> Unit? = {},
@@ -79,7 +83,9 @@ fun ApplyScreen(
 
 // 1. applicationId가 변경되면 application 정보를 가져오는 Effect
     LaunchedEffect(key1 = applicationId) {
-        applicationViewModel.fetchApplication(applicationId)
+        if (type != "My" && applicationId != null) {
+            applicationViewModel.fetchApplication(applicationId)
+        }
     }
 
 // 2. application 정보가 성공적으로 로드되면(null이 아니게 되면) post 정보를 가져오는 Effect
@@ -97,7 +103,9 @@ fun ApplyScreen(
     }
 
     // post가 null이면 로딩 UI 표시
-    if (application == null) {
+    val isLoading = type != "My" && application == null
+
+    if (isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
@@ -174,8 +182,9 @@ fun ApplyScreen(
                         color = Color.White.copy(alpha = 0.8f),
                         fontSize = 14.sp,
                     )
+                    val remainingMillis = closeAt - System.currentTimeMillis()
                     Text(
-                        text = "12시간 30분 남음",
+                        text = "${formatRemainingTime(context, remainingMillis)} 남음",
                         color = Color.White,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
@@ -200,16 +209,24 @@ fun ApplyScreen(
                 ) {
                     Text(
                         text =
-                            application?.applicant?.nickname
-                                ?: stringResource(id = R.string.community_unknown),
+                            if (type == "Owner") {
+                                application?.applicant?.nickname
+                                    ?: stringResource(id = R.string.community_unknown)
+                            } else {
+                                userState?.nickname ?: stringResource(id = R.string.community_unknown)
+                            },
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF4A526A),
                     )
                     Text(
                         text =
-                            application?.applicant?.country
-                                ?: stringResource(id = R.string.community_unknown),
+                            if (type == "Owner") {
+                                application?.applicant?.country
+                                    ?: stringResource(id = R.string.community_unknown)
+                            } else {
+                                userState?.country ?: stringResource(id = R.string.community_unknown)
+                            },
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF7282B4),
@@ -225,30 +242,46 @@ fun ApplyScreen(
                         horizontalAlignment = Alignment.Start,
                     ) {
                         Text(
-//                            text = if (type == "Owner") {
-//                                "${application?.applicationId ?: "알 수 없음"} 수정 필요"
-//                            } else {
-//                                "${userState?.preferredLanguages?.get(0)?.language ?: "알 수 없음"} 수준 : ${
-//                                    userState?.preferredLanguages?.get(
-//                                        0
-//                                    )?.level ?: "알 수 없음"
-//                                } / 10"
-//                            },
-                            text = stringResource(id = R.string.community_unknown),
+                            text =
+                                if (type == "Owner") {
+                                    val korean =
+                                        application?.applicant?.preferredLanguages?.get("KOREAN")
+                                    if (korean != null) {
+                                        "${korean.language} 수준 : ${korean.level} / 10"
+                                    } else {
+                                        "알 수 없음"
+                                    }
+                                } else {
+                                    val korean = userState?.preferredLanguages?.get("KOREAN")
+                                    if (korean != null) {
+                                        "${korean.language} 수준 : ${korean.level} / 10"
+                                    } else {
+                                        "알 수 없음"
+                                    }
+                                },
+//                            text = stringResource(id = R.string.community_unknown),
                             color = Color(0xFF4A526A),
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-//                            text = if (type == "Owner") {
-//                                "${application?.applicationId ?: "알 수 없음"} 수정 필요"
-//                            } else {
-//                                "${userState?.preferredLanguages?.get(0)?.language ?: "알 수 없음"} 수준 : ${
-//                                    userState?.preferredLanguages?.get(
-//                                        0
-//                                    )?.level ?: "알 수 없음"
-//                                } / 10"
-//                            },
-                            text = stringResource(id = R.string.community_unknown),
+                            text =
+                                if (type == "Owner") {
+                                    val english =
+                                        application?.applicant?.preferredLanguages?.get("ENGLISH")
+                                    if (english != null) {
+                                        "${english.language} 수준 : ${english.level} / 10"
+                                    } else {
+                                        "알 수 없음"
+                                    }
+                                } else {
+                                    val english = userState?.preferredLanguages?.get("ENGLISH")
+                                    if (english != null) {
+                                        "${english.language} 수준 : ${english.level} / 10"
+                                    } else {
+                                        "알 수 없음"
+                                    }
+                                },
+//                            text = stringResource(id = R.string.community_unknown),
                             color = Color(0xFF4A526A),
                         )
                     }
@@ -261,15 +294,20 @@ fun ApplyScreen(
                         horizontalAlignment = Alignment.Start,
                     ) {
                         Text(
-                            text = "자기소개:",
+                            text = stringResource(id = R.string.introduction_self),
                             fontWeight = FontWeight.SemiBold,
                             color = Color(0xFF7282B4),
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text =
-                                application?.introduction
-                                    ?: stringResource(id = R.string.community_unknown),
+                                if (type == "Owner") {
+                                    application?.introduction
+                                        ?: stringResource(id = R.string.community_unknown)
+                                } else {
+                                    introduction
+                                        ?: stringResource(id = R.string.community_unknown)
+                                },
                             color = Color(0xFF4A526A),
                         )
                     }
@@ -277,22 +315,21 @@ fun ApplyScreen(
                     Spacer(modifier = Modifier.height(100.dp))
 
                     if (type == "Owner") {
-                        Row {
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                             // 수락 버튼
                             Button(
                                 onClick = {
                                     application?.let { apply ->
                                         applicationViewModel.updateStatus(
                                             application = apply,
-                                            value = "승인",
+                                            value = "APPROVED",
                                         )
                                     }
                                 },
                                 modifier =
                                     Modifier
-                                        .weight(1f)
-                                        .height(50.dp)
-                                        .width(200.dp),
+                                        .weight(1.5f)
+                                        .height(50.dp),
                                 shape = RoundedCornerShape(20.dp),
                                 colors =
                                     ButtonDefaults.buttonColors(
@@ -300,7 +337,10 @@ fun ApplyScreen(
                                         contentColor = Color.White,
                                     ),
                             ) {
-                                Text("승인", fontSize = 16.sp)
+                                Text(
+                                    text = stringResource(id = R.string.application_yes),
+                                    fontSize = 16.sp,
+                                )
                             }
 
                             // 거절 버튼
@@ -309,15 +349,14 @@ fun ApplyScreen(
                                     application?.let { apply ->
                                         applicationViewModel.updateStatus(
                                             application = apply,
-                                            value = "거절",
+                                            value = "REJECTED",
                                         )
                                     }
                                 },
                                 modifier =
                                     Modifier
                                         .weight(1f)
-                                        .height(50.dp)
-                                        .width(120.dp),
+                                        .height(50.dp),
                                 shape = RoundedCornerShape(20.dp),
                                 colors =
                                     ButtonDefaults.buttonColors(
@@ -325,7 +364,10 @@ fun ApplyScreen(
                                         contentColor = Color.DarkGray,
                                     ),
                             ) {
-                                Text("거절", fontSize = 16.sp)
+                                Text(
+                                    text = stringResource(id = R.string.application_no),
+                                    fontSize = 16.sp,
+                                )
                             }
                         }
                     } else {
@@ -351,7 +393,10 @@ fun ApplyScreen(
                                     contentColor = Color.White,
                                 ),
                         ) {
-                            Text("결과 보기", fontSize = 16.sp)
+                            Text(
+                                text = stringResource(id = R.string.myapply_filter_open),
+                                fontSize = 16.sp,
+                            )
                         }
                     }
 
@@ -367,8 +412,8 @@ fun ApplyScreen(
                         Text(
                             text =
                                 when (application?.status) {
-                                    "승인" -> "축하합니다! 🎉"
-                                    "거절" -> "아쉽지만 다음 기회에!"
+                                    "APPROVED" -> "축하합니다! 🎉"
+                                    "REJECTED" -> "아쉽지만 다음 기회에!"
                                     else -> "결과 대기 중"
                                 },
                             fontWeight = FontWeight.Bold,
@@ -378,15 +423,15 @@ fun ApplyScreen(
                         Text(
                             text =
                                 when (application?.status) {
-                                    "승인" -> "지원하신 모집에 합격하셨습니다.\n카카오 오픈채팅으로 바로 이동할 수 있어요."
-                                    "거절" -> "아쉽게도 이번에는 합격하지 못했어요.\n다른 멋진 모집글을 찾아보세요!"
+                                    "APPROVED" -> "지원하신 모집에 합격하셨습니다.\n카카오 오픈채팅으로 바로 이동할 수 있어요."
+                                    "REJECTED" -> "아쉽게도 이번에는 합격하지 못했어요.\n다른 멋진 모집글을 찾아보세요!"
                                     else -> "결과가 아직 나오지 않았습니다."
                                 },
                         )
                     },
                     confirmButton = {
                         when (application?.status) {
-                            "승인" -> {
+                            "APPROVED" -> {
                                 TextButton(
                                     onClick = {
                                         showResultDialog = false
@@ -410,7 +455,7 @@ fun ApplyScreen(
                                 }
                             }
 
-                            "거절" -> {
+                            "REJECTED" -> {
                                 TextButton(
                                     onClick = {
                                         showResultDialog = false
@@ -442,42 +487,46 @@ fun ApplyScreen(
                         .padding(top = 100.dp, start = 60.dp),
                 verticalAlignment = Alignment.Bottom,
             ) {
-                // 프로필 사진
-                AsyncImage(
-                    model = application?.applicant?.profileImageUrl,
-                    contentDescription = "프로필 사진",
-                    contentScale = ContentScale.Crop,
+                Box(
                     modifier =
                         Modifier
                             .size(80.dp)
                             .clip(RoundedCornerShape(20.dp))
+                            .background(Color.White)
                             .border(3.dp, Color.White, RoundedCornerShape(20.dp)),
-                )
+                ) {
+                    // 프로필 사진
+                    AsyncImage(
+                        model =
+                            if (type == "Owner") {
+                                application?.applicant?.profileImageUrl
+                                    ?: ""
+                            } else {
+                                userState?.profileImageUrl ?: ""
+                            },
+                        placeholder = painterResource(id = R.drawable.chain),
+                        error = painterResource(id = R.drawable.chain),
+                        contentDescription = "프로필 사진",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
 
                 Spacer(modifier = Modifier.width(20.dp))
 
                 // 친구 추가 아이콘
-                Box(
-                    modifier =
-                        Modifier
-                            .size(60.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFF3ECDFF))
-                            .border(3.dp, Color.White, CircleShape)
-                            .padding(4.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.follow),
-                        contentDescription = "친구 추가",
-                        tint = Color.White,
+                if (type == "Owner") {
+                    Box(
                         modifier =
                             Modifier
-                                .size(16.dp)
+                                .size(60.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFF3ECDFF))
+                                .border(3.dp, Color.White, CircleShape)
+                                .padding(4.dp)
                                 .clickable {
                                     val currentUser = userState
                                     val currentApplication = application
-
                                     if (currentUser != null && currentApplication != null) {
                                         val myInfo =
                                             UserSummary(
@@ -488,11 +537,26 @@ fun ApplyScreen(
                                             )
                                         userViewModel.toggleFollow(
                                             myInfo,
-                                            currentApplication.applicant,
+                                            UserSummary(
+                                                id = currentApplication.applicant.id,
+                                                nickname = currentApplication.applicant.nickname,
+                                                profileImageUrl = currentApplication.applicant.profileImageUrl,
+                                                country = currentApplication.applicant.country,
+                                            ),
                                         )
                                     }
                                 },
-                    )
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.follow),
+                            contentDescription = "친구 추가",
+                            tint = Color.White,
+                            modifier =
+                                Modifier
+                                    .size(16.dp),
+                        )
+                    }
                 }
             }
         }

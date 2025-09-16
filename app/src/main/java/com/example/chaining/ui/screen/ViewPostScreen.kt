@@ -96,7 +96,7 @@ fun ViewPostScreen(
                     )
                 }
 
-                OwnerProfile(owner = currentPost.owner, where = "모집글 상세보기", type = "상세 보기")
+                OwnerProfile(owner = currentPost.owner, where = "모집글 상세보기")
 
                 // 제목을 완벽한 중앙에 맞추기 위한 빈 공간
                 Spacer(modifier = Modifier.width(48.dp))
@@ -229,7 +229,7 @@ fun ViewPostScreen(
                         )
                         SaveButton(
                             onSave = { onApplicationListClick(currentPost.postId) },
-                            text = stringResource(id = R.string.post_look),
+                            text = stringResource(id = R.string.view_application),
                             modifier = Modifier.weight(1f),
                         )
                     }

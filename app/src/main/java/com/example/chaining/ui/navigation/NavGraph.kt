@@ -1,5 +1,6 @@
 package com.example.chaining.ui.navigation
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -127,6 +128,8 @@ fun NavGraph(
                         Screen.Apply.createRoute(
                             type = "Owner",
                             applicationId = applicationId,
+                            introduction = "",
+                            closeAt = 0L,
                         ),
                     )
                 },
@@ -160,6 +163,9 @@ fun NavGraph(
         composable(Screen.Community.route) {
             CommunityScreen(
                 onBackClick = { navController.navigate("mainHome") },
+                onJoinPostClick = { post ->
+                    navController.navigate(Screen.JoinPost.createRoute(post))
+                },
                 onViewPostClick = { postId ->
                     navController.navigate(Screen.ViewPost.createRoute(postId))
                 },
@@ -211,13 +217,24 @@ fun NavGraph(
             json?.let {
                 val post = remember(it) { Gson().fromJson(it, RecruitPost::class.java) }
                 JoinPostScreen(
+                    navController = navController,
                     onBackClick = { navController.popBackStack() },
                     post = post,
                     onSubmitSuccess = {
                         navController.navigate("mainHome")
                     },
-                    onViewMyApplications = {
-                        navController.navigate(Screen.Applications.createRoute(type = "My"))
+                    onViewMyApplyClick = { introduction ->
+                        navController.currentBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("introduction", introduction)
+                        navController.navigate(
+                            Screen.Apply.createRoute(
+                                type = "My",
+                                closeAt = post.closeAt,
+                                introduction = introduction,
+                                applicationId = null,
+                            ),
+                        )
                     },
                 )
             }
@@ -283,20 +300,42 @@ fun NavGraph(
             route = Screen.Apply.route,
             arguments =
                 listOf(
-                    navArgument("type") {
+                    navArgument("type") { type = NavType.StringType },
+                    navArgument("closeAt") {
+                        type = NavType.LongType
+                        defaultValue = 0L
+                    },
+                    navArgument("introduction") {
                         type = NavType.StringType
-                        defaultValue = "My"
+                        defaultValue = ""
+                    },
+                    navArgument("applicationId") {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = ""
                     },
                 ),
         ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type") ?: "My"
+            val closeAt = backStackEntry.arguments?.getLong("closeAt") ?: 0L
+            val introduction =
+                backStackEntry.arguments?.getString("introduction")?.takeIf { it.isNotEmpty() }
+                    ?.let { Uri.decode(it) }
             val applicationId =
-                backStackEntry.arguments?.getString("applicationId") ?: return@composable
+                backStackEntry.arguments?.getString("applicationId")?.takeIf { it.isNotEmpty() }
 
             ApplyScreen(
-                onBackClick = { navController.popBackStack() },
+                onBackClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("introduction", introduction)
+
+                    navController.popBackStack()
+                },
                 type = type,
                 applicationId = applicationId,
+                introduction = introduction,
+                closeAt = closeAt,
             )
         }
 
@@ -313,6 +352,9 @@ fun NavGraph(
         composable(route = Screen.MyPosts.route) {
             MyPostsScreen(
                 onBackClick = { navController.popBackStack() },
+                onViewPostClick = { postId ->
+                    navController.navigate(Screen.ViewPost.createRoute(postId))
+                },
             )
         }
         composable(
@@ -344,6 +386,8 @@ fun NavGraph(
                         Screen.Apply.createRoute(
                             type = type,
                             applicationId = applicationId,
+                            introduction = "",
+                            closeAt = 0L,
                         ),
                     )
                 },
@@ -357,6 +401,8 @@ fun NavGraph(
                         Screen.Apply.createRoute(
                             type = "Owner",
                             applicationId = applicationId,
+                            introduction = "",
+                            closeAt = 0L,
                         ),
                     )
                 },

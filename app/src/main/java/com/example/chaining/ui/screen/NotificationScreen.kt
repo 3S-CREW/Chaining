@@ -247,7 +247,7 @@ fun NotificationItem(
                     application?.let { apply ->
                         applicationViewModel.updateStatus(
                             application = apply,
-                            value = "승인",
+                            value = "APPROVED",
                         )
                     }
                 },
@@ -255,7 +255,7 @@ fun NotificationItem(
                     application?.let { apply ->
                         applicationViewModel.updateStatus(
                             application = apply,
-                            value = "거절",
+                            value = "REJECTED",
                         )
                     }
                 },

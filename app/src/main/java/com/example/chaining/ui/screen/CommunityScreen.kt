@@ -8,11 +8,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
 import com.example.chaining.data.model.FilterState
+import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.ui.component.CardItem
 import com.example.chaining.ui.component.FilterOptionsSheet
 import com.example.chaining.ui.component.formatRemainingTime
@@ -63,6 +69,7 @@ fun CommunityScreen(
     onViewPostClick: (postId: String) -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel(),
     onCreatePostClick: () -> Unit,
+    onJoinPostClick: (post: RecruitPost) -> Unit,
 ) {
     val context = LocalContext.current
     // 1. ViewModel로부터 필터링된 posts와 현재 filterState를 직접 구독
@@ -84,6 +91,9 @@ fun CommunityScreen(
             }
         }
     }
+    val systemBarHorizontalPadding = WindowInsets.systemBars.asPaddingValues()
+    val horizontalPaddingValue =
+        systemBarHorizontalPadding.calculateStartPadding(LocalLayoutDirection.current) + 16.dp
 
     // 3. Bottom Sheet UI 구현
     if (showBottomSheet) {
@@ -108,6 +118,7 @@ fun CommunityScreen(
         onBackClick()
     }
     Scaffold(
+        contentWindowInsets = WindowInsets.systemBars,
         topBar = {
             Row(
                 modifier =
@@ -153,8 +164,9 @@ fun CommunityScreen(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(16.dp)
+                    .padding(top = innerPadding.calculateTopPadding()) // TopBar 아래 여백
+                    .padding(bottom = 0.dp)
+                    .padding(horizontal = horizontalPaddingValue)
                     .verticalScroll(rememberScrollState()),
         ) {
             Row(
@@ -194,6 +206,8 @@ fun CommunityScreen(
             } else {
                 posts.forEach { post ->
                     val isLiked = userState?.likedPosts?.get(post.postId) == true
+                    val hasApplied =
+                        userState?.applications?.values?.any { it.postId == post.postId } == true
                     CardItem(
                         onClick = { onViewPostClick(post.postId) },
                         type = "모집글",
@@ -204,8 +218,10 @@ fun CommunityScreen(
                                 context,
                                 post.closeAt - System.currentTimeMillis(),
                             ),
+                        onLeftButtonClick = { onJoinPostClick(post) },
                         onRightButtonClick = { userViewModel.toggleLike(post.postId) },
                         currentUserId = userState?.id,
+                        hasApplied = hasApplied,
                     )
                 }
             }

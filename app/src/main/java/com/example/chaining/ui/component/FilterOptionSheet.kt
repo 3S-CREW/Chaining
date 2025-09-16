@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
 import com.example.chaining.data.model.FilterState
+import com.example.chaining.ui.screen.PrimaryBlue
 import com.example.chaining.ui.screen.SecondaryTextColor
 import com.example.chaining.viewmodel.AreaViewModel
 
@@ -264,6 +265,8 @@ fun FilterDropdown(
                     .fillMaxWidth(),
             colors =
                 ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                    focusedLabelColor = PrimaryBlue,
+                    unfocusedLabelColor = Color.Gray,
                     focusedBorderColor = Color(0xFF7282B4),
                     unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
                 ),

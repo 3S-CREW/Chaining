@@ -5,6 +5,7 @@
     <string name="login_button">Login with Google Account</string>
     <string name="login_in_progress">Logging in...</string>
     <string name="login_admin_button">Admin Login</string>
+    <string name="introduction_self">Introduction:</string>
 
     <string name="welcome_message">Welcome, %1$s.</string>
     <string name="recent_apply">Recent Applications</string>
@@ -18,6 +19,7 @@
     <string name="community_no_posts">No posts available.</string>
     <string name="community_see_post">View Post ></string>
     <string name="community_apply_button">Apply</string>
+    <string name="community_application_complete">Apply Complete</string>
     <string name="community_interest_button">Interest</string>
     <string name="community_no_title">no title</string>
     <string name="time_left_recruit">%1$s left until deadline</string>
@@ -83,6 +85,7 @@
         <item quantity="one">%d minute</item>
         <item quantity="other">%d minutes</item>
     </plurals>
+    <string name="view_application_arrow">View Application></string>
     <string name="view_application">View Application></string>
 
     <string name="post_write_title">Write a Post</string>

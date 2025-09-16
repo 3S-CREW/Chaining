@@ -1,6 +1,8 @@
 package com.example.chaining.data.repository
 
 import com.example.chaining.domain.model.Application
+import com.example.chaining.domain.model.Notification
+import com.example.chaining.domain.model.UserSummary
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -51,6 +53,32 @@ class ApplicationRepository
                         // 3. users/{uid}/myApplications/{applicationId} = true
                         "/users/$uid/applications/$applicationId" to newApplication,
                     )
+
+                val postOwnerId = application.owner.id
+
+                val newNotificationKey =
+                    rootRef.child("notifications")
+                        .child(postOwnerId).push().key ?: error("알림 ID 생성 실패")
+
+                val notification =
+                    Notification(
+                        id = newNotificationKey,
+                        type = "application",
+                        sender =
+                            UserSummary(
+                                id = application.applicant.id,
+                                nickname = application.applicant.nickname,
+                                profileImageUrl = application.applicant.profileImageUrl,
+                                country = application.applicant.country,
+                            ),
+                        postId = application.postId,
+                        applicationId = applicationId,
+                        createdAt = System.currentTimeMillis(),
+                        isRead = false,
+                        uid = postOwnerId,
+                    )
+
+                updates["/notifications/$postOwnerId/$newNotificationKey"] = notification
 
                 // 원자적 업데이트 수행
                 rootRef.updateChildren(updates).await()
@@ -137,20 +165,54 @@ class ApplicationRepository
         suspend fun updateStatus(
             application: Application,
             value: String,
-        ) {
-            // 멀티패스 업데이트 경로 구성
-            val updates =
-                hashMapOf<String, Any?>(
-                    // 1. applications 노드에 지원서 저장
-                    "/applications/${application.applicationId}/status" to value,
-                    // 2. posts/{postId}/applications/{applicationId}
-                    "/posts/${application.postId}/applications/${application.applicationId}/status" to value,
-                    // 3. users/{uid}/myApplications/{applicationId}
-                    "/users/${application.applicant.id}/applications/${application.applicationId}/status" to value,
-                )
+        ): Result<Unit> {
+            return try {
+                val applicationRef = applicationsRef().child(application.applicationId)
+                val currentAppSnapshot = applicationRef.get().await()
+                val currentStatus = currentAppSnapshot.child("status").getValue(String::class.java)
 
-            // 원자적 업데이트 수행
-            rootRef.updateChildren(updates).await()
+                if (currentStatus != "PENDING") {
+                    return Result.failure(Exception("이미 처리된 지원서입니다."))
+                }
+                // 멀티패스 업데이트 경로 구성
+                println("호시기" + application.applicant.id + application.applicationId)
+                val updates =
+                    hashMapOf<String, Any?>(
+                        // 1. applications 노드에 지원서 저장
+                        "/applications/${application.applicationId}/status" to value,
+                        // 2. posts/{postId}/applications/{applicationId}
+                        "/posts/${application.postId}/applications/${application.applicationId}/status" to value,
+                        // 3. users/{uid}/myApplications/{applicationId}
+                        "/users/${application.applicant.id}/applications/${application.applicationId}/status" to value,
+                    )
+
+                val newNotificationKey =
+                    rootRef.child("notifications")
+                        .child(application.applicant.id).push().key ?: error("알림 ID 생성 실패")
+                val notification =
+                    Notification(
+                        id = newNotificationKey,
+                        type = "status_update",
+                        sender =
+                            UserSummary(
+                                id = application.applicant.id,
+                                nickname = application.applicant.nickname,
+                                profileImageUrl = application.applicant.profileImageUrl,
+                                country = application.applicant.country,
+                            ),
+                        postId = application.postId,
+                        applicationId = application.applicationId,
+                        status = value,
+                        createdAt = System.currentTimeMillis(),
+                        isRead = false,
+                    )
+                updates["/notifications/${application.applicant.id}/$newNotificationKey"] = notification
+                // 원자적 업데이트 수행
+                rootRef.updateChildren(updates).await()
+                return Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
 
         /** Delete (Soft Delete) */

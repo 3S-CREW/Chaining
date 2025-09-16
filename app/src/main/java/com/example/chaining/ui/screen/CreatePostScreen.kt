@@ -3,14 +3,19 @@ package com.example.chaining.ui.screen
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,7 +41,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -74,6 +83,9 @@ fun CreatePostScreen(
     val userState by userViewModel.user.collectAsState()
     val postState by postViewModel.post.collectAsState()
     val postCreationSuccess by postViewModel.postCreationSuccess.collectAsState()
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(key1 = type, key2 = postId) {
         if (type == "수정" && postId != null) {
@@ -134,6 +146,10 @@ fun CreatePostScreen(
     val validationPleaseEnterText = stringResource(id = R.string.post_please_enter)
     val validationInvalidKakaoLinkText = stringResource(id = R.string.post_invalid_kakao_link)
 
+    val systemBarHorizontalPadding = WindowInsets.systemBars.asPaddingValues()
+    val horizontalPaddingValue =
+        systemBarHorizontalPadding.calculateStartPadding(LocalLayoutDirection.current) + 16.dp
+
     LaunchedEffect(postCreationSuccess) {
         if (postCreationSuccess) {
             onPostCreated() // NavGraph에 정의된 화면 이동 로직 실행
@@ -166,14 +182,21 @@ fun CreatePostScreen(
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets.systemBars,
         topBar = {
             Row(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(64.dp) // 원하는 높이로 직접 설정
+                        .height(64.dp)
                         .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                        .background(Color(0xFF4A526A)),
+                        .background(Color(0xFF4A526A))
+                        .pointerInput(Unit) {
+                            detectTapGestures(onTap = {
+                                focusManager.clearFocus()
+                                keyboardController?.hide()
+                            })
+                        },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 // 뒤로가기 아이콘 버튼
@@ -205,10 +228,17 @@ fun CreatePostScreen(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(16.dp)
                     // 스크롤 가능하게 만듦
-                    .verticalScroll(rememberScrollState()),
+                    .padding(top = innerPadding.calculateTopPadding())
+                    .padding(bottom = 0.dp)
+                    .padding(horizontal = horizontalPaddingValue)
+                    .verticalScroll(rememberScrollState())
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            focusManager.clearFocus()
+                            keyboardController?.hide()
+                        })
+                    },
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -481,13 +511,15 @@ fun SingleDropdown(
                     .fillMaxWidth()
                     .menuAnchor(),
             colors =
-                TextFieldDefaults.colors(
+                ExposedDropdownMenuDefaults.outlinedTextFieldColors(
                     focusedContainerColor = Color(0xFFF3F6FF),
                     unfocusedContainerColor = Color(0xFFF3F6FF),
                     focusedPlaceholderColor = Color.Gray,
                     unfocusedPlaceholderColor = Color.LightGray,
-                    focusedIndicatorColor = Color.LightGray,
-                    unfocusedIndicatorColor = Color.LightGray,
+                    focusedLabelColor = PrimaryBlue,
+                    unfocusedLabelColor = Color.Gray,
+                    focusedBorderColor = Color(0xFF7282B4),
+                    unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
                 ),
             shape = RoundedCornerShape(4.dp),
         )
@@ -544,13 +576,15 @@ fun PreferenceSelector(
             },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
             colors =
-                TextFieldDefaults.colors(
+                ExposedDropdownMenuDefaults.outlinedTextFieldColors(
                     focusedContainerColor = Color(0xFFF3F6FF),
                     unfocusedContainerColor = Color(0xFFF3F6FF),
                     focusedPlaceholderColor = Color.Gray,
                     unfocusedPlaceholderColor = Color.LightGray,
-                    focusedIndicatorColor = Color.LightGray,
-                    unfocusedIndicatorColor = Color.LightGray,
+                    focusedLabelColor = PrimaryBlue,
+                    unfocusedLabelColor = Color.Gray,
+                    focusedBorderColor = Color(0xFF7282B4),
+                    unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
                 ),
             shape = RoundedCornerShape(4.dp),
         )

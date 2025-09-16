@@ -54,15 +54,20 @@ fun CardItem(
     onRightButtonClick: () -> Unit = {},
     currentUserId: String? = "",
     isLiked: Boolean? = false,
+    hasApplied: Boolean = false,
 ) {
     val title =
         when (type) {
             "모집글" -> recruitPost?.title ?: stringResource(id = R.string.community_no_title)
-            "지원서" -> application?.recruitPostTitle ?: stringResource(id = R.string.community_no_title)
+            "지원서" ->
+                application?.recruitPostTitle
+                    ?: stringResource(id = R.string.community_no_title)
+
             else -> stringResource(id = R.string.community_no_title)
-        }
+        }.replace("+", " ")
 
     val remainingTimeText = remainingTime ?: stringResource(id = R.string.community_unknown)
+    val isAuthor = recruitPost?.owner?.id == currentUserId
 
     val timeText =
         when (type) {
@@ -79,11 +84,13 @@ fun CardItem(
 
     val leftButtonText =
         if (type == "모집글") {
-            stringResource(id = R.string.community_apply_button)
+            if (hasApplied == true) {
+                stringResource(id = R.string.community_application_complete)
+            } else {
+                stringResource(id = R.string.community_apply_button)
+            }
         } else {
-            stringResource(
-                id = R.string.application_yes,
-            )
+            stringResource(id = R.string.application_yes)
         }
     val rightButtonText =
         if (type == "모집글") {
@@ -95,7 +102,7 @@ fun CardItem(
         }
 
     val rightText =
-        if (type == "모집글") stringResource(id = R.string.community_see_post) else stringResource(id = R.string.view_application)
+        if (type == "모집글") stringResource(id = R.string.community_see_post) else stringResource(id = R.string.view_application_arrow)
 
     val profile =
         if (type == "모집글") {
@@ -105,7 +112,9 @@ fun CardItem(
                     recruitPost?.owner?.nickname
                         ?: stringResource(id = R.string.community_unknown),
                 profileImageUrl = recruitPost?.owner?.profileImageUrl ?: "",
-                country = recruitPost?.owner?.country ?: stringResource(id = R.string.community_unknown),
+                country =
+                    recruitPost?.owner?.country
+                        ?: stringResource(id = R.string.community_unknown),
             )
         } else {
             UserSummary(
@@ -240,7 +249,6 @@ fun CardItem(
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -251,6 +259,7 @@ fun CardItem(
                             onClick = onLeftButtonClick,
                             modifier = Modifier.weight(3f),
                             shape = RoundedCornerShape(20.dp),
+                            enabled = !isAuthor && !hasApplied,
                             colors =
                                 ButtonDefaults.buttonColors(
                                     containerColor = Color(0xFF4285F4),
@@ -269,6 +278,7 @@ fun CardItem(
                                         .weight(2f)
                                         .scale(scale.value),
                                 shape = RoundedCornerShape(20.dp),
+                                enabled = !isAuthor,
                                 colors =
                                     ButtonDefaults.buttonColors(
                                         containerColor = buttonColor,

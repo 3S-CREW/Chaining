@@ -37,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
 import com.example.chaining.domain.model.Application
 import com.example.chaining.ui.component.CardItem
+import com.example.chaining.viewmodel.ApplicationViewModel
 import com.example.chaining.viewmodel.RecruitPostViewModel
 import com.example.chaining.viewmodel.UserViewModel
 
@@ -46,6 +47,7 @@ fun ApplicationsScreen(
     onBackClick: () -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel(),
     postViewModel: RecruitPostViewModel = hiltViewModel(),
+    applicationViewModel: ApplicationViewModel = hiltViewModel(),
     postId: String?,
     // "My" or "Owner"
     type: String,
@@ -170,6 +172,22 @@ fun ApplicationsScreen(
                         },
                         type = "지원서",
                         application = application,
+                        onLeftButtonClick = {
+                            application.let { apply ->
+                                applicationViewModel.updateStatus(
+                                    application = apply,
+                                    value = "APPROVED",
+                                )
+                            }
+                        },
+                        onRightButtonClick = {
+                            application.let { apply ->
+                                applicationViewModel.updateStatus(
+                                    application = apply,
+                                    value = "APPROVED",
+                                )
+                            }
+                        },
                     )
                 }
             }

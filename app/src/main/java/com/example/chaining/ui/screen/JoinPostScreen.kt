@@ -26,7 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,10 +40,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.chaining.R
 import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.RecruitPost
-import com.example.chaining.domain.model.UserSummary
 import com.example.chaining.ui.component.OwnerProfile
 import com.example.chaining.ui.component.SaveButton
 import com.example.chaining.viewmodel.ApplicationViewModel
@@ -61,11 +61,14 @@ fun JoinPostScreen(
     onSubmitSuccess: () -> Unit,
     userViewModel: UserViewModel = hiltViewModel(),
     post: RecruitPost,
-    onViewMyApplications: () -> Unit,
+    onViewMyApplyClick: (String) -> Unit,
+    navController: NavController,
 ) {
+    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+
+    var introduction by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
     val userState by userViewModel.user.collectAsState()
-    var introduction by remember { mutableStateOf("") }
 
     val isSubmitSuccess by applicationViewModel.isSubmitSuccess.collectAsState()
 
@@ -83,19 +86,23 @@ fun JoinPostScreen(
         }
         // 토스트 메시지 이벤트 처리
         launch {
-            applicationViewModel.toastEvent.collectLatest { eventKey ->
-                val message =
-                    when (eventKey) {
-                        "application_success" -> context.getString(R.string.application_submit_success)
-                        "application_failed" -> context.getString(R.string.application_submit_failed)
-                        else -> null
-                    }
-                message?.let {
-                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                }
+            applicationViewModel.toastEvent.collectLatest { message ->
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
         }
     }
+
+    LaunchedEffect(savedStateHandle) {
+        savedStateHandle?.getStateFlow("introduction", "")
+            ?.collect { restored ->
+                if (restored.isNotEmpty()) {
+                    introduction = restored
+                    savedStateHandle.remove<String>("introduction")
+                }
+            }
+    }
+
+    val decodedTitle = post.title.replace("+", " ")
 
     Scaffold(
         topBar = {
@@ -157,7 +164,7 @@ fun JoinPostScreen(
 
             // 게시글 제목
             Text(
-                text = post.title,
+                text = decodedTitle,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF4A526A),
@@ -247,7 +254,7 @@ fun JoinPostScreen(
 
             // '내 지원서 보기' 버튼 (보조 버튼)
             Button(
-                onClick = { onViewMyApplications() },
+                onClick = { onViewMyApplyClick(introduction) },
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -274,20 +281,19 @@ fun JoinPostScreen(
                     ).show()
                 } else {
                     val newApplication =
-                        Application(
-                            applicationId = "",
-                            postId = post.postId,
-                            owner = post.owner,
-                            recruitPostTitle = post.title,
-                            introduction = introduction,
-                            applicant =
-                                UserSummary(
-                                    id = userState?.id ?: "",
-                                    nickname = userState?.nickname ?: "",
-                                    profileImageUrl = userState?.profileImageUrl ?: "",
-                                ),
-                        )
-                    applicationViewModel.submitApplication(newApplication)
+                        userState?.let {
+                            Application(
+                                applicationId = "",
+                                postId = post.postId,
+                                owner = post.owner,
+                                recruitPostTitle = post.title,
+                                introduction = introduction,
+                                applicant = it,
+                            )
+                        }
+                    if (newApplication != null) {
+                        applicationViewModel.submitApplication(newApplication)
+                    }
                 }
             }, text = stringResource(id = R.string.apply_button))
 

@@ -4,6 +4,7 @@ import androidx.room.TypeConverter
 import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.LanguagePref
 import com.example.chaining.domain.model.RecruitPost
+import com.example.chaining.domain.model.User
 import com.example.chaining.domain.model.UserSummary
 import kotlinx.serialization.json.Json
 
@@ -43,4 +44,10 @@ class Converters {
 
     @TypeConverter
     fun toUserSummary(value: String?): UserSummary? = if (value.isNullOrEmpty()) null else Json.decodeFromString(value)
+
+    @TypeConverter
+    fun fromUser(value: User?): String = value?.let { Json.encodeToString(it) } ?: ""
+
+    @TypeConverter
+    fun toUser(value: String?): User? = if (value.isNullOrEmpty()) null else Json.decodeFromString(value)
 }

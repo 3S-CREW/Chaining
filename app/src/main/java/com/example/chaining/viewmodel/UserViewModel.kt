@@ -94,14 +94,13 @@ class UserViewModel
                 _user.value = _user.value?.copy(likedPosts = newLikedPosts)
 
                 // 2. DB 업데이트
-                viewModelScope.launch {
-                    try {
-                        repo.toggleLikedPost(uid, postId)
-                    } catch (e: Exception) {
-                        // DB 실패 시, 낙관적 업데이트 되돌리기
-                        if (currentLiked) newLikedPosts[postId] = true else newLikedPosts.remove(postId)
-                        _user.value = _user.value?.copy(likedPosts = newLikedPosts)
-                    }
+
+                try {
+                    repo.toggleLikedPost(uid, postId)
+                } catch (e: Exception) {
+                    // DB 실패 시, 낙관적 업데이트 되돌리기
+                    if (currentLiked) newLikedPosts[postId] = true else newLikedPosts.remove(postId)
+                    _user.value = _user.value?.copy(likedPosts = newLikedPosts)
                 }
             }
 
@@ -110,7 +109,7 @@ class UserViewModel
             other: UserSummary,
         ) = viewModelScope.launch {
             val result = repo.toggleFollow(user, other)
-
+            println("호시기 누름")
             result.onFailure { exception ->
                 _toastEvent.emit(exception.message ?: "작업에 실패했습니다.")
             }

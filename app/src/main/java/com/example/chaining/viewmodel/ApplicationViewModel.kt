@@ -65,7 +65,7 @@ class ApplicationViewModel
                     _toastEvent.emit("application_success")
                     _isSubmitSuccess.value = true
                 }.onFailure { exception ->
-                    _toastEvent.emit("application_failed")
+                    _toastEvent.emit(exception.message ?: "application_failed")
                 }
             }
 
