@@ -313,6 +313,9 @@ fun NavGraph(
         composable(route = Screen.MyPosts.route) {
             MyPostsScreen(
                 onBackClick = { navController.popBackStack() },
+                onViewPostClick = { postId ->
+                    navController.navigate(Screen.ViewPost.createRoute(postId))
+                }
             )
         }
         composable(
