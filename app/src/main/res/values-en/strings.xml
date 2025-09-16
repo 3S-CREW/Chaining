@@ -83,7 +83,8 @@
         <item quantity="one">%d minute</item>
         <item quantity="other">%d minutes</item>
     </plurals>
-    <string name="view_application">View Application></string>
+    <string name="view_application">View Application ></string>
+    <string name="view_application_two">View Application</string>
 
     <string name="post_write_title">Write a Post</string>
     <string name="post_write_enter_title">Enter a title. (Max 20 characters)</string>

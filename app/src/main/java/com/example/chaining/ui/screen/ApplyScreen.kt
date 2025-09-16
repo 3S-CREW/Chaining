@@ -128,7 +128,7 @@ fun ApplyScreen(
                 Text(
                     text =
                         if (type == "Owner") {
-                            stringResource(id = R.string.view_application)
+                            stringResource(id = R.string.view_application_two)
                         } else {
                             stringResource(id = R.string.apply_mine)
                         },
@@ -442,17 +442,23 @@ fun ApplyScreen(
                         .padding(top = 100.dp, start = 60.dp),
                 verticalAlignment = Alignment.Bottom,
             ) {
-                // 프로필 사진
-                AsyncImage(
-                    model = application?.applicant?.profileImageUrl,
-                    contentDescription = "프로필 사진",
-                    contentScale = ContentScale.Crop,
-                    modifier =
-                        Modifier
-                            .size(80.dp)
-                            .clip(RoundedCornerShape(20.dp))
-                            .border(3.dp, Color.White, RoundedCornerShape(20.dp)),
-                )
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(Color.White)
+                        .border(3.dp, Color.White, RoundedCornerShape(20.dp))
+                ) {
+                    // 프로필 사진
+                    AsyncImage(
+                        model = application?.applicant?.profileImageUrl,
+                        placeholder = painterResource(id = R.drawable.chain),
+                        error = painterResource(id = R.drawable.chain),
+                        contentDescription = "프로필 사진",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
 
                 Spacer(modifier = Modifier.width(20.dp))
 
