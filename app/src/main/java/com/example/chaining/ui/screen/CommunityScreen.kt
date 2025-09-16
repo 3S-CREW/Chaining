@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
 import com.example.chaining.data.model.FilterState
+import com.example.chaining.domain.model.RecruitPost
 import com.example.chaining.ui.component.CardItem
 import com.example.chaining.ui.component.FilterOptionsSheet
 import com.example.chaining.ui.component.formatRemainingTime
@@ -68,6 +69,7 @@ fun CommunityScreen(
     onViewPostClick: (postId: String) -> Unit = {},
     userViewModel: UserViewModel = hiltViewModel(),
     onCreatePostClick: () -> Unit,
+    onJoinPostClick: (post: RecruitPost) -> Unit,
 ) {
     val context = LocalContext.current
     // 1. ViewModel로부터 필터링된 posts와 현재 filterState를 직접 구독
@@ -90,7 +92,8 @@ fun CommunityScreen(
         }
     }
     val systemBarHorizontalPadding = WindowInsets.systemBars.asPaddingValues()
-    val horizontalPaddingValue = systemBarHorizontalPadding.calculateStartPadding(LocalLayoutDirection.current) + 16.dp
+    val horizontalPaddingValue =
+        systemBarHorizontalPadding.calculateStartPadding(LocalLayoutDirection.current) + 16.dp
 
     // 3. Bottom Sheet UI 구현
     if (showBottomSheet) {
@@ -119,11 +122,11 @@ fun CommunityScreen(
         topBar = {
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                        .background(Color(0xFF4A526A)),
+                Modifier
+                    .fillMaxWidth()
+                    .height(64.dp)
+                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                    .background(Color(0xFF4A526A)),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 // 뒤로가기 버튼
@@ -156,20 +159,20 @@ fun CommunityScreen(
             }
         },
         containerColor = Color(0xFFF3F6FF),
-    ) { innerPadding->
+    ) { innerPadding ->
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(top = innerPadding.calculateTopPadding()) // TopBar 아래 여백
-                    .padding(bottom = 0.dp)
-                    .padding(horizontal = horizontalPaddingValue)
-                    .verticalScroll(rememberScrollState()),
+            Modifier
+                .fillMaxSize()
+                .padding(top = innerPadding.calculateTopPadding()) // TopBar 아래 여백
+                .padding(bottom = 0.dp)
+                .padding(horizontal = horizontalPaddingValue)
+                .verticalScroll(rememberScrollState()),
         ) {
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth(),
+                Modifier
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 // 새로 만든 CommunityActionButton 호출
@@ -194,9 +197,9 @@ fun CommunityScreen(
                 Text(
                     text = stringResource(id = R.string.community_no_posts),
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = 50.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 50.dp),
                     color = Color.Gray,
                     textAlign = TextAlign.Center,
                 )
@@ -209,10 +212,11 @@ fun CommunityScreen(
                         recruitPost = post,
                         isLiked = isLiked,
                         remainingTime =
-                            formatRemainingTime(
-                                context,
-                                post.closeAt - System.currentTimeMillis(),
-                            ),
+                        formatRemainingTime(
+                            context,
+                            post.closeAt - System.currentTimeMillis(),
+                        ),
+                        onLeftButtonClick = { onJoinPostClick(post) },
                         onRightButtonClick = { userViewModel.toggleLike(post.postId) },
                         currentUserId = userState?.id,
                     )
