@@ -203,6 +203,9 @@
     <string name="myapply_filter_open">Show the Apply Results</string>
     <string name="myapply_nothing">You haven\'t created any applications yet.</string>
 
+    <string name="follow_request_sent">You are now following %1$s.</string>
+    <string name="follow_cancelled">You unfollowed %1$s.</string>
+
     <string name="terms_agreement_required">You must agree to the terms to use the service.</string>
     <string name="agree_and_start">Agree and Start</string>
     <string name="terms_of_service_title">Terms of Service</string>
