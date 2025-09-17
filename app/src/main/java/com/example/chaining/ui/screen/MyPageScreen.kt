@@ -390,6 +390,11 @@ fun ProfileSection(
                     }
                 val storageRef = Firebase.storage.reference.child("profileImages/$uid.jpg")
 
+                Toast.makeText(context,
+                    context.getString((R.string.mypage_profile_image_upload)),
+                    Toast.LENGTH_SHORT
+                ).show()
+
                 storageRef.putFile(uri)
                     .addOnSuccessListener {
                         storageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
