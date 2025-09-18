@@ -211,6 +211,7 @@
     <string name="agree_privacy_policy_required">[필수] 개인정보 처리방침 동의</string>
     <string name="fail_to_sign_up">회원가입 취소에 실패했습니다.</string>
 
+    <string name="feed_copy_address">주소가 복사되었습니다.</string>
 
     <!-- Full Terms of Service Content -->
     <string name="terms_of_service_content">
