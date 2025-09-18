@@ -179,6 +179,7 @@
     <string name="mypage_edit_nickname">닉네임 수정</string>
     <string name="mypage_select_image_under_2mb">2MB 이하 이미지를 선택해주세요.</string>
     <string name="mypage_login_required">로그인이 필요합니다.</string>
+    <string name="mypage_profile_image_upload">이미지 업로드 중...</string>
     <string name="mypage_profile_image_changed">프로필 이미지가 변경되었습니다.</string>
     <string name="mypage_image_upload_failed">이미지 업로드 실패: %1$s</string>
     <string name="mypage_profile_save_success">프로필이 저장되었습니다.</string>
@@ -199,6 +200,8 @@
     <string name="myapply_filter_open">지원서 결과 보기</string>
     <string name="myapply_nothing">등록된 지원서가 없습니다.</string>
 
+    <string name="follow_request_sent">%1$s님을 팔로우합니다.</string>
+    <string name="follow_cancelled">%1$s님 팔로우를 취소했습니다.</string>
 
     <string name="terms_agreement_required">서비스 이용을 위해 약관 동의가 필요합니다.</string>
     <string name="agree_and_start">동의하고 시작하기</string>

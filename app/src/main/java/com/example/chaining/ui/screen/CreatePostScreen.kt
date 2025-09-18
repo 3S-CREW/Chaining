@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -182,7 +183,9 @@ fun CreatePostScreen(
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets.systemBars,
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding(),
         topBar = {
             Row(
                 modifier =
@@ -231,7 +234,6 @@ fun CreatePostScreen(
                     // 스크롤 가능하게 만듦
                     .padding(top = innerPadding.calculateTopPadding())
                     .padding(bottom = 0.dp)
-                    .padding(horizontal = horizontalPaddingValue)
                     .verticalScroll(rememberScrollState())
                     .pointerInput(Unit) {
                         detectTapGestures(onTap = {
@@ -240,23 +242,29 @@ fun CreatePostScreen(
                         })
                     },
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Column(
+                modifier = Modifier
+                    .weight(1f) // 남는 공간을 모두 차지
+                    .padding(horizontal = 16.dp) // 좌우 패딩
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = title,
-                onValueChange = { if (it.length <= MAX_TITLE_LENGTH) title = it },
-                modifier =
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { if (it.length <= MAX_TITLE_LENGTH) title = it },
+                    modifier =
                     Modifier
                         .fillMaxWidth(),
-                placeholder = {
-                    Text(
-                        text = stringResource(id = R.string.post_write_enter_title),
-                        modifier = Modifier.padding(start = 14.dp),
-                    )
-                },
-                shape = RoundedCornerShape(16.dp),
-                singleLine = true,
-                colors =
+                    placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.post_write_enter_title),
+                            modifier = Modifier.padding(start = 14.dp),
+                        )
+                    },
+                    shape = RoundedCornerShape(16.dp),
+                    singleLine = true,
+                    colors =
                     TextFieldDefaults.colors(
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White,
@@ -266,99 +274,99 @@ fun CreatePostScreen(
                         focusedIndicatorColor = Color.LightGray,
                         unfocusedIndicatorColor = Color.LightGray,
                     ),
-                supportingText = {
-                    Text(
-                        text = "${title.length} / $MAX_TITLE_LENGTH",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.End,
-                    )
-                },
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // 여행지 스타일 드롭다운
-            val travelStyles =
-                listOf(
-                    stringResource(id = R.string.travel_style_mountain),
-                    stringResource(id = R.string.travel_style_sea),
-                    stringResource(id = R.string.travel_style_city),
-                    stringResource(id = R.string.travel_style_activity),
-                    stringResource(id = R.string.travel_style_rest),
-                    stringResource(id = R.string.travel_style_culture),
+                    supportingText = {
+                        Text(
+                            text = "${title.length} / $MAX_TITLE_LENGTH",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.End,
+                        )
+                    },
                 )
-            PreferenceSelector(
-                options = travelStyles,
-                placeholderText = stringResource(id = R.string.post_write_style),
-                selectedOption = preferredDestinations,
-                onOptionSelected = { preferredDestinations = it },
-                leadingIconRes = R.drawable.favorite_spot,
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-            // 여행 지역 드롭다운
-            val areaNames =
-                remember(areaEntities) {
-                    areaEntities
-                        .map { it.regionName }
-                }
-            PreferenceSelector(
-                options = areaNames,
-                placeholderText = stringResource(id = R.string.post_write_location),
-                selectedOption = preferredLocations,
-                onOptionSelected = { selectedName ->
-                    preferredLocations = selectedName
-                },
-                leadingIconRes = R.drawable.country,
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+                // 여행지 스타일 드롭다운
+                val travelStyles =
+                    listOf(
+                        stringResource(id = R.string.travel_style_mountain),
+                        stringResource(id = R.string.travel_style_sea),
+                        stringResource(id = R.string.travel_style_city),
+                        stringResource(id = R.string.travel_style_activity),
+                        stringResource(id = R.string.travel_style_rest),
+                        stringResource(id = R.string.travel_style_culture),
+                    )
+                PreferenceSelector(
+                    options = travelStyles,
+                    placeholderText = stringResource(id = R.string.post_write_style),
+                    selectedOption = preferredDestinations,
+                    onOptionSelected = { preferredDestinations = it },
+                    leadingIconRes = R.drawable.favorite_spot,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // 여행 시작일 선택
-            DatePickerFieldToModal(
-                modifier = Modifier.fillMaxWidth(),
-                label = stringResource(id = R.string.post_tour_date),
-                selectedDate = tourAt,
-                onDateSelected = { tourAt = it },
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+                // 여행 지역 드롭다운
+                val areaNames =
+                    remember(areaEntities) {
+                        areaEntities
+                            .map { it.regionName }
+                    }
+                PreferenceSelector(
+                    options = areaNames,
+                    placeholderText = stringResource(id = R.string.post_write_location),
+                    selectedOption = preferredLocations,
+                    onOptionSelected = { selectedName ->
+                        preferredLocations = selectedName
+                    },
+                    leadingIconRes = R.drawable.country,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // 모집 마감일 선택
-            DatePickerFieldToModal(
-                modifier = Modifier.fillMaxWidth(),
-                label = stringResource(id = R.string.post_close_date),
-                selectedDate = closeAt,
-                onDateSelected = { closeAt = it },
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            SingleDropdown(
-                label = stringResource(id = R.string.post_write_car),
-                leadingIconRes = R.drawable.car,
-                options =
+                // 여행 시작일 선택
+                DatePickerFieldToModal(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = stringResource(id = R.string.post_tour_date),
+                    selectedDate = tourAt,
+                    onDateSelected = { tourAt = it },
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // 모집 마감일 선택
+                DatePickerFieldToModal(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = stringResource(id = R.string.post_close_date),
+                    selectedDate = closeAt,
+                    onDateSelected = { closeAt = it },
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                SingleDropdown(
+                    label = stringResource(id = R.string.post_write_car),
+                    leadingIconRes = R.drawable.car,
+                    options =
                     listOf(
                         stringResource(id = R.string.post_write_car_six),
                         stringResource(id = R.string.post_write_car_four),
                         stringResource(id = R.string.post_write_car_two),
                         stringResource(id = R.string.post_write_no),
                     ),
-                selectedOption = hasCar,
-                onOptionSelected = { hasCar = it },
-            )
+                    selectedOption = hasCar,
+                    onOptionSelected = { hasCar = it },
+                )
 
-            Spacer(modifier = Modifier.height(20.dp))
-            // 오픈 채팅 링크 입력창
-            OutlinedTextField(
-                value = kakaoOpenChatUrl,
-                onValueChange = { kakaoOpenChatUrl = it },
-                modifier =
+                Spacer(modifier = Modifier.height(20.dp))
+                // 오픈 채팅 링크 입력창
+                OutlinedTextField(
+                    value = kakaoOpenChatUrl,
+                    onValueChange = { kakaoOpenChatUrl = it },
+                    modifier =
                     Modifier
                         .fillMaxWidth(),
-                placeholder = {
-                    Text(
-                        text = stringResource(id = R.string.post_write_kakao),
-                        modifier = Modifier.padding(start = 14.dp),
-                    )
-                },
-                shape = RoundedCornerShape(16.dp),
-                colors =
+                    placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.post_write_kakao),
+                            modifier = Modifier.padding(start = 14.dp),
+                        )
+                    },
+                    shape = RoundedCornerShape(16.dp),
+                    colors =
                     TextFieldDefaults.colors(
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White,
@@ -367,32 +375,32 @@ fun CreatePostScreen(
                         focusedIndicatorColor = Color.LightGray,
                         unfocusedIndicatorColor = Color.LightGray,
                     ),
-            )
-            Spacer(modifier = Modifier.height(30.dp))
+                )
+                Spacer(modifier = Modifier.height(30.dp))
 
-            // 내용 입력창
-            OutlinedTextField(
-                value = content,
-                onValueChange = { if (it.length <= MAX_CONTENT_LENGTH) content = it },
-                modifier =
+                // 내용 입력창
+                OutlinedTextField(
+                    value = content,
+                    onValueChange = { if (it.length <= MAX_CONTENT_LENGTH) content = it },
+                    modifier =
                     Modifier
                         .fillMaxWidth()
                         .height(200.dp),
-                placeholder = {
-                    Text(
-                        text = stringResource(id = R.string.post_write),
-                        modifier = Modifier.padding(start = 14.dp),
-                    )
-                },
-                shape = RoundedCornerShape(16.dp),
-                supportingText = {
-                    Text(
-                        text = "${content.length} / $MAX_CONTENT_LENGTH",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.End,
-                    )
-                },
-                colors =
+                    placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.post_write),
+                            modifier = Modifier.padding(start = 14.dp),
+                        )
+                    },
+                    shape = RoundedCornerShape(16.dp),
+                    supportingText = {
+                        Text(
+                            text = "${content.length} / $MAX_CONTENT_LENGTH",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.End,
+                        )
+                    },
+                    colors =
                     TextFieldDefaults.colors(
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White,
@@ -401,11 +409,13 @@ fun CreatePostScreen(
                         focusedIndicatorColor = Color.LightGray,
                         unfocusedIndicatorColor = Color.LightGray,
                     ),
-            )
+                )
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
+            }
 
             SaveButton(
+                modifier = Modifier.padding(horizontal = 16.dp),
                 onSave = {
                     val missingFields = mutableListOf<String>()
                     if (title.isBlank()) missingFields.add(fieldTitleText)

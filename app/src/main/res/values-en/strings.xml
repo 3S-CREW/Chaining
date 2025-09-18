@@ -182,6 +182,7 @@
     <string name="mypage_edit_nickname">Edit Nickname</string>
     <string name="mypage_select_image_under_2mb">Please select an image under 2MB.</string>
     <string name="mypage_login_required">Login required.</string>
+    <string name="mypage_profile_image_upload">Uploading Images...</string>
     <string name="mypage_profile_image_changed">Profile image has been changed.</string>
     <string name="mypage_image_upload_failed">Image upload failed: %1$s</string>
     <string name="mypage_profile_save_success">Profile saved successfully.</string>
@@ -201,6 +202,9 @@
     <string name="myapply_all_post">View All Applications</string>
     <string name="myapply_filter_open">Show the Apply Results</string>
     <string name="myapply_nothing">You haven\'t created any applications yet.</string>
+
+    <string name="follow_request_sent">You are now following %1$s.</string>
+    <string name="follow_cancelled">You unfollowed %1$s.</string>
 
     <string name="terms_agreement_required">You must agree to the terms to use the service.</string>
     <string name="agree_and_start">Agree and Start</string>
