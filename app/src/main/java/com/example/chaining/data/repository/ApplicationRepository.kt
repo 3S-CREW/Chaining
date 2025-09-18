@@ -59,7 +59,6 @@ constructor(
             val newNotificationKey =
                 rootRef.child("notifications")
                     .child(postOwnerId).push().key ?: error("알림 ID 생성 실패")
-
             val notification =
                 Notification(
                     id = newNotificationKey,
@@ -176,7 +175,6 @@ constructor(
                 return Result.failure(Exception("이미 처리된 지원서입니다."))
             }
             // 멀티패스 업데이트 경로 구성
-            println("호시기" + application.applicant.id + application.applicationId)
             val updates =
                 hashMapOf<String, Any?>(
                     // 1. applications 노드에 지원서 저장

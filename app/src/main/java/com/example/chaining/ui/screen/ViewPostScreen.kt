@@ -61,13 +61,16 @@ fun ViewPostScreen(
     val post by postViewModel.post.collectAsState()
     val currentPost = post
 
+    val hasApplied =
+        userState?.applications?.values?.any { it.postId == currentPost?.postId } == true
+
     // post가 null이면 로딩 UI 표시
     if (currentPost == null) {
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(30.dp),
+            Modifier
+                .fillMaxSize()
+                .padding(30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -80,11 +83,11 @@ fun ViewPostScreen(
         topBar = {
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                        .background(Color(0xFF4A526A)),
+                Modifier
+                    .fillMaxWidth()
+                    .height(64.dp)
+                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                    .background(Color(0xFF4A526A)),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = onBackClick) {
@@ -116,27 +119,27 @@ fun ViewPostScreen(
     ) { innerPadding ->
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(start = 10.dp, end = 10.dp),
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(start = 10.dp, end = 10.dp),
         ) {
             // 스크롤이 필요한 콘텐츠 영역 (Card)
             Card(
                 // weight(1f)를 주어 남는 공간을 모두 차지하게 함
                 modifier =
-                    Modifier
-                        .padding(12.dp)
-                        .weight(1f),
+                Modifier
+                    .padding(12.dp)
+                    .weight(1f),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFF3F6FF)),
             ) {
                 // 카드 내부는 이전과 동일하게 스크롤 가능
                 Column(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .verticalScroll(rememberScrollState()),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .verticalScroll(rememberScrollState()),
                 ) {
                     Spacer(modifier = Modifier.height(30.dp))
 
@@ -212,9 +215,9 @@ fun ViewPostScreen(
 
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 10.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (userState?.id == currentPost.owner.id) {
@@ -236,9 +239,16 @@ fun ViewPostScreen(
 
                     //                SaveButton(onSave = { /*TODO*/ }, text = "삭제")
                 } else {
+                    val buttonText =
+                        if (hasApplied == true) {
+                            stringResource(id = R.string.community_application_complete)
+                        } else {
+                            stringResource(id = R.string.community_apply_button)
+                        }
                     SaveButton(
                         onSave = { onJoinPostClick(currentPost) },
-                        text = stringResource(id = R.string.post_button),
+                        text = buttonText,
+                        enable = !hasApplied
                     )
                     //                SaveButton(onSave = { /*TODO*/ }, text = "숨김")
                 }
@@ -256,9 +266,9 @@ fun SetInfo(
 ) {
     Row(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .height(48.dp),
+        Modifier
+            .fillMaxWidth()
+            .height(48.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(

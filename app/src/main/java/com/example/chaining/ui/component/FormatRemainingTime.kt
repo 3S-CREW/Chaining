@@ -13,10 +13,10 @@ fun formatRemainingTime(
     if (remainingMillis <= 0) {
         return context.getString(R.string.time_closed)
     }
-    val totalMinutes = remainingMillis / 1000 / 60
-    val days = (totalMinutes / (60 * 24)).toInt()
-    val hours = ((totalMinutes % (60 * 24)) / 60).toInt()
-    val minutes = (totalMinutes % 60).toInt()
+    val totalSeconds = remainingMillis / 1000
+    val days = (totalSeconds / (24 * 3600)).toInt()
+    val hours = ((totalSeconds % (24 * 3600)) / 3600).toInt()
+    val minutes = ((totalSeconds % 3600) / 60).toInt()
 
     val resources = context.resources
     val parts = mutableListOf<String>()

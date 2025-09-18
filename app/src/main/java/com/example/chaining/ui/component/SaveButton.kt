@@ -18,13 +18,15 @@ fun SaveButton(
     onSave: () -> Unit,
     text: String,
     modifier: Modifier = Modifier,
+    enable: Boolean? = true,
 ) {
     Button(
         onClick = onSave,
+        enabled = enable ?: true,
         modifier =
-            modifier
-                .fillMaxWidth()
-                .height(45.dp),
+        modifier
+            .fillMaxWidth()
+            .height(45.dp),
         shape = RoundedCornerShape(30.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4285F4)),
     ) {

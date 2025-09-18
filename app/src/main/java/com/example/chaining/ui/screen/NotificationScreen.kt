@@ -58,6 +58,7 @@ import com.example.chaining.ui.screen.PrimaryBlue
 import com.example.chaining.viewmodel.ApplicationViewModel
 import com.example.chaining.viewmodel.NotificationEvent
 import com.example.chaining.viewmodel.NotificationViewModel
+import com.example.chaining.viewmodel.UserViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -236,8 +237,10 @@ fun NotificationItem(
     notification: Notification,
     viewModel: NotificationViewModel = hiltViewModel(),
     applicationViewModel: ApplicationViewModel = hiltViewModel(),
+    userViewModel: UserViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val userState by userViewModel.user.collectAsState()
     val formattedDate =
         remember(notification.createdAt) {
             val date = Date(notification.createdAt)
@@ -264,22 +267,23 @@ fun NotificationItem(
             LaunchedEffect(notification.applicationId) {
                 notification.applicationId?.let { applicationViewModel.fetchApplication(it) }
             }
-            println(
-                "호시기" + notification.closeAt,
-            )
+            val hasStatus =
+                application?.status != "PENDING"
             CardItem(
                 onClick = {
                     notification.applicationId?.let { id ->
                         viewModel.onApplicationClick(id)
                     }
                 },
+                hasStatus = hasStatus,
                 type = "지원서",
                 // Notification -> Application 매핑 필요
                 application = application,
+                currentUserId = userState?.id,
                 remainingTime =
                 formatRemainingTime(
                     context,
-                    notification.closeAt?.minus(System.currentTimeMillis()) ?: 0L,
+                    application?.closeAt?.minus(System.currentTimeMillis()) ?: 0L,
                 ),
                 onLeftButtonClick = {
                     application?.let { apply ->
@@ -287,6 +291,11 @@ fun NotificationItem(
                             application = apply,
                             value = "APPROVED",
                         )
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.toast_approved),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 },
                 onRightButtonClick = {
@@ -295,6 +304,11 @@ fun NotificationItem(
                             application = apply,
                             value = "REJECTED",
                         )
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.toast_rejected),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 },
             )

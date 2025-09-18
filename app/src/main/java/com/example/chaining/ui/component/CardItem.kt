@@ -55,6 +55,7 @@ fun CardItem(
     currentUserId: String? = "",
     isLiked: Boolean? = false,
     hasApplied: Boolean = false,
+    hasStatus: Boolean = false,
 ) {
     val title =
         when (type) {
@@ -67,7 +68,8 @@ fun CardItem(
         }.replace("+", " ")
 
     val remainingTimeText = remainingTime ?: stringResource(id = R.string.community_unknown)
-    val isAuthor = recruitPost?.owner?.id == currentUserId
+    val isAuthor =
+        (recruitPost?.owner?.id == currentUserId) || (application?.applicant?.id == currentUserId)
 
     val timeText =
         when (type) {
@@ -273,7 +275,7 @@ fun CardItem(
                             onClick = onLeftButtonClick,
                             modifier = Modifier.weight(3f),
                             shape = RoundedCornerShape(20.dp),
-                            enabled = !isAuthor && !hasApplied,
+                            enabled = !isAuthor && !hasApplied && !hasStatus,
                             colors =
                             ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF4285F4),
@@ -282,7 +284,6 @@ fun CardItem(
                         ) {
                             Text(text = leftButtonText)
                         }
-
                         // 오른쪽 버튼
                         if (type == "모집글") {
                             Button(
@@ -306,6 +307,7 @@ fun CardItem(
                                 onClick = onRightButtonClick,
                                 modifier = Modifier.weight(2f),
                                 shape = RoundedCornerShape(20.dp),
+                                enabled = !isAuthor && !hasStatus,
                                 colors =
                                 ButtonDefaults.buttonColors(
                                     containerColor = Color(0xFFEBEFFA),

@@ -97,7 +97,11 @@ fun MainHomeScreen(
         if (System.currentTimeMillis() - backPressedTime <= 2000L) {
             (context as? android.app.Activity)?.finish()
         } else {
-            Toast.makeText(context, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                context.getString(R.string.toast_exit_again),
+                Toast.LENGTH_SHORT
+            ).show()
         }
         backPressedTime = System.currentTimeMillis()
     }
