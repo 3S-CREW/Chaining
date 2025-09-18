@@ -1,5 +1,6 @@
 package com.example.chaining.ui.screen
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -121,11 +122,11 @@ fun CommunityScreen(
         topBar = {
             Row(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                    .background(Color(0xFF4A526A)),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                        .background(Color(0xFF4A526A)),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 // 뒤로가기 버튼
@@ -161,17 +162,17 @@ fun CommunityScreen(
     ) { innerPadding ->
         Column(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(top = innerPadding.calculateTopPadding())
-                .padding(bottom = 0.dp)
-                .padding(horizontal = horizontalPaddingValue)
-                .verticalScroll(rememberScrollState()),
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = innerPadding.calculateTopPadding())
+                    .padding(bottom = 0.dp)
+                    .padding(horizontal = horizontalPaddingValue)
+                    .verticalScroll(rememberScrollState()),
         ) {
             Row(
                 modifier =
-                Modifier
-                    .fillMaxWidth(),
+                    Modifier
+                        .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 // 새로 만든 CommunityActionButton 호출
@@ -195,9 +196,9 @@ fun CommunityScreen(
                 Text(
                     text = stringResource(id = R.string.community_no_posts),
                     modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 50.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 50.dp),
                     color = Color.Gray,
                     textAlign = TextAlign.Center,
                 )
@@ -213,10 +214,10 @@ fun CommunityScreen(
                         recruitPost = post,
                         isLiked = isLiked,
                         remainingTime =
-                        formatRemainingTime(
-                            context,
-                            post.closeAt - System.currentTimeMillis(),
-                        ),
+                            formatRemainingTime(
+                                context,
+                                post.closeAt - System.currentTimeMillis(),
+                            ),
                         onLeftButtonClick = { onJoinPostClick(post) },
                         onRightButtonClick = { userViewModel.toggleLike(post.postId) },
                         currentUserId = userState?.id,

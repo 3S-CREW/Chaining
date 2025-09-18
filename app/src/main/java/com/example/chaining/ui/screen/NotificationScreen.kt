@@ -110,27 +110,27 @@ fun NotificationScreen(
             else -> emptyList()
         }
 
-
     BackHandler(enabled = true) {
         onBackClick()
     }
-
 
     Scaffold(
         containerColor = LightGrayBackground,
         topBar = {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(LightGrayBackground),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .background(LightGrayBackground),
             ) {
                 // 상단바
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                        .background(Color(0xFF4A526A)),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(64.dp)
+                            .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                            .background(Color(0xFF4A526A)),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     // 뒤로가기 버튼
@@ -184,10 +184,10 @@ fun NotificationScreen(
     ) { innerPadding ->
         Box(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(LightGrayBackground),
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(LightGrayBackground),
         ) {
             when {
                 isLoading -> {
@@ -215,9 +215,9 @@ fun NotificationScreen(
                 else -> {
                     LazyColumn(
                         modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                            Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
                     ) {
                         items(filteredNotifications) { notification ->
                             NotificationItem(
@@ -237,7 +237,7 @@ fun NotificationItem(
     notification: Notification,
     viewModel: NotificationViewModel = hiltViewModel(),
     applicationViewModel: ApplicationViewModel = hiltViewModel(),
-    userViewModel: UserViewModel = hiltViewModel()
+    userViewModel: UserViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val userState by userViewModel.user.collectAsState()
@@ -247,13 +247,12 @@ fun NotificationItem(
             SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault()).format(date)
         }
 
-
     when (notification.type) {
         "follow" -> {
             FollowNotificationItem(
                 name =
-                notification.sender?.nickname
-                    ?: stringResource(id = R.string.community_unknown),
+                    notification.sender?.nickname
+                        ?: stringResource(id = R.string.community_unknown),
                 timestamp = formattedDate,
                 imageUrl = notification.sender?.profileImageUrl?.takeIf { it.isNotEmpty() } ?: "",
             )
@@ -281,10 +280,10 @@ fun NotificationItem(
                 application = application,
                 currentUserId = userState?.id,
                 remainingTime =
-                formatRemainingTime(
-                    context,
-                    application?.closeAt?.minus(System.currentTimeMillis()) ?: 0L,
-                ),
+                    formatRemainingTime(
+                        context,
+                        application?.closeAt?.minus(System.currentTimeMillis()) ?: 0L,
+                    ),
                 onLeftButtonClick = {
                     application?.let { apply ->
                         applicationViewModel.updateStatus(
@@ -294,7 +293,7 @@ fun NotificationItem(
                         Toast.makeText(
                             context,
                             context.getString(R.string.toast_approved),
-                            Toast.LENGTH_SHORT
+                            Toast.LENGTH_SHORT,
                         ).show()
                     }
                 },
@@ -307,7 +306,7 @@ fun NotificationItem(
                         Toast.makeText(
                             context,
                             context.getString(R.string.toast_rejected),
-                            Toast.LENGTH_SHORT
+                            Toast.LENGTH_SHORT,
                         ).show()
                     }
                 },
@@ -318,19 +317,19 @@ fun NotificationItem(
             // 기타 알림 처리
             Card(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 6.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors =
-                CardDefaults.cardColors(
-                    containerColor =
-                    if (notification.isRead) {
-                        MaterialTheme.colorScheme.surface
-                    } else {
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
-                    },
-                ),
+                    CardDefaults.cardColors(
+                        containerColor =
+                            if (notification.isRead) {
+                                MaterialTheme.colorScheme.surface
+                            } else {
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
+                            },
+                    ),
                 elevation = CardDefaults.cardElevation(2.dp),
             ) {
                 Column(modifier = Modifier.padding(14.dp)) {

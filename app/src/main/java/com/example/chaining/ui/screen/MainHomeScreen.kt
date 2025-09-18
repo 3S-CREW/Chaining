@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -101,7 +99,7 @@ fun MainHomeScreen(
             Toast.makeText(
                 context,
                 context.getString(R.string.toast_exit_again),
-                Toast.LENGTH_SHORT
+                Toast.LENGTH_SHORT,
             ).show()
         }
         backPressedTime = System.currentTimeMillis()
@@ -123,12 +121,12 @@ fun MainHomeScreen(
         topBar = {
             Row(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .background(Color(0xFFF3F6FF))
-                    .padding(top = 4.dp)
-                    .padding(horizontal = 12.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                        .background(Color(0xFFF3F6FF))
+                        .padding(top = 4.dp)
+                        .padding(horizontal = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Spacer(modifier = Modifier.width(40.dp))
@@ -161,19 +159,19 @@ fun MainHomeScreen(
         // 중앙 콘텐츠 구현 (환영 메시지, 매칭 카드, 팔로우 목록 등)
         Column(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(Color(0xFFF3F6FF)),
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(Color(0xFFF3F6FF)),
         ) {
             Text(
                 text = stringResource(id = R.string.welcome_message, userState?.nickname ?: "체이닝"),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 modifier =
-                Modifier
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 32.dp),
+                    Modifier
+                        .padding(top = 16.dp)
+                        .padding(horizontal = 32.dp),
             )
             Text(
                 text = stringResource(id = R.string.recent_apply),
@@ -181,9 +179,9 @@ fun MainHomeScreen(
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Gray,
                 modifier =
-                Modifier
-                    .padding(top = 24.dp)
-                    .padding(horizontal = 32.dp),
+                    Modifier
+                        .padding(top = 24.dp)
+                        .padding(horizontal = 32.dp),
             )
 
             if (isLoading) {
@@ -196,14 +194,14 @@ fun MainHomeScreen(
                     fontSize = 14.sp,
                     color = Color.Gray,
                     modifier =
-                    Modifier
-                        .padding(horizontal = 32.dp, vertical = 16.dp),
+                        Modifier
+                            .padding(horizontal = 32.dp, vertical = 16.dp),
                 )
             } else {
                 Row(
                     modifier =
-                    Modifier
-                        .padding(horizontal = 24.dp),
+                        Modifier
+                            .padding(horizontal = 24.dp),
                 ) {
                     NotificationItem(notification = recentApplication)
                 }
@@ -214,9 +212,9 @@ fun MainHomeScreen(
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Gray,
                 modifier =
-                Modifier
-                    .padding(top = 24.dp)
-                    .padding(horizontal = 32.dp),
+                    Modifier
+                        .padding(top = 24.dp)
+                        .padding(horizontal = 32.dp),
             )
 
             recentFollows.forEach { notification ->
@@ -235,9 +233,9 @@ fun AppBottomNavigation(
 
     Surface(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .height(65.dp),
+            Modifier
+                .fillMaxWidth()
+                .height(65.dp),
         shadowElevation = 12.dp,
         color = Color(0xFFF3F6FF),
     ) {
@@ -296,28 +294,28 @@ private fun CustomIconButton(
     val scale by animateFloatAsState(targetValue = if (isPressed) 0.9f else 1f)
     Box(
         modifier =
-        Modifier
-            .clickable(
-                onClick = onClick,
-                // 리플 효과를 없애기 위한 핵심 코드
-                indication = null,
-                interactionSource = interactionSource,
-            )
-            // 버튼의 터치 영역을 적절히 확보하기 위한 패딩
-            .padding(10.dp),
+            Modifier
+                .clickable(
+                    onClick = onClick,
+                    // 리플 효과를 없애기 위한 핵심 코드
+                    indication = null,
+                    interactionSource = interactionSource,
+                )
+                // 버튼의 터치 영역을 적절히 확보하기 위한 패딩
+                .padding(10.dp),
         contentAlignment = Alignment.Center,
     ) {
         Icon(
             painter = painterResource(id = iconRes),
             contentDescription = description,
             modifier =
-            Modifier
-                .size(30.dp)
-                // 4. 애니메이션으로 변경되는 scale 값을 아이콘에 적용
-                .graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
-                },
+                Modifier
+                    .size(30.dp)
+                    // 4. 애니메이션으로 변경되는 scale 값을 아이콘에 적용
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    },
         )
     }
 }
@@ -333,11 +331,11 @@ fun ProfileImageWithStatus(
     // Box를 사용해 이미지와 상태 점을 겹치게 만듭니다.
     Box(
         modifier =
-        modifier
-            .size(40.dp)
-            .clickable {
-                onMyPageClick()
-            },
+            modifier
+                .size(40.dp)
+                .clickable {
+                    onMyPageClick()
+                },
     ) {
         AsyncImage(
             model = model,
@@ -346,11 +344,11 @@ fun ProfileImageWithStatus(
             placeholder = painterResource(R.drawable.test_profile),
             error = painterResource(R.drawable.test_profile),
             modifier =
-            Modifier
-                // 부모(Box) 크기에 맞춤
-                .matchParentSize()
-                // 이미지를 원형으로 자름
-                .clip(RoundedCornerShape(15.dp)),
+                Modifier
+                    // 부모(Box) 크기에 맞춤
+                    .matchParentSize()
+                    // 이미지를 원형으로 자름
+                    .clip(RoundedCornerShape(15.dp)),
         )
 
         // 온라인 상태를 표시하는 점

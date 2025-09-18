@@ -34,5 +34,6 @@ enum class QuizType {
 
 data class WordChip(
     val text: String,
-    val id: UUID = UUID.randomUUID() // 각 단어에 고유한 ID를 자동으로 부여
+    // 각 단어에 고유한 ID를 자동으로 부여
+    val id: UUID = UUID.randomUUID(),
 )
