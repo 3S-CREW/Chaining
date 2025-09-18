@@ -13,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.chaining.data.repository.UserRepository
 import com.example.chaining.domain.model.QuizItem // 이전에 만든 QuizItem 데이터 클래스 import
 import com.example.chaining.domain.model.QuizType
+import com.example.chaining.domain.model.WordChip
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -53,17 +54,17 @@ class QuizViewModel
 
         // '순서 맞추기' 유형을 위한 '한 번만 섞인' 단어 목록 (상태로 관리)
         @Suppress("PropertyName")
-        private val _shuffledWordChips = mutableStateOf<List<String>>(emptyList())
+        private val _shuffledWordChips = mutableStateOf<List<WordChip>>(emptyList())
 
         // '선택하고 남은 단어 칩'은 이제 _shuffledWordChips를 기준으로 계산
-        val remainingWordChips: State<List<String>> =
+        val remainingWordChips: State<List<WordChip>> =
             derivedStateOf {
-                _shuffledWordChips.value - _userAnswerSentence.value.toSet()
+                _shuffledWordChips.value - _userAnswerSentence.value
             }
 
         // 사용자가 구성한 정답 문장을 저장하는 State
-        private val _userAnswerSentence = mutableStateOf<List<String>>(emptyList())
-        val userAnswerSentence: State<List<String>> = _userAnswerSentence
+        private val _userAnswerSentence = mutableStateOf<List<WordChip>>(emptyList())
+        val userAnswerSentence: State<List<WordChip>> = _userAnswerSentence
 
         // '객관식' 유형을 위한 사용자 선택 답안 저장 State
         private val _selectedOption = mutableStateOf<String?>(null)
@@ -163,20 +164,20 @@ class QuizViewModel
         private fun prepareSentenceOrderChips() {
             val quiz = currentQuestion.value
             if (quiz != null && quiz.type == QuizType.SENTENCE_ORDER.name) {
-                _shuffledWordChips.value = quiz.answer.split(" ").shuffled()
+                _shuffledWordChips.value = quiz.answer.split(" ").map{ WordChip(text = it) }.shuffled()
             } else {
                 _shuffledWordChips.value = emptyList()
             }
         }
 
         // 단어 칩을 클릭했을 때 호출될 함수
-        fun onWordChipClicked(word: String) {
-            _userAnswerSentence.value = _userAnswerSentence.value + word
+        fun onWordChipClicked(chip: WordChip) {
+            _userAnswerSentence.value = _userAnswerSentence.value + chip
         }
 
         // '내가 만든 문장'의 단어를 클릭했을 때 (선택 해제)
-        fun onAnswerWordClicked(word: String) {
-            _userAnswerSentence.value = _userAnswerSentence.value - word
+        fun onAnswerWordClicked(chip: WordChip) {
+            _userAnswerSentence.value = _userAnswerSentence.value - chip
         }
 
         // '객관식' 선택지를 클릭했을 때
@@ -212,7 +213,7 @@ class QuizViewModel
             // 현재 문제 유형에 맞는 사용자 답변 가져오기
             val userAnswer =
                 when (quiz.type) {
-                    QuizType.SENTENCE_ORDER.name -> _userAnswerSentence.value.joinToString(" ")
+                    QuizType.SENTENCE_ORDER.name -> _userAnswerSentence.value.joinToString(" "){ it.text }
                     QuizType.MULTIPLE_CHOICE.name -> _selectedOption.value
                     QuizType.FILL_IN_THE_BLANK.name -> _selectedBlankWord.value
                     else -> null
