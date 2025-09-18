@@ -208,6 +208,7 @@ fun CommunityScreen(
                     val isLiked = userState?.likedPosts?.get(post.postId) == true
                     val hasApplied =
                         userState?.applications?.values?.any { it.postId == post.postId } == true
+                    Log.d("CardItemCheck", "게시글 ID: ${post.postId}, 작성자 정보: ${post.owner}")
                     CardItem(
                         onClick = { onViewPostClick(post.postId) },
                         type = "모집글",

@@ -214,6 +214,8 @@
     <string name="agree_privacy_policy_required">[Required] Agree to Privacy Policy</string>
     <string name="fail_to_sign_up">Failed to cancel membership.</string>
 
+    <string name="feed_copy_address">Address Copied.</string>
+
     <!-- Full Terms of Service Content -->
     <string name="terms_of_service_content">
         Article 1 (Purpose)\n
