@@ -95,6 +95,7 @@ fun MainHomeScreen(
     }
     BackHandler(enabled = true) {
         if (System.currentTimeMillis() - backPressedTime <= 2000L) {
+            // 2초 안에 두 번 누르면 앱 종료
             (context as? android.app.Activity)?.finish()
         } else {
             Toast.makeText(
@@ -353,18 +354,18 @@ fun ProfileImageWithStatus(
         )
 
         // 온라인 상태를 표시하는 점
-        if (isOnline) {
-            Box(
-                modifier =
-                Modifier
-                    .size(12.dp)
-                    // 오른쪽 아래에 배치
-                    .align(Alignment.BottomEnd)
-                    // 초록색 배경
-                    .background(Color(0xFF00C853), CircleShape)
-                    // 흰색 테두리
-                    .border(width = 1.5.dp, color = Color.White, shape = CircleShape),
-            )
-        }
+//        if (isOnline) {
+//            Box(
+//                modifier =
+//                    Modifier
+//                        .size(12.dp)
+//                        // 오른쪽 아래에 배치
+//                        .align(Alignment.BottomEnd)
+//                        // 초록색 배경
+//                        .background(Color(0xFF00C853), CircleShape)
+//                        // 흰색 테두리
+//                        .border(width = 1.5.dp, color = Color.White, shape = CircleShape),
+//            )
+//        }
     }
 }

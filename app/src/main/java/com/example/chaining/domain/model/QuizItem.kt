@@ -1,5 +1,7 @@
 package com.example.chaining.domain.model
 
+import java.util.UUID
+
 data class QuizItem(
     // 고유 ID
     val id: String = "",
@@ -29,3 +31,8 @@ enum class QuizType {
     // 문장 빈칸 채우기
     FILL_IN_THE_BLANK,
 }
+
+data class WordChip(
+    val text: String,
+    val id: UUID = UUID.randomUUID() // 각 단어에 고유한 ID를 자동으로 부여
+)
