@@ -95,7 +95,6 @@ fun MainHomeScreen(
     }
     BackHandler(enabled = true) {
         if (System.currentTimeMillis() - backPressedTime <= 2000L) {
-            // 2초 안에 두 번 누르면 앱 종료
             (context as? android.app.Activity)?.finish()
         } else {
             Toast.makeText(context, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
@@ -119,12 +118,12 @@ fun MainHomeScreen(
         topBar = {
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .background(Color(0xFFF3F6FF))
-                        .padding(top = 4.dp)
-                        .padding(horizontal = 12.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .background(Color(0xFFF3F6FF))
+                    .padding(top = 4.dp)
+                    .padding(horizontal = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Spacer(modifier = Modifier.width(40.dp))
@@ -157,19 +156,19 @@ fun MainHomeScreen(
         // 중앙 콘텐츠 구현 (환영 메시지, 매칭 카드, 팔로우 목록 등)
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .background(Color(0xFFF3F6FF)),
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(Color(0xFFF3F6FF)),
         ) {
             Text(
                 text = stringResource(id = R.string.welcome_message, userState?.nickname ?: "체이닝"),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 modifier =
-                    Modifier
-                        .padding(top = 16.dp)
-                        .padding(horizontal = 32.dp),
+                Modifier
+                    .padding(top = 16.dp)
+                    .padding(horizontal = 32.dp),
             )
             Text(
                 text = stringResource(id = R.string.recent_apply),
@@ -177,9 +176,9 @@ fun MainHomeScreen(
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Gray,
                 modifier =
-                    Modifier
-                        .padding(top = 24.dp)
-                        .padding(horizontal = 32.dp),
+                Modifier
+                    .padding(top = 24.dp)
+                    .padding(horizontal = 32.dp),
             )
 
             if (isLoading) {
@@ -192,14 +191,14 @@ fun MainHomeScreen(
                     fontSize = 14.sp,
                     color = Color.Gray,
                     modifier =
-                        Modifier
-                            .padding(horizontal = 32.dp, vertical = 16.dp),
+                    Modifier
+                        .padding(horizontal = 32.dp, vertical = 16.dp),
                 )
             } else {
                 Row(
                     modifier =
-                        Modifier
-                            .padding(horizontal = 24.dp),
+                    Modifier
+                        .padding(horizontal = 24.dp),
                 ) {
                     NotificationItem(notification = recentApplication)
                 }
@@ -210,9 +209,9 @@ fun MainHomeScreen(
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Gray,
                 modifier =
-                    Modifier
-                        .padding(top = 24.dp)
-                        .padding(horizontal = 32.dp),
+                Modifier
+                    .padding(top = 24.dp)
+                    .padding(horizontal = 32.dp),
             )
 
             recentFollows.forEach { notification ->
@@ -231,9 +230,9 @@ fun AppBottomNavigation(
 
     Surface(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .height(65.dp),
+        Modifier
+            .fillMaxWidth()
+            .height(65.dp),
         shadowElevation = 12.dp,
         color = Color(0xFFF3F6FF),
     ) {
@@ -292,28 +291,28 @@ private fun CustomIconButton(
     val scale by animateFloatAsState(targetValue = if (isPressed) 0.9f else 1f)
     Box(
         modifier =
-            Modifier
-                .clickable(
-                    onClick = onClick,
-                    // 리플 효과를 없애기 위한 핵심 코드
-                    indication = null,
-                    interactionSource = interactionSource,
-                )
-                // 버튼의 터치 영역을 적절히 확보하기 위한 패딩
-                .padding(10.dp),
+        Modifier
+            .clickable(
+                onClick = onClick,
+                // 리플 효과를 없애기 위한 핵심 코드
+                indication = null,
+                interactionSource = interactionSource,
+            )
+            // 버튼의 터치 영역을 적절히 확보하기 위한 패딩
+            .padding(10.dp),
         contentAlignment = Alignment.Center,
     ) {
         Icon(
             painter = painterResource(id = iconRes),
             contentDescription = description,
             modifier =
-                Modifier
-                    .size(30.dp)
-                    // 4. 애니메이션으로 변경되는 scale 값을 아이콘에 적용
-                    .graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
-                    },
+            Modifier
+                .size(30.dp)
+                // 4. 애니메이션으로 변경되는 scale 값을 아이콘에 적용
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                },
         )
     }
 }
@@ -329,11 +328,11 @@ fun ProfileImageWithStatus(
     // Box를 사용해 이미지와 상태 점을 겹치게 만듭니다.
     Box(
         modifier =
-            modifier
-                .size(40.dp)
-                .clickable {
-                    onMyPageClick()
-                },
+        modifier
+            .size(40.dp)
+            .clickable {
+                onMyPageClick()
+            },
     ) {
         AsyncImage(
             model = model,
@@ -342,25 +341,25 @@ fun ProfileImageWithStatus(
             placeholder = painterResource(R.drawable.test_profile),
             error = painterResource(R.drawable.test_profile),
             modifier =
-                Modifier
-                    // 부모(Box) 크기에 맞춤
-                    .matchParentSize()
-                    // 이미지를 원형으로 자름
-                    .clip(RoundedCornerShape(15.dp)),
+            Modifier
+                // 부모(Box) 크기에 맞춤
+                .matchParentSize()
+                // 이미지를 원형으로 자름
+                .clip(RoundedCornerShape(15.dp)),
         )
 
         // 온라인 상태를 표시하는 점
         if (isOnline) {
             Box(
                 modifier =
-                    Modifier
-                        .size(12.dp)
-                        // 오른쪽 아래에 배치
-                        .align(Alignment.BottomEnd)
-                        // 초록색 배경
-                        .background(Color(0xFF00C853), CircleShape)
-                        // 흰색 테두리
-                        .border(width = 1.5.dp, color = Color.White, shape = CircleShape),
+                Modifier
+                    .size(12.dp)
+                    // 오른쪽 아래에 배치
+                    .align(Alignment.BottomEnd)
+                    // 초록색 배경
+                    .background(Color(0xFF00C853), CircleShape)
+                    // 흰색 테두리
+                    .border(width = 1.5.dp, color = Color.White, shape = CircleShape),
             )
         }
     }

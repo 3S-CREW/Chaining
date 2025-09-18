@@ -108,12 +108,12 @@ fun JoinPostScreen(
         topBar = {
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        // 원하는 높이로 직접 설정
-                        .height(64.dp)
-                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                        .background(Color(0xFF4A526A)),
+                Modifier
+                    .fillMaxWidth()
+                    // 원하는 높이로 직접 설정
+                    .height(64.dp)
+                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                    .background(Color(0xFF4A526A)),
                 // 내부 요소들을 세로 중앙에 정렬
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -153,10 +153,10 @@ fun JoinPostScreen(
         // 스크롤 영역과 하단 고정 영역을 나누기 위한 부모 Column
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(30.dp),
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(30.dp),
         ) {
             // 게시글 정보 섹션 추가
             // 상단바와의 간격
@@ -201,9 +201,9 @@ fun JoinPostScreen(
                     value = introduction,
                     onValueChange = { if (it.length <= MAX_CONTENT_LENGTH) introduction = it },
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(150.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(150.dp),
                     placeholder = {
                         Text(
                             stringResource(id = R.string.apply_write),
@@ -220,22 +220,22 @@ fun JoinPostScreen(
                         )
                     },
                     colors =
-                        TextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                            focusedIndicatorColor = Color.LightGray,
-                            unfocusedIndicatorColor = Color.LightGray,
-                            focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black,
-                        ),
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        focusedIndicatorColor = Color.LightGray,
+                        unfocusedIndicatorColor = Color.LightGray,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                    ),
                 )
                 Text(
                     text = stringResource(id = R.string.apply_text_one),
                     modifier =
-                        Modifier
-                            .padding(top = 8.dp)
-                            // 오른쪽 정렬
-                            .align(Alignment.End),
+                    Modifier
+                        .padding(top = 8.dp)
+                        // 오른쪽 정렬
+                        .align(Alignment.End),
                     fontSize = 10.sp,
                     color = Color.Gray,
                 )
@@ -256,15 +256,15 @@ fun JoinPostScreen(
             Button(
                 onClick = { onViewMyApplyClick(introduction) },
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFD9DDE9),
-                        contentColor = Color(0xFF7282B4),
-                    ),
+                ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFD9DDE9),
+                    contentColor = Color(0xFF7282B4),
+                ),
             ) {
                 Text(stringResource(id = R.string.apply_mine), fontSize = 16.sp)
             }
@@ -289,6 +289,7 @@ fun JoinPostScreen(
                                 recruitPostTitle = post.title,
                                 introduction = introduction,
                                 applicant = it,
+                                closeAt = post.closeAt,
                             )
                         }
                     if (newApplication != null) {
