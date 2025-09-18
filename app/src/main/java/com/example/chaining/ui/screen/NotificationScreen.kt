@@ -1,6 +1,7 @@
 package com.example.chaining.ui.notification
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,12 +12,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
@@ -33,8 +38,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -58,6 +65,7 @@ import java.util.Locale
 @Suppress("FunctionName")
 @Composable
 fun NotificationScreen(
+    onBackClick: () -> Unit = {},
     viewModel: NotificationViewModel = hiltViewModel(),
     onViewApplyClick: (String) -> Unit,
 ) {
@@ -101,26 +109,53 @@ fun NotificationScreen(
             else -> emptyList()
         }
 
+
+    BackHandler(enabled = true) {
+        onBackClick()
+    }
+
+
     Scaffold(
         containerColor = LightGrayBackground,
         topBar = {
             Column(
-                modifier =
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .background(LightGrayBackground),
             ) {
-                Text(
-                    text = stringResource(id = R.string.alarm_title),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier =
-                    Modifier
+                // 상단바
+                Row(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    textAlign = TextAlign.Center,
-                )
+                        .height(64.dp)
+                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                        .background(Color(0xFF4A526A)),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    // 뒤로가기 버튼
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.back_arrow),
+                            contentDescription = "뒤로 가기",
+                            modifier = Modifier.size(20.dp),
+                            tint = Color.White,
+                        )
+                    }
 
+                    // 제목
+                    Text(
+                        text = stringResource(id = R.string.alarm_title),
+                        modifier = Modifier.weight(1f),
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Center,
+                    )
+
+                    // 오른쪽에 비워둠 (필요시 버튼 추가 가능)
+                    Spacer(modifier = Modifier.width(48.dp))
+                }
+
+                // 탭
                 TabRow(
                     selectedTabIndex = selectedTabIndex,
                     containerColor = LightGrayBackground,
@@ -209,6 +244,7 @@ fun NotificationItem(
             SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault()).format(date)
         }
 
+
     when (notification.type) {
         "follow" -> {
             FollowNotificationItem(
@@ -229,11 +265,7 @@ fun NotificationItem(
                 notification.applicationId?.let { applicationViewModel.fetchApplication(it) }
             }
             println(
-                "호시기" +
-                        formatRemainingTime(
-                            context,
-                            notification.closeAt?.minus(System.currentTimeMillis()) ?: 0L,
-                        )
+                "호시기" + notification.closeAt,
             )
             CardItem(
                 onClick = {
