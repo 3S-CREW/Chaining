@@ -3,6 +3,7 @@
 package com.example.chaining.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -124,7 +125,7 @@ class QuizViewModel
                 // 1. Assets에서 파일 스트림 열기
                 val inputStream = context.assets.open(fileName)
                 // 2. 텍스트 읽기
-                val jsonString = inputStream.bufferedReader().use { it.readText() }
+                val jsonString = inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
                 // 3. Gson을 사용해 JSON 텍스트를 List<QuizItem>으로 변환
                 val listType = object : TypeToken<List<QuizItem>>() {}.type
                 allQuizzes = Gson().fromJson(jsonString, listType)
@@ -251,12 +252,24 @@ class QuizViewModel
 
         private fun calculateScore() {
             var score = 0
+            Log.d("QuizScoreCheck", "===== 채점 시작 =====")
             _quizSet.value.forEach { quizItem ->
                 val userAnswer = _userAnswersMap.value[quizItem.id]
+                val correctAnswer = quizItem.answer
+
+                Log.d("QuizScoreCheck", "문제 ID: ${quizItem.id} | 문제: ${quizItem.problem}")
+                Log.d("QuizScoreCheck", "  -> 제출한 답: '$userAnswer'")
+                Log.d("QuizScoreCheck", "  -> 실제 정답: '$correctAnswer'")
+
+                val isCorrect = userAnswer?.trim() == correctAnswer.trim()
                 if (userAnswer == quizItem.answer) {
                     score += quizItem.level // 정답이면 레벨만큼 점수 추가
                 }
+                Log.d("QuizScoreCheck", "  -> 채점 결과: ${if (isCorrect) "정답 (점수 +${quizItem.level})" else "오답"}")
+                Log.d("QuizScoreCheck", "---------------------------------")
             }
+            Log.d("QuizScoreCheck", "최종 점수: $score")
+            Log.d("QuizScoreCheck", "===== 채점 종료 =====")
             _totalScore.value = score
             _finalLevel.value = mapScoreToLevel(score)
         }
