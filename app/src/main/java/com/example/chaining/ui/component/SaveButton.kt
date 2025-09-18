@@ -18,9 +18,11 @@ fun SaveButton(
     onSave: () -> Unit,
     text: String,
     modifier: Modifier = Modifier,
+    enable: Boolean? = true,
 ) {
     Button(
         onClick = onSave,
+        enabled = enable ?: true,
         modifier =
             modifier
                 .fillMaxWidth()

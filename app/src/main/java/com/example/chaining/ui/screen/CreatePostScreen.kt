@@ -183,9 +183,10 @@ fun CreatePostScreen(
     }
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding(),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .imePadding(),
         topBar = {
             Row(
                 modifier =
@@ -243,10 +244,11 @@ fun CreatePostScreen(
                     },
         ) {
             Column(
-                modifier = Modifier
-                    .weight(1f) // 남는 공간을 모두 차지
-                    .padding(horizontal = 16.dp) // 좌우 패딩
-                    .verticalScroll(rememberScrollState())
+                modifier =
+                    Modifier
+                        .weight(1f) // 남는 공간을 모두 차지
+                        .padding(horizontal = 16.dp) // 좌우 패딩
+                        .verticalScroll(rememberScrollState()),
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -254,8 +256,8 @@ fun CreatePostScreen(
                     value = title,
                     onValueChange = { if (it.length <= MAX_TITLE_LENGTH) title = it },
                     modifier =
-                    Modifier
-                        .fillMaxWidth(),
+                        Modifier
+                            .fillMaxWidth(),
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.post_write_enter_title),
@@ -265,15 +267,15 @@ fun CreatePostScreen(
                     shape = RoundedCornerShape(16.dp),
                     singleLine = true,
                     colors =
-                    TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        disabledContainerColor = Color.White,
-                        focusedPlaceholderColor = Color.Gray,
-                        unfocusedPlaceholderColor = Color.Gray,
-                        focusedIndicatorColor = Color.LightGray,
-                        unfocusedIndicatorColor = Color.LightGray,
-                    ),
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            disabledContainerColor = Color.White,
+                            focusedPlaceholderColor = Color.Gray,
+                            unfocusedPlaceholderColor = Color.Gray,
+                            focusedIndicatorColor = Color.LightGray,
+                            unfocusedIndicatorColor = Color.LightGray,
+                        ),
                     supportingText = {
                         Text(
                             text = "${title.length} / $MAX_TITLE_LENGTH",
@@ -341,12 +343,12 @@ fun CreatePostScreen(
                     label = stringResource(id = R.string.post_write_car),
                     leadingIconRes = R.drawable.car,
                     options =
-                    listOf(
-                        stringResource(id = R.string.post_write_car_six),
-                        stringResource(id = R.string.post_write_car_four),
-                        stringResource(id = R.string.post_write_car_two),
-                        stringResource(id = R.string.post_write_no),
-                    ),
+                        listOf(
+                            stringResource(id = R.string.post_write_car_six),
+                            stringResource(id = R.string.post_write_car_four),
+                            stringResource(id = R.string.post_write_car_two),
+                            stringResource(id = R.string.post_write_no),
+                        ),
                     selectedOption = hasCar,
                     onOptionSelected = { hasCar = it },
                 )
@@ -357,8 +359,8 @@ fun CreatePostScreen(
                     value = kakaoOpenChatUrl,
                     onValueChange = { kakaoOpenChatUrl = it },
                     modifier =
-                    Modifier
-                        .fillMaxWidth(),
+                        Modifier
+                            .fillMaxWidth(),
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.post_write_kakao),
@@ -367,14 +369,14 @@ fun CreatePostScreen(
                     },
                     shape = RoundedCornerShape(16.dp),
                     colors =
-                    TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        focusedPlaceholderColor = Color.Gray,
-                        unfocusedPlaceholderColor = Color.Gray,
-                        focusedIndicatorColor = Color.LightGray,
-                        unfocusedIndicatorColor = Color.LightGray,
-                    ),
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            focusedPlaceholderColor = Color.Gray,
+                            unfocusedPlaceholderColor = Color.Gray,
+                            focusedIndicatorColor = Color.LightGray,
+                            unfocusedIndicatorColor = Color.LightGray,
+                        ),
                 )
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -383,9 +385,9 @@ fun CreatePostScreen(
                     value = content,
                     onValueChange = { if (it.length <= MAX_CONTENT_LENGTH) content = it },
                     modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(200.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.post_write),
@@ -401,14 +403,14 @@ fun CreatePostScreen(
                         )
                     },
                     colors =
-                    TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        focusedPlaceholderColor = Color.Gray,
-                        unfocusedPlaceholderColor = Color.Gray,
-                        focusedIndicatorColor = Color.LightGray,
-                        unfocusedIndicatorColor = Color.LightGray,
-                    ),
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            focusedPlaceholderColor = Color.Gray,
+                            unfocusedPlaceholderColor = Color.Gray,
+                            focusedIndicatorColor = Color.LightGray,
+                            unfocusedIndicatorColor = Color.LightGray,
+                        ),
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))

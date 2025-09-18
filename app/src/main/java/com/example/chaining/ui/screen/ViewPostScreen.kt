@@ -61,6 +61,9 @@ fun ViewPostScreen(
     val post by postViewModel.post.collectAsState()
     val currentPost = post
 
+    val hasApplied =
+        userState?.applications?.values?.any { it.postId == currentPost?.postId } == true
+
     // post가 null이면 로딩 UI 표시
     if (currentPost == null) {
         Column(
@@ -236,9 +239,16 @@ fun ViewPostScreen(
 
                     //                SaveButton(onSave = { /*TODO*/ }, text = "삭제")
                 } else {
+                    val buttonText =
+                        if (hasApplied == true) {
+                            stringResource(id = R.string.community_application_complete)
+                        } else {
+                            stringResource(id = R.string.community_apply_button)
+                        }
                     SaveButton(
                         onSave = { onJoinPostClick(currentPost) },
-                        text = stringResource(id = R.string.post_button),
+                        text = buttonText,
+                        enable = !hasApplied,
                     )
                     //                SaveButton(onSave = { /*TODO*/ }, text = "숨김")
                 }

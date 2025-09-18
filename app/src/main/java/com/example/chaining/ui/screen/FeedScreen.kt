@@ -69,11 +69,11 @@ fun FeedScreen(
         topBar = {
             Row(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                    .background(Color(0xFF4A526A)),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                        .background(Color(0xFF4A526A)),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = onBackClick) {

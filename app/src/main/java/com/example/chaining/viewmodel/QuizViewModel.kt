@@ -164,7 +164,7 @@ class QuizViewModel
         private fun prepareSentenceOrderChips() {
             val quiz = currentQuestion.value
             if (quiz != null && quiz.type == QuizType.SENTENCE_ORDER.name) {
-                _shuffledWordChips.value = quiz.answer.split(" ").map{ WordChip(text = it) }.shuffled()
+                _shuffledWordChips.value = quiz.answer.split(" ").map { WordChip(text = it) }.shuffled()
             } else {
                 _shuffledWordChips.value = emptyList()
             }
@@ -213,7 +213,7 @@ class QuizViewModel
             // 현재 문제 유형에 맞는 사용자 답변 가져오기
             val userAnswer =
                 when (quiz.type) {
-                    QuizType.SENTENCE_ORDER.name -> _userAnswerSentence.value.joinToString(" "){ it.text }
+                    QuizType.SENTENCE_ORDER.name -> _userAnswerSentence.value.joinToString(" ") { it.text }
                     QuizType.MULTIPLE_CHOICE.name -> _selectedOption.value
                     QuizType.FILL_IN_THE_BLANK.name -> _selectedBlankWord.value
                     else -> null

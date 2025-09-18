@@ -164,7 +164,7 @@ fun CommunityScreen(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(top = innerPadding.calculateTopPadding()) // TopBar 아래 여백
+                    .padding(top = innerPadding.calculateTopPadding())
                     .padding(bottom = 0.dp)
                     .padding(horizontal = horizontalPaddingValue)
                     .verticalScroll(rememberScrollState()),
@@ -191,7 +191,6 @@ fun CommunityScreen(
                     onClick = { postViewModel.refreshPosts() },
                 )
             }
-            Log.d("hhhh", posts.toString())
             if (posts.isEmpty()) {
                 // 데이터가 없을 때
                 Text(

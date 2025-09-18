@@ -396,6 +396,7 @@ fun NavGraph(
 
         composable(route = Screen.Notification.route) {
             NotificationScreen(
+                onBackClick = { navController.navigate("mainHome") },
                 onViewApplyClick = { applicationId ->
                     navController.navigate(
                         Screen.Apply.createRoute(

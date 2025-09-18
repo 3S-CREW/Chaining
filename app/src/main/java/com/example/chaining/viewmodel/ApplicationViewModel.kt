@@ -50,6 +50,10 @@ class ApplicationViewModel
                 }
             }
 
+        fun setApplication(app: Application) {
+            _application.value = app
+        }
+
         fun submitApplication(application: Application) =
             viewModelScope.launch {
                 val result = repo.submitApplication(application)
@@ -59,6 +63,7 @@ class ApplicationViewModel
                         application.copy(
                             applicationId = returnedApplicationId,
                             createdAt = System.currentTimeMillis(),
+                            closeAt = application.closeAt,
                         )
                     updatedList.add(newApplicationForUi)
                     _applications.value = updatedList
@@ -84,6 +89,14 @@ class ApplicationViewModel
             value: String,
         ) = viewModelScope.launch {
             repo.updateStatus(application, value)
+
+            val message =
+                when (value) {
+                    "APPROVED" -> "수락 처리 되었습니다"
+                    "REJECTED" -> "거절 처리 되었습니다"
+                    else -> ""
+                }
+            if (message.isNotEmpty()) _toastEvent.emit(message)
         }
 
         fun fetchAllApplications() =

@@ -242,4 +242,23 @@
         3. Period of Retention and Use of Personal Information\n
         As a general rule, the user\'s personal information shall be destroyed without delay once the purposes of its collection and use have been achieved.
     </string>
+
+    <string name="accept_or_reject">Until accept/reject</string>
+    <string name="time_left">%1$s left</string>
+    <string name="unknown">Unknown</string>
+    <string name="result_approved_title">Congratulations! 🎉</string>
+    <string name="result_rejected_title">Better luck next time!</string>
+    <string name="result_pending_title">Waiting for result</string>
+    <string name="result_approved_message">You have been accepted!\nYou can move to Kakao Open Chat directly.</string>
+    <string name="result_rejected_message">Unfortunately, you did not pass this time.\nCheck out other great posts!</string>
+    <string name="move_to_kakao_chat">Go to Kakao Open Chat</string>
+    <string name="go_to_other_posts">See other posts</string>
+    <string name="close">Close</string>
+    <string name="result_pending_message">Result is not available yet.</string>
+    <string name="kakao_chat_url_not_exist">Kakao Open Chat URL does not exist.</string>
+    <string name="toast_approved">Accepted successfully</string>
+    <string name="toast_rejected">Rejected successfully</string>
+    <string name="toast_exit_again">Press again to exit</string>
+    <string name="toast_followed">Followed</string>
+    <string name="toast_unfollowed">Unfollowed</string>
 </resources>

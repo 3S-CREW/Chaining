@@ -251,21 +251,20 @@ fun SentenceOrderAnswerArea(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             userAnswer.forEach { chip ->
-                key(chip.id){
+                key(chip.id) {
                     Button(
                         // 클릭 시 선택 해제
                         onClick = { onAnswerWordClicked(chip) },
                         shape = CircleShape,
                         colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF4285F4),
-                            contentColor = Color.White,
-                        ),
+                            ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF4285F4),
+                                contentColor = Color.White,
+                            ),
                     ) {
                         Text(text = chip.text)
                     }
                 }
-
             }
         }
 

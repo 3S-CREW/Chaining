@@ -106,43 +106,6 @@ class UserRepository
                     auth.removeAuthStateListener(authStateListener)
                 }
             }
-//    fun observeMyUser(): Flow<User?> = callbackFlow {
-//        val uid = uidOrThrow()
-//        val ref = usersRef().child(uid)
-//
-//        val listener = object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                val user = snapshot.getValue(User::class.java)?.copy(id = uid)
-//                if (user != null) {
-//                    // Firebase → Room DB에 저장
-//                    val entity = user.toEntity()
-//                    CoroutineScope(Dispatchers.IO).launch {
-//                        userDao.insertUser(entity)
-//                    }
-//                }
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                close(error.toException())
-//            }
-//        }
-//
-//        ref.addValueEventListener(listener)
-//
-//        // Room DB Flow 구독 → UI에 전달
-//        val dbFlow = userDao.getUser(uid)
-//        val job = CoroutineScope(Dispatchers.IO).launch {
-//            dbFlow.collect { entity ->
-//                val user = entity?.toUser() // UserEntity → User 변환
-//                trySend(user).isSuccess
-//            }
-//        }
-//
-//        awaitClose {
-//            ref.removeEventListener(listener)
-//            job.cancel()
-//        }
-//    }
 
         /** Update (관심글 추가 / 삭제) */
         suspend fun toggleLikedPost(
@@ -180,10 +143,109 @@ class UserRepository
         /** 프로필 사진 변경 */
         suspend fun updateProfileImage(newUrl: String) {
             val uid = uidOrThrow()
-            usersRef().child(uid).child("profileImageUrl").setValue(newUrl).await()
+//        usersRef().child(uid).child("profileImageUrl").setValue(newUrl).await()
+
+            // 1. users/{uid}/profileImageUrl 업데이트
+            val updates =
+                hashMapOf<String, Any?>(
+                    "/users/$uid/profileImageUrl" to newUrl,
+                )
+
+            val myFollowingSnapshot = usersRef().child(uid).child("following").get().await()
+            for (followingSnap in myFollowingSnapshot.children) {
+                val followedUid = followingSnap.key ?: continue
+
+                updates["/users/$followedUid/follower/$uid/profileImageUrl"] = newUrl
+            }
+
+            // 2. 내가 작성한 posts (owner)
+            val myPosts = usersRef().child(uid).child("recruitPosts").get().await()
+            for (postSnap in myPosts.children) {
+                val postId = postSnap.key ?: continue
+                updates["/posts/$postId/owner/profileImageUrl"] = newUrl
+                updates["/users/$uid/posts/$postId/owner/profileImageUrl"] = newUrl
+            }
+
+            // 3. 내가 작성한 applications (applicant)
+            val myApplications = usersRef().child(uid).child("applications").get().await()
+            for (appSnap in myApplications.children) {
+                val applicationId = appSnap.key ?: continue
+                updates["/applications/$applicationId/applicant/profileImageUrl"] = newUrl
+                updates["/users/$uid/applications/$applicationId/applicant/profileImageUrl"] = newUrl
+            }
+
+            // 4. notifications에서 sender.id == uid 인 것들 갱신
+            val notifications = rootRef.child("notifications").get().await()
+            for (userSnap in notifications.children) {
+                val targetUid = userSnap.key ?: continue
+                for (notiSnap in userSnap.children) {
+                    val senderId = notiSnap.child("sender/id").getValue(String::class.java)
+                    val notiId = notiSnap.key ?: continue
+                    if (senderId == uid) {
+                        updates["/notifications/$targetUid/$notiId/sender/profileImageUrl"] = newUrl
+                    }
+                }
+            }
+
+            // 5. 원자적 업데이트 실행
+            rootRef.updateChildren(updates).await()
 
             val current = userDao.getUser(uid).firstOrNull() ?: return
             val updatedEntity = current.copy(profileImageUrl = newUrl)
+            userDao.updateUser(updatedEntity)
+        }
+
+        /** 닉네임 변경 */
+        suspend fun updateNickname(newNickname: String) {
+            val uid = uidOrThrow()
+
+            // 1. users/{uid}/profileImageUrl 업데이트
+            val updates =
+                hashMapOf<String, Any?>(
+                    "/users/$uid/nickname" to newNickname,
+                )
+
+            val myFollowingSnapshot = usersRef().child(uid).child("following").get().await()
+            for (followingSnap in myFollowingSnapshot.children) {
+                val followedUid = followingSnap.key ?: continue
+
+                updates["/users/$followedUid/follower/$uid/nickname"] = newNickname
+            }
+
+            // 2. 내가 작성한 posts (owner)
+            val myPosts = usersRef().child(uid).child("recruitPosts").get().await()
+            for (postSnap in myPosts.children) {
+                val postId = postSnap.key ?: continue
+                updates["/posts/$postId/owner/nickname"] = newNickname
+                updates["/users/$uid/posts/$postId/owner/nickname"] = newNickname
+            }
+
+            // 3. 내가 작성한 applications (applicant)
+            val myApplications = usersRef().child(uid).child("applications").get().await()
+            for (appSnap in myApplications.children) {
+                val applicationId = appSnap.key ?: continue
+                updates["/applications/$applicationId/applicant/nickname"] = newNickname
+                updates["/users/$uid/applications/$applicationId/applicant/nickname"] = newNickname
+            }
+
+            // 4. notifications에서 sender.id == uid 인 것들 갱신
+            val notifications = rootRef.child("notifications").get().await()
+            for (userSnap in notifications.children) {
+                val targetUid = userSnap.key ?: continue
+                for (notiSnap in userSnap.children) {
+                    val senderId = notiSnap.child("sender/id").getValue(String::class.java)
+                    val notiId = notiSnap.key ?: continue
+                    if (senderId == uid) {
+                        updates["/notifications/$targetUid/$notiId/sender/nickname"] = newNickname
+                    }
+                }
+            }
+
+            // 5. 원자적 업데이트 실행
+            rootRef.updateChildren(updates).await()
+
+            val current = userDao.getUser(uid).firstOrNull() ?: return
+            val updatedEntity = current.copy(nickname = newNickname)
             userDao.updateUser(updatedEntity)
         }
 
