@@ -26,7 +26,7 @@ fun SplashAnimation(startAnimation: Boolean) {
         if (startAnimation) {
             launch {
                 offsetY.animateTo(
-                    targetValue = -100f,
+                    targetValue = -50f,
                     animationSpec = tween(durationMillis = 400, easing = FastOutSlowInEasing),
                 )
             }
@@ -44,7 +44,7 @@ fun SplashAnimation(startAnimation: Boolean) {
         contentDescription = "Chain",
         modifier =
             Modifier
-                .size(70.dp)
+                .size(90.dp)
                 .graphicsLayer {
                     translationY = offsetY.value
                     this.alpha = alpha.value

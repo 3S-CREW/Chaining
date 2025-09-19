@@ -165,10 +165,7 @@ fun MyPageScreen(
             ProfileSection(
                 nickname = nickname,
                 onNicknameChanged = { newNickname ->
-                    nickname = newNickname
-                    userState?.let { currentUser ->
-                        userViewModel.updateMyUser(currentUser.copy(nickname = newNickname))
-                    }
+                    userViewModel.updateNickname(newNickname = newNickname)
                 },
                 profileImageUrl = userState?.profileImageUrl,
                 userViewModel = userViewModel,
@@ -361,6 +358,7 @@ fun ProfileSection(
     userViewModel: UserViewModel,
 ) {
     val context = LocalContext.current
+    val userState by userViewModel.user.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     var tempNickname by remember { mutableStateOf(nickname) }
 
@@ -389,6 +387,12 @@ fun ProfileSection(
                         return@let
                     }
                 val storageRef = Firebase.storage.reference.child("profileImages/$uid.jpg")
+
+                Toast.makeText(
+                    context,
+                    context.getString((R.string.mypage_profile_image_upload)),
+                    Toast.LENGTH_SHORT,
+                ).show()
 
                 storageRef.putFile(uri)
                     .addOnSuccessListener {
@@ -469,7 +473,12 @@ fun ProfileSection(
 
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(id = R.string.mypage_follower_info, "203", "106"),
+            text =
+                stringResource(
+                    id = R.string.mypage_follower_info,
+                    userState?.follower?.count() ?: 0,
+                    userState?.following?.count() ?: 0,
+                ),
             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
             color = Color.Gray,
         )

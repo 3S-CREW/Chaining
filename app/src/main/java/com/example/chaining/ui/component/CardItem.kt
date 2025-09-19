@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -45,7 +46,7 @@ import com.example.chaining.domain.model.UserSummary
 @Composable
 fun CardItem(
     onClick: () -> Unit,
-    // "모집글" or "지원서"
+    // "모집글" or "지원서" or "결과"
     type: String,
     recruitPost: RecruitPost? = null,
     application: Application? = null,
@@ -55,6 +56,7 @@ fun CardItem(
     currentUserId: String? = "",
     isLiked: Boolean? = false,
     hasApplied: Boolean = false,
+    hasStatus: Boolean = false,
 ) {
     val title =
         when (type) {
@@ -63,17 +65,40 @@ fun CardItem(
                 application?.recruitPostTitle
                     ?: stringResource(id = R.string.community_no_title)
 
+            "결과" ->
+                application?.recruitPostTitle
+                    ?: stringResource(id = R.string.community_no_title)
+
             else -> stringResource(id = R.string.community_no_title)
         }.replace("+", " ")
 
     val remainingTimeText = remainingTime ?: stringResource(id = R.string.community_unknown)
-    val isAuthor = recruitPost?.owner?.id == currentUserId
+    val isAuthor =
+        (recruitPost?.owner?.id == currentUserId) || (application?.applicant?.id == currentUserId)
 
     val timeText =
-        when (type) {
-            "모집글" -> stringResource(id = R.string.time_left_recruit, remainingTimeText)
-            "지원서" -> stringResource(id = R.string.time_left_application, remainingTimeText)
-            else -> ""
+        if (type == "결과") {
+            stringResource(id = R.string.application_result_available)
+        } else {
+            when (type) {
+                "모집글" -> {
+                    if (remainingTimeText == stringResource(id = R.string.time_closed)) {
+                        stringResource(id = R.string.time_closed)
+                    } else {
+                        stringResource(id = R.string.time_left_recruit, remainingTimeText)
+                    }
+                }
+
+                "지원서" -> {
+                    if (remainingTimeText == stringResource(id = R.string.time_closed)) {
+                        stringResource(id = R.string.time_closed)
+                    } else {
+                        stringResource(id = R.string.time_left_application, remainingTimeText)
+                    }
+                }
+
+                else -> ""
+            }
         }
 
 //    val profile = when (type) {
@@ -188,7 +213,12 @@ fun CardItem(
                 Spacer(modifier = Modifier.width(10.dp))
 
                 Text(
-                    text = timeText,
+                    text =
+                        if (type == "결과") {
+                            stringResource(id = R.string.application_result_available)
+                        } else {
+                            timeText
+                        },
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
@@ -254,51 +284,69 @@ fun CardItem(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        // 왼쪽 버튼
-                        Button(
-                            onClick = onLeftButtonClick,
-                            modifier = Modifier.weight(3f),
-                            shape = RoundedCornerShape(20.dp),
-                            enabled = !isAuthor && !hasApplied,
-                            colors =
-                                ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF4285F4),
-                                    contentColor = Color.White,
-                                ),
-                        ) {
-                            Text(text = leftButtonText)
-                        }
-
-                        // 오른쪽 버튼
-                        if (type == "모집글") {
-                            Button(
-                                onClick = onRightButtonClick,
+                        if (type == "결과") {
+                            Text(
+                                text = stringResource(id = R.string.application_check_result),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Gray,
                                 modifier =
-                                    Modifier
-                                        .weight(2f)
-                                        .scale(scale.value),
-                                shape = RoundedCornerShape(20.dp),
-                                enabled = !isAuthor,
-                                colors =
-                                    ButtonDefaults.buttonColors(
-                                        containerColor = buttonColor,
-                                        contentColor = if (isLiked == true) Color.White else Color.Gray,
-                                    ),
-                            ) {
-                                Text(text = rightButtonText)
-                            }
+                                    if (type == "결과") {
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(12.dp)
+                                    } else {
+                                        Modifier.padding(12.dp)
+                                    },
+                                textAlign = if (type == "결과") TextAlign.Center else TextAlign.Start,
+                            )
                         } else {
+                            // 왼쪽 버튼
                             Button(
-                                onClick = onRightButtonClick,
-                                modifier = Modifier.weight(2f),
+                                onClick = onLeftButtonClick,
+                                modifier = Modifier.weight(3f),
                                 shape = RoundedCornerShape(20.dp),
+                                enabled = !isAuthor && !hasApplied && !hasStatus,
                                 colors =
                                     ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFFEBEFFA),
-                                        contentColor = Color.Gray,
+                                        containerColor = Color(0xFF4285F4),
+                                        contentColor = Color.White,
                                     ),
                             ) {
-                                Text(text = rightButtonText)
+                                Text(text = leftButtonText)
+                            }
+                            // 오른쪽 버튼
+                            if (type == "모집글") {
+                                Button(
+                                    onClick = onRightButtonClick,
+                                    modifier =
+                                        Modifier
+                                            .weight(2f)
+                                            .scale(scale.value),
+                                    shape = RoundedCornerShape(20.dp),
+                                    enabled = !isAuthor,
+                                    colors =
+                                        ButtonDefaults.buttonColors(
+                                            containerColor = buttonColor,
+                                            contentColor = if (isLiked == true) Color.White else Color.Gray,
+                                        ),
+                                ) {
+                                    Text(text = rightButtonText)
+                                }
+                            } else {
+                                Button(
+                                    onClick = onRightButtonClick,
+                                    modifier = Modifier.weight(2f),
+                                    shape = RoundedCornerShape(20.dp),
+                                    enabled = !isAuthor && !hasStatus,
+                                    colors =
+                                        ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFFEBEFFA),
+                                            contentColor = Color.Gray,
+                                        ),
+                                ) {
+                                    Text(text = rightButtonText)
+                                }
                             }
                         }
                     }

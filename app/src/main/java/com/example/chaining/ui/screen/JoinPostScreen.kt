@@ -289,6 +289,7 @@ fun JoinPostScreen(
                                 recruitPostTitle = post.title,
                                 introduction = introduction,
                                 applicant = it,
+                                closeAt = post.closeAt,
                             )
                         }
                     if (newApplication != null) {

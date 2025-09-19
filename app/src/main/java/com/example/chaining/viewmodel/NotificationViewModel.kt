@@ -38,9 +38,21 @@ class NotificationViewModel
             fetchNotifications()
         }
 
-        fun onApplicationClick(id: String) {
+        fun onApplicationClick(
+            applicationId: String,
+            screenType: String,
+            introduction: String?,
+            closeAt: Long?,
+        ) {
             viewModelScope.launch {
-                _event.emit(NotificationEvent.NavigateToApplication(id))
+                _event.emit(
+                    NotificationEvent.NavigateToApplication(
+                        applicationId = applicationId,
+                        type = screenType,
+                        introduction = introduction ?: "",
+                        closeAt = closeAt ?: 0L,
+                    ),
+                )
             }
         }
 
@@ -78,7 +90,12 @@ class NotificationViewModel
     }
 
 sealed class NotificationEvent {
-    data class NavigateToApplication(val applicationId: String) : NotificationEvent()
+    data class NavigateToApplication(
+        val applicationId: String,
+        val type: String,
+        val introduction: String,
+        val closeAt: Long,
+    ) : NotificationEvent()
 
     data class ShowToast(val message: String) : NotificationEvent()
     object Refresh : NotificationEvent()

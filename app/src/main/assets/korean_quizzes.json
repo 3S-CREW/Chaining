@@ -47,7 +47,7 @@
     "problem": "화장실은 ______에 있어요?",
     "translation": "Where is the restroom?",
     "options": ["어디", "언제", "누구", "무엇"],
-    "answer": "어디 (Where)"
+    "answer": "어디"
   },
   {
     "id": "kor_lv1_fb_02",
@@ -57,7 +57,7 @@
     "problem": "이거 ______예요?",
     "translation": "How much is this?",
     "options": ["얼마", "왜", "어떻게", "몇"],
-    "answer": "얼마 (How much)"
+    "answer": "얼마"
   },
   {
     "id": "kor_lv2_so_01",
@@ -107,7 +107,7 @@
     "problem": "이 버스, 시청에 ______?",
     "translation": "Does this bus go to the city hall?",
     "options": ["가요", "와요", "먹어요", "자요"],
-    "answer": "가요 (go)"
+    "answer": "가요"
   },
   {
     "id": "kor_lv2_fb_02",
@@ -117,7 +117,7 @@
     "problem": "계산서 좀 ______.",
     "translation": "The bill, please.",
     "options": ["앉으세요", "주세요", "입으세요", "읽으세요"],
-    "answer": "주세요 (give me)"
+    "answer": "주세요"
   },
   {
     "id": "kor_lv3_so_01",
@@ -167,7 +167,7 @@
     "problem": "창가 쪽 자리로 ______.",
     "translation": "I'd like a window seat, please.",
     "options": ["부탁드립니다", "괜찮습니다", "모릅니다", "없습니다"],
-    "answer": "부탁드립니다 (I'd like to request)"
+    "answer": "부탁드립니다"
   },
   {
     "id": "kor_lv3_fb_02",
@@ -177,7 +177,7 @@
     "problem": "와이파이 비밀번호가 ______?",
     "translation": "What is the Wi-Fi password?",
     "options": ["뭐예요", "예뻐요", "비싸요", "멀어요"],
-    "answer": "뭐예요 (what is)"
+    "answer": "뭐예요"
   },
   {
     "id": "kor_lv4_so_01",
@@ -227,7 +227,7 @@
     "problem": "이 자리에 다른 분이 ______?",
     "translation": "Is this seat taken? (Did someone else sit here?)",
     "options": ["앉으셨어요", "서셨어요", "주무셨어요", "오셨어요"],
-    "answer": "앉으셨어요 (sat down)"
+    "answer": "앉으셨어요"
   },
   {
     "id": "kor_lv4_fb_02",
@@ -237,7 +237,7 @@
     "problem": "제가 한국 드라마를 좋아해서 한국어를 ______ 됐어요.",
     "translation": "I like K-dramas, so I came to learn Korean.",
     "options": ["배우게", "가르치게", "만들게", "보게"],
-    "answer": "배우게 (came to learn)"
+    "answer": "배우게"
   },
   {
     "id": "kor_lv5_so_01",
@@ -287,7 +287,7 @@
     "problem": "그 친구는 약속을 밥 ______ 어겨서 믿을 수가 없어.",
     "translation": "I can't trust that friend because they break promises as habitually as they eat meals.",
     "options": ["먹듯이", "보듯이", "자듯이", "입듯이"],
-    "answer": "먹듯이 (like eating)"
+    "answer": "먹듯이"
   },
   {
     "id": "kor_lv5_fb_02",
@@ -297,6 +297,6 @@
     "problem": "한국의 배달 문화는 ______ 감탄스러울 정도예요.",
     "translation": "Korea's delivery culture is, once again, impressive.",
     "options": ["새삼", "감히", "차마", "결코"],
-    "answer": "새삼 (newly, once again)"
+    "answer": "새삼"
   }
 ]

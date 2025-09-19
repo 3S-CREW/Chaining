@@ -64,6 +64,17 @@ class UserViewModel
             }
         }
 
+        fun updateNickname(newNickname: String) {
+            viewModelScope.launch {
+                try {
+                    repo.updateNickname(newNickname)
+                    _user.value = _user.value?.copy(nickname = newNickname)
+                } catch (e: Exception) {
+                    Log.e("UserViewModel", "닉네임 업데이트 실패", e)
+                }
+            }
+        }
+
         /** Create - 최초 회원가입 시 User 등록 */
         fun addUser(
             user: User,
@@ -109,7 +120,6 @@ class UserViewModel
             other: UserSummary,
         ) = viewModelScope.launch {
             val result = repo.toggleFollow(user, other)
-            println("호시기 누름")
             result.onFailure { exception ->
                 _toastEvent.emit(exception.message ?: "작업에 실패했습니다.")
             }

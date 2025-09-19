@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -98,7 +96,11 @@ fun MainHomeScreen(
             // 2초 안에 두 번 누르면 앱 종료
             (context as? android.app.Activity)?.finish()
         } else {
-            Toast.makeText(context, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                context.getString(R.string.toast_exit_again),
+                Toast.LENGTH_SHORT,
+            ).show()
         }
         backPressedTime = System.currentTimeMillis()
     }
@@ -350,18 +352,18 @@ fun ProfileImageWithStatus(
         )
 
         // 온라인 상태를 표시하는 점
-        if (isOnline) {
-            Box(
-                modifier =
-                    Modifier
-                        .size(12.dp)
-                        // 오른쪽 아래에 배치
-                        .align(Alignment.BottomEnd)
-                        // 초록색 배경
-                        .background(Color(0xFF00C853), CircleShape)
-                        // 흰색 테두리
-                        .border(width = 1.5.dp, color = Color.White, shape = CircleShape),
-            )
-        }
+//        if (isOnline) {
+//            Box(
+//                modifier =
+//                    Modifier
+//                        .size(12.dp)
+//                        // 오른쪽 아래에 배치
+//                        .align(Alignment.BottomEnd)
+//                        // 초록색 배경
+//                        .background(Color(0xFF00C853), CircleShape)
+//                        // 흰색 테두리
+//                        .border(width = 1.5.dp, color = Color.White, shape = CircleShape),
+//            )
+//        }
     }
 }

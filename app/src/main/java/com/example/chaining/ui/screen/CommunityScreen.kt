@@ -164,7 +164,7 @@ fun CommunityScreen(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(top = innerPadding.calculateTopPadding()) // TopBar 아래 여백
+                    .padding(top = innerPadding.calculateTopPadding())
                     .padding(bottom = 0.dp)
                     .padding(horizontal = horizontalPaddingValue)
                     .verticalScroll(rememberScrollState()),
@@ -191,7 +191,6 @@ fun CommunityScreen(
                     onClick = { postViewModel.refreshPosts() },
                 )
             }
-            Log.d("hhhh", posts.toString())
             if (posts.isEmpty()) {
                 // 데이터가 없을 때
                 Text(
@@ -208,6 +207,7 @@ fun CommunityScreen(
                     val isLiked = userState?.likedPosts?.get(post.postId) == true
                     val hasApplied =
                         userState?.applications?.values?.any { it.postId == post.postId } == true
+                    Log.d("CardItemCheck", "게시글 ID: ${post.postId}, 작성자 정보: ${post.owner}")
                     CardItem(
                         onClick = { onViewPostClick(post.postId) },
                         type = "모집글",

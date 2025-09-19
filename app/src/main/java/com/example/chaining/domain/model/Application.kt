@@ -20,4 +20,5 @@ data class Application(
     // Soft Delete 플래그 추가
     @get:PropertyName("isDeleted")
     val isDeleted: Boolean = false,
+    val closeAt: Long = 0L,
 )

@@ -1,5 +1,6 @@
 package com.example.chaining.ui.screen
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,8 +28,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,6 +53,8 @@ fun FeedScreen(
 ) {
     // ViewModel의 randomizedFeedItems 상태를 구독하여 UI에 자동 반영
     val feedItems by feedViewModel.randomizedFeedItems.collectAsState()
+    val clipboardManager = LocalClipboardManager.current
+    val context = LocalContext.current
 
     // 화면이 처음 로드될 때 API를 통해 관광 정보를 가져옵니다.
     LaunchedEffect(Unit) {
@@ -137,6 +143,10 @@ fun FeedScreen(
                         imageUrl =
                             item.imageUrl
                                 ?: "https://your-placeholder-image-url.com/default.jpg",
+                        onClick = {
+                            clipboardManager.setText(AnnotatedString(item.address))
+                            Toast.makeText(context, context.getString(R.string.feed_copy_address), Toast.LENGTH_SHORT).show()
+                        },
                     )
                 }
             }

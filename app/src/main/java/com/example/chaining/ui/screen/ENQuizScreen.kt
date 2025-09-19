@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chaining.domain.model.QuizType
+import com.example.chaining.domain.model.WordChip
 import com.example.chaining.viewmodel.QuizViewModel
 
 @Suppress("FunctionName")
@@ -223,10 +224,10 @@ fun QuizProgressIndicator(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SentenceOrderAnswerArea(
-    remainingWords: List<String>,
-    userAnswer: List<String>,
-    onWordChipClicked: (String) -> Unit,
-    onAnswerWordClicked: (String) -> Unit,
+    remainingWords: List<WordChip>,
+    userAnswer: List<WordChip>,
+    onWordChipClicked: (WordChip) -> Unit,
+    onAnswerWordClicked: (WordChip) -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -249,18 +250,20 @@ fun SentenceOrderAnswerArea(
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            userAnswer.forEach { word ->
-                Button(
-                    // 클릭 시 선택 해제
-                    onClick = { onAnswerWordClicked(word) },
-                    shape = CircleShape,
-                    colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF4285F4),
-                            contentColor = Color.White,
-                        ),
-                ) {
-                    Text(text = word)
+            userAnswer.forEach { chip ->
+                key(chip.id) {
+                    Button(
+                        // 클릭 시 선택 해제
+                        onClick = { onAnswerWordClicked(chip) },
+                        shape = CircleShape,
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF4285F4),
+                                contentColor = Color.White,
+                            ),
+                    ) {
+                        Text(text = chip.text)
+                    }
                 }
             }
         }
@@ -273,10 +276,10 @@ fun SentenceOrderAnswerArea(
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            remainingWords.forEach { word ->
-                key(word) {
+            remainingWords.forEach { chip ->
+                key(chip.id) {
                     Button(
-                        onClick = { onWordChipClicked(word) },
+                        onClick = { onWordChipClicked(chip) },
                         shape = CircleShape,
                         colors =
                             ButtonDefaults.buttonColors(
@@ -284,7 +287,7 @@ fun SentenceOrderAnswerArea(
                                 contentColor = Color.Black,
                             ),
                     ) {
-                        Text(text = word)
+                        Text(text = chip.text)
                     }
                 }
             }
