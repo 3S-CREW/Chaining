@@ -134,23 +134,23 @@ fun CardItem(
             UserSummary(
                 id = recruitPost?.owner?.id ?: "",
                 nickname =
-                recruitPost?.owner?.nickname
-                    ?: stringResource(id = R.string.community_unknown),
+                    recruitPost?.owner?.nickname
+                        ?: stringResource(id = R.string.community_unknown),
                 profileImageUrl = recruitPost?.owner?.profileImageUrl ?: "",
                 country =
-                recruitPost?.owner?.country
-                    ?: stringResource(id = R.string.community_unknown),
+                    recruitPost?.owner?.country
+                        ?: stringResource(id = R.string.community_unknown),
             )
         } else {
             UserSummary(
                 id = application?.applicant?.id ?: "",
                 nickname =
-                application?.applicant?.nickname
-                    ?: stringResource(id = R.string.community_unknown),
+                    application?.applicant?.nickname
+                        ?: stringResource(id = R.string.community_unknown),
                 profileImageUrl = application?.applicant?.profileImageUrl ?: "",
                 country =
-                application?.applicant?.country
-                    ?: stringResource(id = R.string.community_unknown),
+                    application?.applicant?.country
+                        ?: stringResource(id = R.string.community_unknown),
             )
         }
 
@@ -178,14 +178,14 @@ fun CardItem(
     Card(
         onClick = onClick,
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
         shape = RoundedCornerShape(16.dp),
         colors =
-        CardDefaults.cardColors(
-            containerColor = Color(0xFF4285F4),
-        ),
+            CardDefaults.cardColors(
+                containerColor = Color(0xFF4285F4),
+            ),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -213,8 +213,12 @@ fun CardItem(
                 Spacer(modifier = Modifier.width(10.dp))
 
                 Text(
-                    text = if (type == "결과") stringResource(id = R.string.application_result_available)
-                    else timeText,
+                    text =
+                        if (type == "결과") {
+                            stringResource(id = R.string.application_result_available)
+                        } else {
+                            timeText
+                        },
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
@@ -227,9 +231,9 @@ fun CardItem(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 colors =
-                CardDefaults.cardColors(
-                    containerColor = Color.White,
-                ),
+                    CardDefaults.cardColors(
+                        containerColor = Color.White,
+                    ),
             ) {
                 Column(
                     modifier = Modifier.padding(12.dp),
@@ -244,9 +248,9 @@ fun CardItem(
                             contentDescription = "모집자/신청자 프로필 사진",
                             contentScale = ContentScale.Crop,
                             modifier =
-                            Modifier
-                                .size(48.dp)
-                                .clip(RoundedCornerShape(15.dp)),
+                                Modifier
+                                    .size(48.dp)
+                                    .clip(RoundedCornerShape(15.dp)),
                         )
 
                         Spacer(modifier = Modifier.width(12.dp))
@@ -286,10 +290,15 @@ fun CardItem(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Gray,
-                                modifier = if (type == "결과") Modifier
-                                    .fillMaxWidth()
-                                    .padding(12.dp) else Modifier.padding(12.dp),
-                                textAlign = if (type == "결과") TextAlign.Center else TextAlign.Start
+                                modifier =
+                                    if (type == "결과") {
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(12.dp)
+                                    } else {
+                                        Modifier.padding(12.dp)
+                                    },
+                                textAlign = if (type == "결과") TextAlign.Center else TextAlign.Start,
                             )
                         } else {
                             // 왼쪽 버튼
@@ -299,10 +308,10 @@ fun CardItem(
                                 shape = RoundedCornerShape(20.dp),
                                 enabled = !isAuthor && !hasApplied && !hasStatus,
                                 colors =
-                                ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF4285F4),
-                                    contentColor = Color.White,
-                                ),
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFF4285F4),
+                                        contentColor = Color.White,
+                                    ),
                             ) {
                                 Text(text = leftButtonText)
                             }
@@ -311,16 +320,16 @@ fun CardItem(
                                 Button(
                                     onClick = onRightButtonClick,
                                     modifier =
-                                    Modifier
-                                        .weight(2f)
-                                        .scale(scale.value),
+                                        Modifier
+                                            .weight(2f)
+                                            .scale(scale.value),
                                     shape = RoundedCornerShape(20.dp),
                                     enabled = !isAuthor,
                                     colors =
-                                    ButtonDefaults.buttonColors(
-                                        containerColor = buttonColor,
-                                        contentColor = if (isLiked == true) Color.White else Color.Gray,
-                                    ),
+                                        ButtonDefaults.buttonColors(
+                                            containerColor = buttonColor,
+                                            contentColor = if (isLiked == true) Color.White else Color.Gray,
+                                        ),
                                 ) {
                                     Text(text = rightButtonText)
                                 }
@@ -331,17 +340,16 @@ fun CardItem(
                                     shape = RoundedCornerShape(20.dp),
                                     enabled = !isAuthor && !hasStatus,
                                     colors =
-                                    ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFFEBEFFA),
-                                        contentColor = Color.Gray,
-                                    ),
+                                        ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFFEBEFFA),
+                                            contentColor = Color.Gray,
+                                        ),
                                 ) {
                                     Text(text = rightButtonText)
                                 }
                             }
                         }
                     }
-
                 }
             }
         }

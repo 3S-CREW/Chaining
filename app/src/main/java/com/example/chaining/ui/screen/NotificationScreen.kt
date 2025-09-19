@@ -74,7 +74,7 @@ fun NotificationScreen(
         applicationId: String,
         type: String,
         introduction: String,
-        closeAt: Long
+        closeAt: Long,
     ) -> Unit,
 ) {
     val notifications by viewModel.notifications.collectAsState()
@@ -99,7 +99,7 @@ fun NotificationScreen(
                         event.applicationId,
                         event.type,
                         event.introduction,
-                        event.closeAt
+                        event.closeAt,
                     )
                 }
 
@@ -118,10 +118,11 @@ fun NotificationScreen(
     val filteredNotifications =
         when (selectedTabIndex) {
             0 -> notifications.filter { it.type.equals("follow", ignoreCase = true) }
-            1 -> notifications.filter {
-                it.type.equals("application", ignoreCase = true) ||
+            1 ->
+                notifications.filter {
+                    it.type.equals("application", ignoreCase = true) ||
                         it.type.equals("status_update", ignoreCase = true)
-            }
+                }
 
             else -> emptyList()
         }
@@ -135,18 +136,18 @@ fun NotificationScreen(
         topBar = {
             Column(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .background(LightGrayBackground),
+                    Modifier
+                        .fillMaxWidth()
+                        .background(LightGrayBackground),
             ) {
                 // 상단바
                 Row(
                     modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                        .background(Color(0xFF4A526A)),
+                        Modifier
+                            .fillMaxWidth()
+                            .height(64.dp)
+                            .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                            .background(Color(0xFF4A526A)),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     // 뒤로가기 버튼
@@ -200,10 +201,10 @@ fun NotificationScreen(
     ) { innerPadding ->
         Box(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(top = innerPadding.calculateTopPadding())
-                .background(LightGrayBackground),
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = innerPadding.calculateTopPadding())
+                    .background(LightGrayBackground),
         ) {
             when {
                 isLoading -> {
@@ -231,9 +232,9 @@ fun NotificationScreen(
                 else -> {
                     LazyColumn(
                         modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                            Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
                     ) {
                         items(filteredNotifications) { notification ->
                             NotificationItem(
@@ -267,8 +268,8 @@ fun NotificationItem(
         "follow" -> {
             FollowNotificationItem(
                 name =
-                notification.sender?.nickname
-                    ?: stringResource(id = R.string.community_unknown),
+                    notification.sender?.nickname
+                        ?: stringResource(id = R.string.community_unknown),
                 timestamp = formattedDate,
                 imageUrl = notification.sender?.profileImageUrl?.takeIf { it.isNotEmpty() } ?: "",
             )
@@ -296,7 +297,7 @@ fun NotificationItem(
                             applicationId = application.applicationId,
                             screenType = "Owner",
                             introduction = application.introduction,
-                            closeAt = application.closeAt
+                            closeAt = application.closeAt,
                         )
                     }
                 },
@@ -306,10 +307,10 @@ fun NotificationItem(
                 application = application,
                 currentUserId = userState?.id,
                 remainingTime =
-                formatRemainingTime(
-                    context,
-                    application?.closeAt?.minus(System.currentTimeMillis()) ?: 0L,
-                ),
+                    formatRemainingTime(
+                        context,
+                        application?.closeAt?.minus(System.currentTimeMillis()) ?: 0L,
+                    ),
                 onLeftButtonClick = {
                     application?.let { apply ->
                         applicationViewModel.updateStatus(
@@ -357,17 +358,18 @@ fun NotificationItem(
 //                        viewModel.onApplicationClick(id)
 //                    }
                     if (application != null && userState != null) {
-                        val screenType = if (application.applicant.id == userState?.id) {
-                            "My"
-                        } else {
-                            "Owner"
-                        }
+                        val screenType =
+                            if (application.applicant.id == userState?.id) {
+                                "My"
+                            } else {
+                                "Owner"
+                            }
 
                         viewModel.onApplicationClick(
                             application.applicationId,
                             screenType,
                             application.introduction,
-                            application.closeAt
+                            application.closeAt,
                         )
                     }
                 },
@@ -381,19 +383,19 @@ fun NotificationItem(
             // 기타 알림 처리
             Card(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 6.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors =
-                CardDefaults.cardColors(
-                    containerColor =
-                    if (notification.isRead) {
-                        MaterialTheme.colorScheme.surface
-                    } else {
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
-                    },
-                ),
+                    CardDefaults.cardColors(
+                        containerColor =
+                            if (notification.isRead) {
+                                MaterialTheme.colorScheme.surface
+                            } else {
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
+                            },
+                    ),
                 elevation = CardDefaults.cardElevation(2.dp),
             ) {
                 Column(modifier = Modifier.padding(14.dp)) {

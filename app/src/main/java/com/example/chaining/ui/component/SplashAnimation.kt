@@ -43,11 +43,11 @@ fun SplashAnimation(startAnimation: Boolean) {
         painter = painterResource(id = R.drawable.chain),
         contentDescription = "Chain",
         modifier =
-        Modifier
-            .size(90.dp)
-            .graphicsLayer {
-                translationY = offsetY.value
-                this.alpha = alpha.value
-            },
+            Modifier
+                .size(90.dp)
+                .graphicsLayer {
+                    translationY = offsetY.value
+                    this.alpha = alpha.value
+                },
     )
 }
