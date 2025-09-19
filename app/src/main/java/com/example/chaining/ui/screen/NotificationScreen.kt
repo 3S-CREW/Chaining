@@ -34,6 +34,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chaining.R
+import com.example.chaining.domain.model.Application
 import com.example.chaining.domain.model.Notification
 import com.example.chaining.ui.component.CardItem
 import com.example.chaining.ui.component.FollowNotificationItem
@@ -68,7 +70,12 @@ import java.util.Locale
 fun NotificationScreen(
     onBackClick: () -> Unit = {},
     viewModel: NotificationViewModel = hiltViewModel(),
-    onViewApplyClick: (String) -> Unit,
+    onViewApplyClick: (
+        applicationId: String,
+        type: String,
+        introduction: String,
+        closeAt: Long
+    ) -> Unit,
 ) {
     val notifications by viewModel.notifications.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -88,7 +95,12 @@ fun NotificationScreen(
         eventFlow.collect { event ->
             when (event) {
                 is NotificationEvent.NavigateToApplication -> {
-                    onViewApplyClick(event.applicationId)
+                    onViewApplyClick(
+                        event.applicationId,
+                        event.type,
+                        event.introduction,
+                        event.closeAt
+                    )
                 }
 
                 is NotificationEvent.ShowToast -> {
@@ -106,7 +118,11 @@ fun NotificationScreen(
     val filteredNotifications =
         when (selectedTabIndex) {
             0 -> notifications.filter { it.type.equals("follow", ignoreCase = true) }
-            1 -> notifications.filter { it.type.equals("application", ignoreCase = true) }
+            1 -> notifications.filter {
+                it.type.equals("application", ignoreCase = true) ||
+                        it.type.equals("status_update", ignoreCase = true)
+            }
+
             else -> emptyList()
         }
 
@@ -119,18 +135,18 @@ fun NotificationScreen(
         topBar = {
             Column(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .background(LightGrayBackground),
+                Modifier
+                    .fillMaxWidth()
+                    .background(LightGrayBackground),
             ) {
                 // 상단바
                 Row(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(64.dp)
-                            .clip(RoundedCornerShape(bottomEnd = 20.dp))
-                            .background(Color(0xFF4A526A)),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                        .background(Color(0xFF4A526A)),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     // 뒤로가기 버튼
@@ -184,10 +200,10 @@ fun NotificationScreen(
     ) { innerPadding ->
         Box(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .background(LightGrayBackground),
+            Modifier
+                .fillMaxSize()
+                .padding(top = innerPadding.calculateTopPadding())
+                .background(LightGrayBackground),
         ) {
             when {
                 isLoading -> {
@@ -215,9 +231,9 @@ fun NotificationScreen(
                 else -> {
                     LazyColumn(
                         modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
                     ) {
                         items(filteredNotifications) { notification ->
                             NotificationItem(
@@ -251,8 +267,8 @@ fun NotificationItem(
         "follow" -> {
             FollowNotificationItem(
                 name =
-                    notification.sender?.nickname
-                        ?: stringResource(id = R.string.community_unknown),
+                notification.sender?.nickname
+                    ?: stringResource(id = R.string.community_unknown),
                 timestamp = formattedDate,
                 imageUrl = notification.sender?.profileImageUrl?.takeIf { it.isNotEmpty() } ?: "",
             )
@@ -260,18 +276,28 @@ fun NotificationItem(
 
         "application" -> {
             // Application 데이터를 StateFlow로 구독
-            val application by applicationViewModel.application.collectAsState()
+            val applicationState = remember { mutableStateOf<Application?>(null) }
 
             // notification.applicationId로 데이터 로드
             LaunchedEffect(notification.applicationId) {
-                notification.applicationId?.let { applicationViewModel.fetchApplication(it) }
+                notification.applicationId?.let { id ->
+                    applicationState.value = applicationViewModel.fetchApplication(id)
+                }
             }
+
+            val application = applicationState.value
+
             val hasStatus =
                 application?.status != "PENDING"
             CardItem(
                 onClick = {
-                    notification.applicationId?.let { id ->
-                        viewModel.onApplicationClick(id)
+                    if (application != null) {
+                        viewModel.onApplicationClick(
+                            applicationId = application.applicationId,
+                            screenType = "Owner",
+                            introduction = application.introduction,
+                            closeAt = application.closeAt
+                        )
                     }
                 },
                 hasStatus = hasStatus,
@@ -280,10 +306,10 @@ fun NotificationItem(
                 application = application,
                 currentUserId = userState?.id,
                 remainingTime =
-                    formatRemainingTime(
-                        context,
-                        application?.closeAt?.minus(System.currentTimeMillis()) ?: 0L,
-                    ),
+                formatRemainingTime(
+                    context,
+                    application?.closeAt?.minus(System.currentTimeMillis()) ?: 0L,
+                ),
                 onLeftButtonClick = {
                     application?.let { apply ->
                         applicationViewModel.updateStatus(
@@ -313,23 +339,61 @@ fun NotificationItem(
             )
         }
 
+        "status_update" -> {
+            // status_update 알림은 결과 확인용으로 표시
+            val applicationState = remember { mutableStateOf<Application?>(null) }
+
+            LaunchedEffect(notification.applicationId) {
+                notification.applicationId?.let { id ->
+                    val app = applicationViewModel.fetchApplication(id)
+                    applicationState.value = app
+                }
+            }
+
+            val application = applicationState.value
+            CardItem(
+                onClick = {
+//                    notification.applicationId?.let { id ->
+//                        viewModel.onApplicationClick(id)
+//                    }
+                    if (application != null && userState != null) {
+                        val screenType = if (application.applicant.id == userState?.id) {
+                            "My"
+                        } else {
+                            "Owner"
+                        }
+
+                        viewModel.onApplicationClick(
+                            application.applicationId,
+                            screenType,
+                            application.introduction,
+                            application.closeAt
+                        )
+                    }
+                },
+                type = "결과",
+                currentUserId = userState?.id,
+                application = application,
+            )
+        }
+
         else -> {
             // 기타 알림 처리
             Card(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 6.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors =
-                    CardDefaults.cardColors(
-                        containerColor =
-                            if (notification.isRead) {
-                                MaterialTheme.colorScheme.surface
-                            } else {
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
-                            },
-                    ),
+                CardDefaults.cardColors(
+                    containerColor =
+                    if (notification.isRead) {
+                        MaterialTheme.colorScheme.surface
+                    } else {
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
+                    },
+                ),
                 elevation = CardDefaults.cardElevation(2.dp),
             ) {
                 Column(modifier = Modifier.padding(14.dp)) {

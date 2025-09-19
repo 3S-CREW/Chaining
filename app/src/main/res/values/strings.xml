@@ -263,4 +263,6 @@
     <string name="toast_exit_again">한 번 더 누르면 종료됩니다.</string>
     <string name="toast_followed">팔로우 완료</string>
     <string name="toast_unfollowed">팔로우 취소</string>
+    <string name="application_result_available">지원자님의 지원 결과가 나왔습니다.</string>
+    <string name="application_check_result">결과를 확인하세요!</string>
 </resources>

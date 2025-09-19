@@ -261,4 +261,6 @@
     <string name="toast_exit_again">Press again to exit</string>
     <string name="toast_followed">Followed</string>
     <string name="toast_unfollowed">Unfollowed</string>
+    <string name="application_result_available">Your application result is now available.</string>
+    <string name="application_check_result">Check your result!</string>
 </resources>
