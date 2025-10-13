@@ -21,7 +21,9 @@
 |                                        인하대학교 전기전자공학부 20                                         |                                         세종대학교 전자정보통신공학과 20                                          |
 |                                                   윤종근                                                    |                                                   이호섭                                                    |
 |                                    [@hi2242](https://github.com/hi2242)                                     |                               [@lhs2257](https://github.com/lhs2257)                                |
-| [AND 배운점, 기술적 고민]() | [AND 배운점, 기술적 고민]() |
+| [AND 경험했던 오류, 시행착오](https://mountain-cobbler-da6.notion.site/2381ee3a79a280cfa433c56c53aab2ad?pvs=73) | [AND 경험했던 오류, 시행착오](https://mountain-cobbler-da6.notion.site/2381ee3a79a280cfa433c56c53aab2ad?pvs=73) |
+| [AND 이론 학습](https://mountain-cobbler-da6.notion.site/Android-2451ee3a79a28033a0e7cb6892659760) | |
+| [Firebase 비용 최적화를 위한 노력](https://mountain-cobbler-da6.notion.site/Firebase-25b1ee3a79a28053a01fcec4034dbb53?pvs=73) | |
 
 ## 📋 Documnets for developer
 
