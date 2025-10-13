@@ -25,7 +25,7 @@
 
 ## 📋 Documnets for developer
 
-[개발 설명서]()
+[개발 설명서](https://mountain-cobbler-da6.notion.site/2361ee3a79a28096b09bcd843a6a4ee9)
   
 ## 🛠️ Tech
 
@@ -135,7 +135,7 @@
 
 ## 7. 프로젝트 전체 아키텍쳐
 
-![프로젝트 아키텍처]()
+<img width="1663" height="895" alt="Image" src="https://github.com/user-attachments/assets/355778f1-cf50-45c4-9d31-8ceb83108b13" />
 
 ## 8. Commit Convention
 
