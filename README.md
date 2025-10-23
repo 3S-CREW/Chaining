@@ -7,6 +7,7 @@
 ## 🌐 앱 다운로드 사이트
 
 ### [원스토어]
+
 [한국인과 외국인의 문화 교류 앱 서비스, 체이닝(Chaining)](https://m.onestore.co.kr/v2/ko-kr/app/0001002362)
 
 ## 📧 문의
@@ -15,23 +16,24 @@
 
 ## 🔥3S CREW
 
-|                                                     AOS                                                      |                                                     AOS                                                      |
-| :---------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: |
-|                  <img width="130px" src="https://avatars.githubusercontent.com/hi2242" />                   |                <img width="130px" src="https://avatars.githubusercontent.com/lhs2257" />                |
-|                                        인하대학교 전기전자공학부 20                                         |                                         세종대학교 전자정보통신공학과 20                                          |
-|                                                   윤종근                                                    |                                                   이호섭                                                    |
-|                                    [@hi2242](https://github.com/hi2242)                                     |                               [@lhs2257](https://github.com/lhs2257)                                |
-| [AOS 경험했던 오류, 시행착오](https://mountain-cobbler-da6.notion.site/2381ee3a79a280cfa433c56c53aab2ad?pvs=73) | [AOS 경험했던 오류, 시행착오](https://mountain-cobbler-da6.notion.site/2381ee3a79a280cfa433c56c53aab2ad?pvs=73) |
-| [AOS 이론 학습](https://mountain-cobbler-da6.notion.site/Android-2451ee3a79a28033a0e7cb6892659760) | |
-| [Firebase 비용 최적화를 위한 노력](https://mountain-cobbler-da6.notion.site/Firebase-25b1ee3a79a28053a01fcec4034dbb53?pvs=73) | |
+|                                                         AOS                                                         |                                                  AOS                                                  |
+|:-------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------:|
+|                      <img width="130px" src="https://avatars.githubusercontent.com/hi2242" />                       |               <img width="130px" src="https://avatars.githubusercontent.com/lhs2257" />               |
+|                                                  인하대학교 전기전자공학부 20                                                   |                                          세종대학교 전자정보통신공학과 20                                           |
+|                                                         윤종근                                                         |                                                  이호섭                                                  |
+|                                        [@hi2242](https://github.com/hi2242)                                         |                                [@lhs2257](https://github.com/lhs2257)                                 |
+|        [AOS 경험했던 오류, 시행착오](https://mountain-cobbler-da6.notion.site/2381ee3a79a280cfa433c56c53aab2ad?pvs=73)        | [AOS 경험했던 오류, 시행착오](https://mountain-cobbler-da6.notion.site/2381ee3a79a280cfa433c56c53aab2ad?pvs=73) |
+|           [AOS 이론 학습](https://mountain-cobbler-da6.notion.site/Android-2451ee3a79a28033a0e7cb6892659760)            |                                                                                                       |
+| [Firebase 비용 최적화를 위한 노력](https://mountain-cobbler-da6.notion.site/Firebase-25b1ee3a79a28053a01fcec4034dbb53?pvs=73) |                                                                                                       |
 
 ## 📋 Documnets for developer
 
 [개발 설명서](https://mountain-cobbler-da6.notion.site/2361ee3a79a28096b09bcd843a6a4ee9)
-  
+
 ## 🛠️ Tech
 
 ### Development Tools
+
 <img src="https://skillicons.dev/icons?i=androidstudio,firebase,githubactions,github,figma&perline=5"/>
 
 ![Google Analytics](https://img.shields.io/badge/Google_Analytics-Data-orange?logo=googleanalytics&logoColor=white)
@@ -40,6 +42,7 @@
 ---
 
 ### Language & UI
+
 <img src="https://skillicons.dev/icons?i=kotlin&perline=5"/>
 
 ![Jetpack Compose](https://img.shields.io/badge/Jetpack_Compose-UI-brightgreen)
@@ -48,6 +51,7 @@
 ---
 
 ### Architecture & Libraries
+
 ![Hilt](https://img.shields.io/badge/Hilt-DI-lightblue)
 ![Coroutine](https://img.shields.io/badge/Coroutine-Async-yellow)
 ![Retrofit](https://img.shields.io/badge/Retrofit-Networking-red)
@@ -56,12 +60,14 @@
 ---
 
 ### Code Quality
+
 ![Spotless](https://img.shields.io/badge/Spotless-Formatter-green)
 ![ktlint](https://img.shields.io/badge/ktlint-Linter-purple)
 
 ---
 
 ### Version Control & Deployment
+
 <img src="https://skillicons.dev/icons?i=git&perline=5"/>
 
 ![Onestore](https://img.shields.io/badge/Onestore_Developer-Release-blueviolet)
@@ -82,7 +88,8 @@
 
 > Chaining은 여러분을 '여행객'에서 '문화 가이드'이자 '글로벌 친구'로 만들어 드립니다.
 
-> K-컬처에 대한 열정을 가지고 한국을 찾은 외국인 친구들에게 여러분만 아는 '진짜 한국'의 명소와 문화를 소개해 주세요. 익숙했던 강원도의 풍경도, 늘 가던 부산의 맛집도 외국인 친구의 새로운 시선을 통해 가장 특별한 여행지가 될 수 있습니다.
+> K-컬처에 대한 열정을 가지고 한국을 찾은 외국인 친구들에게 여러분만 아는 '진짜 한국'의 명소와 문화를 소개해 주세요. 익숙했던 강원도의 풍경도, 늘 가던 부산의 맛집도
+> 외국인 친구의 새로운 시선을 통해 가장 특별한 여행지가 될 수 있습니다.
 
 > 딱딱한 교과서는 잠시 잊으세요. 함께 여행하며 웃고 대화하는 사이, 학원에서는 배울 수 없었던 살아있는 외국어 실력이 자연스럽게 향상되는 놀라운 경험을 하게 될 것입니다.
 
@@ -100,13 +107,15 @@
 
 > 많은 사람들이 외국어를 배우고 외국인 친구를 사귀고 싶어 하지만 비싼 비용과 시간적 제약, 마땅한 기회의 부재로 어려움을 겪습니다.
 
-> 저희는 이러한 문제에 대한 해결책으로 **여행을 통한 자연스러운 문화 교류**를 제시합니다. 한국인은 외국인 친구에게 자신만의 '진짜 한국'을 소개하는 가이드가 되어 여행의 새로운 주인공이 될 수 있습니다. 외국인은 현지인 친구와 함께 K-컬처를 깊이 있게 체험하며 잊지 못할 추억을 만듭니다.
+> 저희는 이러한 문제에 대한 해결책으로 **여행을 통한 자연스러운 문화 교류**를 제시합니다. 한국인은 외국인 친구에게 자신만의 '진짜 한국'을 소개하는 가이드가 되어 여행의
+> 새로운 주인공이 될 수 있습니다. 외국인은 현지인 친구와 함께 K-컬처를 깊이 있게 체험하며 잊지 못할 추억을 만듭니다.
 
 > Chaining은 언어와 문화의 장벽을 허물고 '여행'이라는 즐거운 활동을 통해 사람과 사람을 연결하여 서로의 세상을 넓혀주는 경험을 제공하고자 합니다.
 
 ## 5. 프로젝트 기능 소개
+
 <!--![image](https://github.com/hi2242/사진링크)-->
-  
+
 ### 🔹 공통 기능
 
 - 회원가입 및 로그인: 구글 소셜 계정을 통해 간편하게 서비스에 가입하고 로그인할 수 있습니다.
@@ -141,26 +150,27 @@
 
 ## 8. Commit Convention
 
-|       Tags       |               Explanation               |
-| :--------------: | :-------------------------------------: |
-|       Feat       |            새로운 기능 추가             |
-|       Fix        |                버그 수정                |
-| !BREAKING CHANGE |         커다란 API 변경의 경우          |
-|     !HOTFIX      |          급한 치명적 버그 수정          |
-|      Build       |           빌드 관련 파일 수정           |
-|      Design      |        CSS를 포함 UI 디자인 변경        |
-|       Docs       |                문서 수정                |
+|       Tags       |       Explanation        |
+|:----------------:|:------------------------:|
+|       Feat       |        새로운 기능 추가         |
+|       Fix        |          버그 수정           |
+| !BREAKING CHANGE |      커다란 API 변경의 경우      |
+|     !HOTFIX      |       급한 치명적 버그 수정       |
+|      Build       |       빌드 관련 파일 수정        |
+|      Design      |    CSS를 포함 UI 디자인 변경     |
+|       Docs       |          문서 수정           |
 |      Style       | 코드 포맷팅, 세미콜론 누락, 코드 변경 X |
-|     Refactor     |              코드 리팩토링              |
-|     Comment      |        필요한 주석 추가 및 변경         |
-|       Test       |            테스트 코드 수정             |
-|      Rename      |         파일, 폴더명 이름 수정          |
-|      Remove      |             파일, 폴더 삭제             |
-|      chore       |            빌드, 패키지 수정            |
+|     Refactor     |         코드 리팩토링          |
+|     Comment      |      필요한 주석 추가 및 변경      |
+|       Test       |        테스트 코드 수정         |
+|      Rename      |      파일, 폴더명 이름 수정       |
+|      Remove      |        파일, 폴더 삭제         |
+|      chore       |        빌드, 패키지 수정        |
 
 ## 9. 오픈소스 활용
+
 | 이름                                      | 버전             | 구분    | 설명 / 역할                     | 라이선스       |
-| --------------------------------------- | -------------- | ----- | --------------------------- | ---------- |
+|-----------------------------------------|----------------|-------|-----------------------------|------------|
 | **AndroidX Core KTX**                   | 최신 (libs 관리)   | 라이브러리 | Kotlin 확장 함수 제공             | Apache-2.0 |
 | **AndroidX Lifecycle Runtime KTX**      | 최신             | 라이브러리 | Lifecycle + Coroutine 통합 지원 | Apache-2.0 |
 | **AndroidX Activity Compose**           | 최신             | 라이브러리 | Jetpack Compose Activity 지원 | Apache-2.0 |
@@ -192,9 +202,8 @@
 | **Compose Compiler Plugin**             | 2.1.0          | 플러그인  | Compose 컴파일러 확장             | Apache-2.0 |
 | **Google Services Plugin**              | 4.4.3          | 플러그인  | Firebase/Google 서비스 연동      | Apache-2.0 |
 
-
-
 ## 10. Version
+
 <table align="center" border="1" cellpadding="10" cellspacing="0">
   <thead>
     <tr>
@@ -222,6 +231,12 @@
       <td>오류 및 디자인 수정</td>
       <td>Ver.1.0.2</td>
       <td>3</td>
+    </tr>
+    <tr>
+      <td>2025.10.23</td>
+      <td>오류 수정</td>
+      <td>Ver.1.0.3</td>
+      <td>4</td>
     </tr>
   </tbody>
 </table>
