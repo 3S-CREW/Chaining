@@ -54,7 +54,7 @@ fun ApplicationsScreen(
     postId: String?,
     // "My" or "Owner"
     type: String,
-    onViewApplyClick: (applicationId: String) -> Unit,
+    onViewApplyClick: (applicationId: String, closeAt: Long) -> Unit,
 ) {
     val userState by userViewModel.user.collectAsState()
     val myApplications = userState?.applications.orEmpty()
@@ -180,7 +180,7 @@ fun ApplicationsScreen(
                                 application.closeAt.minus(System.currentTimeMillis()),
                             ),
                         onClick = {
-                            onViewApplyClick(application.applicationId)
+                            onViewApplyClick(application.applicationId, application.closeAt)
                         },
                         type = "지원서",
                         currentUserId = userState?.id,

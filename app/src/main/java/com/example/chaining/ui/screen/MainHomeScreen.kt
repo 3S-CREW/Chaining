@@ -64,7 +64,7 @@ fun MainHomeScreen(
     onFeedClick: () -> Unit,
     onNotificationClick: () -> Unit,
     userViewModel: UserViewModel = hiltViewModel(),
-    onViewApplyClick: (String) -> Unit,
+    onViewApplyClick: (String, Long) -> Unit,
 ) {
     var backPressedTime = 0L
     val eventFlow = notificationViewModel.event
@@ -78,7 +78,7 @@ fun MainHomeScreen(
         eventFlow.collect { event ->
             when (event) {
                 is NotificationEvent.NavigateToApplication -> {
-                    onViewApplyClick(event.applicationId)
+                    onViewApplyClick(event.applicationId, event.closeAt)
                 }
 
                 is NotificationEvent.ShowToast -> {

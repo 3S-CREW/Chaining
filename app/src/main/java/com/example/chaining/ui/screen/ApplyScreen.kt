@@ -192,6 +192,7 @@ fun ApplyScreen(
                     )
                     val remainingMillis = closeAt.minus(System.currentTimeMillis())
                     val remainingTimeText = formatRemainingTime(context, remainingMillis)
+
                     Text(
                         text = stringResource(id = R.string.time_left, remainingTimeText),
                         color = Color.White,
@@ -222,7 +223,8 @@ fun ApplyScreen(
                                 application?.applicant?.nickname
                                     ?: stringResource(id = R.string.community_unknown)
                             } else {
-                                userState?.nickname ?: stringResource(id = R.string.community_unknown)
+                                userState?.nickname
+                                    ?: stringResource(id = R.string.community_unknown)
                             },
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
@@ -234,7 +236,8 @@ fun ApplyScreen(
                                 application?.applicant?.country
                                     ?: stringResource(id = R.string.community_unknown)
                             } else {
-                                userState?.country ?: stringResource(id = R.string.community_unknown)
+                                userState?.country
+                                    ?: stringResource(id = R.string.community_unknown)
                             },
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,

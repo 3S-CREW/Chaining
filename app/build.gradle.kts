@@ -30,7 +30,7 @@ android {
         applicationId = "com.example.chaining"
         minSdk = 24
         targetSdk = 35
-        versionCode = 2
+        versionCode = 3
         versionName = "1.0.2"
 
         buildConfigField("String", "DATA_OPEN_API_KEY", properties["DATA_OPEN_API_KEY"].toString())

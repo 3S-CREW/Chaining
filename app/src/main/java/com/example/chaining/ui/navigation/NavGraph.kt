@@ -123,13 +123,13 @@ fun NavGraph(
                 onCommunityClick = { navController.navigate("community") },
                 onFeedClick = { navController.navigate("feed") },
                 onNotificationClick = { navController.navigate(route = Screen.Notification.route) },
-                onViewApplyClick = { applicationId ->
+                onViewApplyClick = { applicationId, closeAt ->
                     navController.navigate(
                         Screen.Apply.createRoute(
                             type = "Owner",
                             applicationId = applicationId,
                             introduction = "",
-                            closeAt = 0L,
+                            closeAt = closeAt,
                         ),
                     )
                 },
@@ -381,13 +381,13 @@ fun NavGraph(
                 type = type,
                 postId = postId,
                 onBackClick = { navController.popBackStack() },
-                onViewApplyClick = { applicationId ->
+                onViewApplyClick = { applicationId, closeAt ->
                     navController.navigate(
                         Screen.Apply.createRoute(
                             type = type,
                             applicationId = applicationId,
                             introduction = "",
-                            closeAt = 0L,
+                            closeAt = closeAt,
                         ),
                     )
                 },
