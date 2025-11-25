@@ -144,6 +144,53 @@
 
 ## 6. 프로젝트 시연 GIF
 
+<details>
+<summary>🔹 프로필 관련 Flow</summary>
+<details>
+<summary>프로필 정보 등록 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/2290e7cb-ac44-46dd-b898-d6e5d7e8ef0f" alt="프로필 등록 방법.gif">
+</details>
+<details>
+<summary>언어 테스트 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/e04c7e82-d636-496a-af6d-4aa4307f8508" alt="언어 테스트 방법.gif">
+</details>
+</details>
+
+<details>
+<summary>🔹 지원자 서비스 Flow</summary>
+<details>
+<summary>커뮤니티 글 확인 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/ef491210-bb8e-46eb-afd4-4156e8c55b78" alt="커뮤니티 글 확인 방법.gif">
+</details>
+<details>
+<summary>신청서 작성 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/a09cdd7f-f86c-4f77-881e-3a34c6bbe641" alt="신청서 작성 방법.gif">
+</details>
+<details>
+<summary>지원서 결과 확인 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/e4bb6d15-85ad-44f9-b311-c64257c84d5b" alt="지원서 결과 확인 방법.gif">
+</details>
+</details>
+
+<details>
+<summary>🔹 피드 관련 Flow</summary>
+<details>
+<summary>국문 버전 피드 확인 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/00ea7fe7-3fab-4d04-970e-ccd7453307fc" alt="국문 버전 피드 확인 방법.gif">
+</details>
+<details>
+<summary>영문 버전 피드 확인 방법</summary>
+<br>
+<img src="https://github.com/user-attachments/assets/b52aa894-90ff-4f99-b2b0-fb17864d71d9" alt="영문 버전 피드 확인 방법.gif">
+</details>
+</details>
+
 ## 7. 프로젝트 전체 아키텍쳐
 
 <img width="1663" height="895" alt="Image" src="https://github.com/user-attachments/assets/355778f1-cf50-45c4-9d31-8ceb83108b13" />
